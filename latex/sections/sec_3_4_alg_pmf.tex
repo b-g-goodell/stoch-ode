@@ -1,0 +1,45 @@
+\subsection{Computing Rates and Choosing the Next Event}\label{subsec:compute_pmf}
+
+We combine these steps in a single section due to the way the steps depend on each other.
+
+\subsubsection{Computing Event Rates}\label{subsubsec:compute_rates}
+
+We compute the rates of occurrence\index{occurrence, rate of} of each event from the current state. The DG re-interpretation assigns each ODE term a rate equal to the absolute value of that term: the probability that event $E_i$ occurs in a short interval $[t, t+s)$ is $\lambda_i s$, where $\lambda_i = \left|\text{term}_i(t)\right|$.
+
+Computing rates of occurrence depends on the ODE model, so we usually hand-write the rate computation for the ODE we simulate.
+For each model, inspect the ODE, identify each distinct event, take the event term's absolute value, and write a function that returns those values given the current state.
+\begin{itemize}
+\item In Example~\ref{ex:radioactive_decay}, the only event is isotope decay. This event occurs with rate $\lambda_{\mathrm{decay}} = \mu M(t)$, the absolute value of the term $-\mu M(t)$ in $\frac{dM}{dt}$. Return $\lambda_{\mathrm{decay}} = -\mu M$.
+
+\item In Example~\ref{ex:logistic_growth}, there are two events: birth with rate $\lambda_{\mathrm{birth}} = rP$ and death with rate $\lambda_{\mathrm{death}} = r\frac{P^2}{K}$. The total rate is $\lambda = rP + r\frac{P^2}{K}$. Return $(\lambda_{\mathrm{birth}}, \lambda_{\mathrm{birth}}) = (rP, \frac{r}{K}P^2)$.
+
+\item In Example~\ref{ex:saline_tank}, the birth rate (salt arriving) is $\lambda_{\mathrm{in}} = \frac{bc}{m}$ and the death rate (salt departing) is $\lambda_{\mathrm{out}} = \frac{a+b}{V}M$. The total rate is $\lambda = \frac{bc}{m} + \frac{a+b}{V}M$.  Return $(\lambda_{\mathrm{arrive}}, \lambda_{\mathrm{depart}}) = (\frac{bc}{m}, \frac{a+b}{V}M)$.
+
+\item In Example~\ref{ex:allee}, four events yield rates $rP$, $\frac{r}{L}P^2$, $\frac{r}{K}P^2$, and $\frac{r}{LK}P^3$. The total rate is $\lambda = rP + \frac{r}{L}P^2 + \frac{r}{K}P^2 + \frac{r}{LK}P^3$. Return $(rP, \frac{r}{L}P^2, \frac{r}{K}P^2, \frac{r}{LK}P^3)$.
+
+\item In Example~\ref{ex:sir_first}, the $S\to I$ event has rate $\alpha SI$ and the $I\to R$ event has rate $\beta I$. The total rate is $\lambda = \alpha SI + \beta I$. Return $(\alpha SI, \beta I)$.
+\end{itemize}
+
+Note that the symbol $\lambda$ serves two roles simultaneously. The total rate $\lambda = \sum_i \lambda_i$ is the rate parameter of the exponential distribution from which we sample the waiting time $\Delta t$ in Step 6 (Section~\ref{subsec:wait_time}), and it is the normalizer that converts each individual rate $\lambda_i$ into a probability $p_i = \lambda_i/\lambda$ in Step 4 below. Both roles follow from the Poisson-process re-interpretation of Section~\ref{sec:resolving}, which separates events from their inter-arrival wait times.
+
+\subsubsection{Building the PMF and Choosing the Next Event}\label{subsubsec:construct_pmf}
+
+Given events $E_0, E_1, \ldots, E_{N-1}$ with rates $\lambda_0, \lambda_1, \ldots, \lambda_{N-1}$, the probability that the next event to occur is $E_i$ equals $p_i = \lambda_i/\lambda$, where $\lambda = \sum_{i=0}^{N-1}\lambda_i$. This yields the PMF\index{probability mass function (PMF)} $\mathbb{P}[\text{next event is }E_i] = p_i$.
+\begin{itemize}
+\item In Example~\ref{ex:radioactive_decay}, $\mathbb{P}[E_{\mathrm{decay}}] = 1$.
+
+\item In Example~\ref{ex:logistic_growth}, $\mathbb{P}[\textup{birth}] = K/(K+P)$ and $\mathbb{P}[\textup{death}] = P/(K+P)$. These correspond to the two rates above.
+
+\item In Example~\ref{ex:saline_tank}, $\mathbb{P}[\textup{salt arrives}] = \frac{bcV}{bcV+m(a+b)M}$ and $\mathbb{P}[\textup{salt departs}] = \frac{m(a+b)M}{bcV+m(a+b)M}$. These correspond to the two rates above.
+
+\item In Example~\ref{ex:allee}, $\mathbb{P}[\textup{birth}] = \frac{(L+K)P}{(P+L)(P+K)}$ and $\mathbb{P}[\textup{death}] = \frac{LK+P^2}{(P+L)(P+K)}$. Each of these split into two events, corresponding to the four rates above.
+
+\item In Example~\ref{ex:sir_first}, $\mathbb{P}[S\to I] = \frac{\alpha S}{\alpha S+\beta}$ and $\mathbb{P}[I\to R] = \frac{\beta}{\alpha S+\beta}$. These correspond to the two rates above.
+\end{itemize}
+
+Given the PMF $\{p_i\}$, sampling the next event reduces to the following algorithm, which outputs the sampled index $i$:
+\begin{enumerate}
+\item Sample $W \in (0, 1]$ uniformly at random.
+\item Output the smallest $k \geq 0$ such that $\sum_{i=0}^k p_i \geq W$.
+\end{enumerate}
+Pseudocode for \RatesToPmf{} and \PmfToEventIndex{} appears in Figure~\ref{fig:dg_subroutines_b}, and the Python repository (\url{https://github.com/b-g-goodell/stoch-ode}) holds the implementations.

@@ -1,0 +1,343 @@
+﻿\section{Homework Problems}
+\label{sec:homework}
+
+Several problems below require parameter space exploration\index{exploration!parameter space} (Section~\ref{sec:parameter_sweep}) and the univariate elasticity formula $\mathcal{E}_{V}(r,s)$ (Section~\ref{sec:sensitivity_analysis}). Students should read those sections before attempting the problems that call for parameter sweeps or elasticity scores.
+
+\newcommand{\hwcategory}[1]{\item[]\addtocounter{prob}{-1}\par\smallskip\noindent\rule{\linewidth}{0.4pt}\par\smallskip\noindent\textbf{#1}\par\smallskip}
+
+\begin{exercises}
+\hwcategory{Mathematical and Probabilistic Background}
+
+\item \label{ex:hw_memoryless_rigorous}
+% (expected time: 45 to 60 min)
+Work through the following steps to prove that the only continuous real-valued random variable $T$ which is memoryless\index{memoryless property} is the exponential random variable.
+\begin{enumerate}[(a)]
+\item Let $f(t)$ be the probability density function for $T$, let $F(t) = \int_{-\infty}^{t} f(s) ds = \mathbb{P}[T \leq t]$ be the cumulative distribution function for $T$, and let $S(t) = 1 - F(t)$ be the \textit{survival function}\index{survival function}. Restate the memoryless property as a property of the survival function.
+\item Prove that your restatement is equivalent to the memoryless property.
+\item Take the derivative of your restatement with respect to $s$. Simplify to obtain an expression in terms of $f(t + s)$, $f(s)$, and $F(t)$.
+\item This relationship must be true for all $t, s \geq 0$. So it must be true when $s = 0$. Denote $f(0) = \lambda$ and substitute $s = 0$ into your equation above to obtain a first-order ODE for the CDF (cumulative distribution function) $F(t)$.
+\item Show that the solution to this ODE is the CDF (cumulative distribution function) $F(t)$.
+\end{enumerate}
+
+\item \label{ex:hw_memoryless_elementary}
+% (expected time: 45 to 60 min)
+We take a less rigorous approach to establishing that the only continuous random variable which is memoryless is the exponential random variable. Let $T$ be a random variable with cumulative distribution function $F(t) = \mathbb{P}[T \leq t]$. For any events $A, B$, define conditional probability as $\mathbb{P}[A \mid B] = \frac{\mathbb{P}[A \cap B]}{\mathbb{P}[B]}$. An exponential random variable has probability density function $f(t) = \lambda e^{-\lambda t}$.
+\begin{enumerate}[(a)]
+\item Show that if $T$ is memoryless, then for any $t, s > 0$, $1-F(t+s) = (1-F(t))(1-F(s))$ and therefore, for any $m, n \in \mathbb{N} = \left\{1, 2, 3, \ldots\right\}$, $1-F(\frac{m}{n}) = (1-F(1))^{\frac{m}{n}}$. (Hint: condition $T > t+s$ on the event that $T > s$).
+\item Using the above, show that there exists some $\lambda$ such that $F(t) = 1-e^{-\lambda t}$ when $t$ is rational, i.e.\ $t = \frac{m}{n}$ for integers $m, n$. Argue that if $F$ is continuous on the positive reals, then $F(t) = 1-e^{-\lambda t}$ for all positive reals.
+\end{enumerate}
+
+\item \label{ex:hw_doob_gillespie_interp}
+% (expected time: 15 to 20 min)
+Consider a two-dimensional system of differential equations like the following, where $a, b, c, d > 0$.
+\begin{align*}
+\frac{dX}{dt} =& a + bX - cXY \\
+\frac{dY}{dt} =& cXY - dY^2
+\end{align*}
+Interpret this system of ODEs from the perspective of the Doob-Gillespie algorithm.\index{Doob-Gillespie algorithm}
+
+\item \label{ex:hw_molecule_collision}
+% (expected time: 30 to 45 min)
+We model $X$ molecules of one water-soluble chemical and $Y$ molecules of another water-soluble chemical in a well-mixed tank of water. Assume that when one molecule of $X$ and one molecule of $Y$ collide, they tend to bond to form molecule $Z$. Assume that molecule $Z$ decays with half-life $\tau$ back into one molecule of $X$ and one molecule of $Y$.
+\begin{enumerate}[(a)]
+\item Identify which state-change events we model.
+\item Identify how each of these events change the state.
+\item Assuming the rate of $X$-$Y$ collisions that produce new $Z$ molecules is jointly proportional to both $X$ and $Y$ with some constant of proportionality $\alpha > 0$, identify the rate at which these state-change events occur.
+\item State a system of ordinary differential equations which models the total number of $X$, $Y$, and $Z$ particles.
+\item Argue that the time until the next $X$-$Y$ collision is an exponential random variable with rate $\lambda$ proportional to $\left|\alpha X Y\right| = \alpha XY$.
+\item Argue that the time until the next $Z$ decay is an exponential random variable with rate $\lambda$ proportional to $\left|\mu Z\right| = \mu Z$.
+\item Conclude that the time until either of these next events is an exponential random variable with rate $\lambda = \alpha X Y + \mu Z$.
+\item Since the rates of occurrence of these events are $\alpha X Y$ and $\mu Z$, respectively, argue that the probability that the next event is an $X$-$Y$ collision event is $\frac{\alpha X Y}{\alpha X Y + \mu Z}$, and that the probability that the next event is a $Z$ decay event is $\frac{\mu Z}{\alpha X Y + \mu Z}$.
+\end{enumerate}
+
+
+\hwcategory{Bounding Extinction Time via Geometric Domination}
+
+\item \label{ex:hw_bound_ext_time}
+
+Let $(X_\tau)_{\tau \ge 0}$ be a continuous-time stochastic process with an absorbing state $0$. Let $T = \inf \{\tau \ge 0 : X_\tau = 0\}$ denote the time to extinction. Assume there exists a fixed time interval $t > 0$ and a minimum probability $p \in (0, 1]$ such that, for all $\tau > 0$ and for all initial conditions $X_0 \neq 0$, the probability of extinction occurring within the time interval $[0, t)$ satisfies $p \leq P(T \le \tau + t \mid X_\tau = X_0, T > \tau)$. Answer the following questions.
+\begin{enumerate}
+    \item Divide time into discrete intervals of length $t$: $[0, t), [t, 2t), \dots, [(k-1)t, kt)$. Show that the probability the process survives past time $kt$ satisfies $P(T > kt) \leq (1-p)^k$. Hint: Express the probability of surviving past time $kt$ by conditioning on survival up to time $(k-1)t$. Then apply the definition of conditional probability and the definition of memoryless-ness.
+    
+    \item Let $N$ denote the discrete random variable representing the index of the interval $[(N-1)t, Nt)$ during which extinction occurs. Model $N$ by comparing it to a geometric random variable $Y \sim \text{Geometric}(p)$. Explain or prove that $\mathbb{P}\left(N>k\right)\leq \mathbb{P}\left(Y>k\right)$ for all $k > 0$.
+    
+    \item Using the property that $T \leq Nt$ and the expectation of the bounding geometric distribution from part (b), prove that the expected time to extinction satisfies the upper bound:
+    \[
+    E[T] \le \frac{t}{p}.
+    \]
+\end{enumerate}
+
+\hwcategory{Gambler's Ruin and Extinction Probability}
+
+\item \label{ex:hw_gamblers_ruin}
+% (expected time: 45 to 60 min)
+Consider a random walk\index{random walk} $Y_0, Y_1, Y_2, \ldots$ on the set $\left\{0, 1, 2, \ldots, N\right\}$. Assume $Y=0$ and $Y=N$ are absorbing states. Assume there exists a probability $p \in (0,1)$ such that, for all non-absorbing states $1 \leq Y < N$, the probability is $p$ that $Y$ transitions to $Y+1$ and the probability is $q = 1-p$ that $Y$ transitions to $Y-1$. Let $\pi_k$ be the probability that, given initial condition $Y_0 = k$, the population walks into $Y=0$; for $k > N$, set $\pi_k = 0$ for convenience.
+\begin{enumerate}[(a)]
+    \item Show $\pi_0 = 1$ and $\pi_N = 0$.
+    \item Show that, for integers $0 < k < N$, $\pi_k = p\pi_{k+1} + q\pi_{k-1}$ for $1 \leq k \leq N-1$. We call this equality a recurrence relation\index{recurrence relation}.
+    \item Solve the recurrence relation to show
+\[
+\pi_k = \begin{cases}
+\displaystyle\frac{(q/p)^k - (q/p)^N}{1-(q/p)^N} & p \neq \tfrac{1}{2}, \\[10pt]
+1 - \dfrac{k}{N} & p = \tfrac{1}{2}.
+\end{cases}
+\]
+
+\item Now suppose there is no upper barrier. Show that the following holds for each non-negative integer $k$.
+\[
+\lim_{N\to\infty} \pi_k = \begin{cases} (q/p)^k & p > \tfrac{1}{2}, \\ 1 & p \leq \tfrac{1}{2}. \end{cases}
+\]
+    \item Interpret this problem in the context of extinction probability\index{extinction!probability} of a population.
+    \item Interpret this problem in the context of a gambler's ruin problem\index{gambler's ruin}.
+
+\end{enumerate}
+
+\hwcategory{Radioactive Decay}
+
+\item \label{ex:hw_radioactive_decay_sim}
+% (expected time: 2 to 3 hours)
+Write Doob-Gillespie implementations of the model in Example~\ref{ex:radioactive_decay}. Answer the following questions.
+\begin{enumerate}[(i)]
+\item With a half-life of $100$ days, a sample size of $10,000$ simulations lasting $100$ days each, and with $M(0) = 100$, find the proportion of simulations of Example~\ref{ex:radioactive_decay} whose population drops below $M(t) < 40$ before $t = 100$.
+\item With a half-life of $100$ days and a sample size of $10,000$ simulations lasting $5000$ days each, find the mean, median, and variance in the wait time until $M(t) < 10$ in simulations.
+\item Fix a half-life $\tau > 0$ and generate a large sample size of simulations. Use these to investigate whether the continuous solutions $M(t)$ from Equation~\ref{eqn:radioactive_decay} are a good approximation for the expected state at time $t$.
+\end{enumerate}
+
+
+\item \label{ex:hw_radioactive_decay_elasticity}
+% (expected time: 2 to 3 hours)
+Reconsider the radioactive decay model of Example~\ref{ex:radioactive_decay} with decay rate $\mu > 0$, and let the statistic $V(\mu)$ be the time until every atom has decayed, the first time at which $M(t) = 0$. Estimate $V(\mu)$ by the sample mean of this extinction time over a large sample of Doob-Gillespie simulations started from a fixed initial count $M(0)$.
+\begin{enumerate}[(i)]
+\item Fix $M(0) = 1000$. For the base rate $\mu = 1$ and the perturbed rate $\mu = 1 + \epsilon$, estimate $V(1)$ and $V(1+\epsilon)$ for each $\epsilon \in \left\{10^{-1}, 10^{-2}, 10^{-3}\right\}$, each from a large sample of simulations.
+\item For each $\epsilon$, compute the elasticity $\mathcal{E}_V(1, 1+\epsilon)$ using the formula from Section~\ref{sec:sensitivity_analysis}, and describe how the estimate behaves as $\epsilon$ shrinks, and compare it against the analytic extinction time $V(\mu) = \frac{1}{\mu}\sum_{k=1}^{M(0)} \frac{1}{k}$.
+\item Using your elasticity estimate, determine how many decimal digits of $\mu$ a researcher must measure to hold the relative change in extinction time below $1\%$. Explain how the required precision depends on the magnitude of the elasticity.
+\end{enumerate}
+
+
+\item \label{ex:hw_uranium_decay}
+% (expected time: 4 to 5 hours)
+Radon is a dangerous gas because it is colorless, tasteless, and radioactive. Radon comes from the uranium decay chain,\index{uranium decay chain} so soil with a high uranium content naturally produces radon over time. Radon gas often accumulates to dangerous levels in basements, so residents should run fans regularly to dissipate the gas. In this problem, we stochastically model part of the uranium decay chain to investigate radon content in a basement.
+
+We use the following approximations. Uranium-234 (${}^{234}U$) has a half-life of $2.45\times10^5$ years and decays into Thorium-230 (${}^{230}Th$) by releasing an alpha particle (known as \textit{$\alpha$-decay}). Thorium-230 in turn has a half-life of $7.54\times 10^4$ years and decays into Radium-226 (${}^{226}Ra$) via $\alpha$-decay. Radium-226 in turn has a half-life of $1600$ years and decays into Radon-222 (${}^{222}Rn$) via $\alpha$-decay. Radon-222 has a half-life of $3.8235$ days and also decays via $\alpha$-decay.
+
+\begin{enumerate}[(a)]
+\item Employ a compartment model to write the system of ODEs which govern the masses of Uranium-234, Thorium-230, Radium-226, and Radon-222 over time.
+
+\item Denote the number of ${}^{234}U$ atoms present in a closed system with $U$, the number of ${}^{230}Th$ atoms with $V$, the number of ${}^{226}Ra$ atoms with $W$, and the number of ${}^{222}Rn$ atoms with $X$. Use $\mu_U, \mu_V, \mu_W, \mu_X$ for the decay rates and write the uranium decay chain as a system of linear differential equations symbolically.
+
+\item Identify all of the events that a Doob-Gillespie algorithm would simulate in this model.
+
+\item Determine the numerical values of the $\mu$ parameters, assuming the half-lives $\tau$ described above and assuming $t$ has units measured in days. (Note: $\mu = \ln(2)/\tau$.)
+
+\item Show that $(U, V, W, X) = (0, 0, 0, 0)$ is the only steady-state solution.
+
+\item Implement the Doob-Gillespie algorithm to simulate $(U(t), V(t), W(t), X(t))$ stochastically using the techniques in this chapter, and answer the following questions.
+\begin{enumerate}[(i)]
+\item With initial conditions $(U(0), V(0), W(0), X(0)) = (1, 0, 0, 0)$, simulate $10,000$ stochastic trajectories to estimate the probability that a simulation terminates with state $(U(t), V(t), W(t), X(t)) = (0, 0, 0, 0)$ within one half-life of Uranium-234.
+
+\item Modify your script to terminate when the first radon atom appears, and use it to simulate $10,000$ stochastic trajectories with initial conditions $(U(0), V(0), W(0), X(0)) = (10^8, 0, 0, 0)$. Use the sample mean of simulation time to estimate the expected time until the first Radon atom appears.
+
+\item We model a basement that last had fresh air exchange $40$ years ago. Use your script to simulate $10,000$ trajectories, each lasting $40$ years, with initial conditions $(U(0), V(0), W(0), X(0)) = (10^8, 10^7, 10^5, 0)$. Use the sample mean of these trajectories to estimate the number of atoms of radon in the basement. Determine how your answer changes if these simulations last $10^4$ years, instead.
+
+\end{enumerate}
+\end{enumerate}
+
+\hwcategory{Logistic Growth}
+
+\item \label{ex:hw_logistic_growth_sim}
+% (expected time: 2 to 3 hours)
+Write Doob-Gillespie implementations of the model in Example~\ref{ex:logistic_growth}. Answer the following questions.
+\begin{enumerate}[(i)]
+\item With a per-capita birth rate $r = 0.001$ and a carrying capacity $K = 100$, a sample size of $10,000$ simulations lasting $100$ days each, and with $P(0) = 10$, find the proportion of simulations of Example~\ref{ex:logistic_growth} whose population drops below $P(t) < 5$ before $t = 100$, and the proportion of simulations whose population goes extinct.
+\item With a per-capita birth rate $r = 0.01$, carrying capacity $K = 10$, a sample size of $10,000$ simulations lasting $1000$ days each, and with $P(0) = 10$, find the proportion of simulations of Example~\ref{ex:logistic_growth} whose populations go extinct.
+\item Fix a birth rate $r > 0$, fix a carrying capacity $K > 0$, and generate a large sample size of simulations. Use these to investigate whether the continuous solutions $P(t)$ from Equation~\ref{eqn:logistic_growth} are a good approximation for the expected state at time $t$.
+\end{enumerate}
+
+\item \label{ex:hw_const_harvest_sim}
+% (expected time: 3 to 4 hours)
+Consider the logistic growth model under constant harvest from Example~\ref{ex:const_harvest}. Assume $V(\alpha)$ is the ``odds of extinction.''
+\begin{enumerate}[(a)]
+\item Implement the Doob-Gillespie algorithm for this model which simulates one year of the population.
+\item For parameters $(r, K, \alpha)$, there are three cases: either $\alpha < \frac{rK}{4}$, $\alpha = \frac{rK}{4}$, or $\alpha > \frac{rK}{4}$, where $\alpha = rK/4$ is a bifurcation point of the ODE (Section~\ref{sec:sensitivity_analysis}). Explore these three parts of parameter space by investigating the odds of extinction before three months has elapsed.
+\end{enumerate}
+
+\item \label{ex:hw_const_harvest_sensitivity}
+% (expected time: 2 to 3 hours)
+Consider Example~\ref{ex:const_harvest}. A critical parameter value exists: if $\alpha < \frac{rK}{4}$, a stable equilibrium exists.
+\begin{sloppypar}
+Use $r = 10^{-3}, 10^{-2.5}, 10^{-2}, 10^{-1.5}, 10^{-1}$, carrying capacity $K = 10, 100, 1000$, and harvest rates approaching the critical $\alpha = \frac{rK}{4}$ from below by using $\alpha = \frac{0.9\times rK}{4}, \frac{0.95\times rK}{4}, \frac{0.99\times rK}{4}, \frac{0.995\times rK}{4}, \frac{0.999\times rK}{4}$. Explain the general trends you observe from this parameter space exploration.
+\end{sloppypar}
+
+\hwcategory{Saline Tank Model}
+
+\item \label{ex:hw_two_tank}
+% (expected time: 3 to 4 hours)
+Consider a $2$-tank mixing problem with fixed inflow and fixed outflow with the following specifications:\begin{itemize}
+\item Tank $A$ and tank $B$ are both $200$ liters and well-mixed.
+\item Tank $A$ has a $5$ liter per minute inlet pipe that brings in a deadly solution with concentration $c$ grams solute per liter of solvent.
+\item Tank $A$ has a $5$ liter per minute inlet pipe that pumps in from tank $B$.
+\item Tank $A$ has a $5$ liter per minute outlet pipe that pumps to tank $B$.
+\item Tank $B$ has a $5$ liter outlet pipe that drains its mixture into the surrounding environment.
+\end{itemize}
+Answer the following questions.
+\begin{enumerate}[(i)]
+\item State an ODE model describing how the concentration (mass/vol) of deadly chemical changes in each tank over time.
+\item Find all steady-state solutions to the system of differential equations.
+\item Assume the mass of one particle of deadly substance is $m > 0$ grams. Change variables and parameters in this model so that the state space counts the deadly particles in each tank.
+\item Write a Doob-Gillespie implementation of the resulting system of differential equations.
+\item Starting the simulation with zero concentration in both tanks, with $c = 10^{-15}$ grams of solute per liter of solvent and searching across $100$ simulations, estimate the expected time until tank $B$ drains out $1$ deadly molecule.
+\item If $\Delta t$ is exponentially distributed with parameter $\lambda > 0$, then the expectation is $E[\Delta t] = \lambda^{-1}$. Hand-compute the expected time until a new deadly molecule leaves tank $B$ in a simulation at $t=0$ with initial conditions set exactly to the steady-state solution found above.
+
+\item Find the sample average time until tank $B$ drains out a new deadly molecule in a simulation at the steady state solution and searching across $100$ simulations. Compare this to the theoretical expectation you computed in the previous step.
+
+\item Hand-compute the expected time until a new deadly molecule enters tank $B$ in a simulation at $t=0$ with initial conditions set exactly to the steady-state solution found above.
+
+\item Starting the simulation at the steady state solution and searching across $10,000$ simulations, find the sample average time until a new deadly molecule enters tank $B$. Compare this to the theoretical expectation you computed in the previous step.
+
+\end{enumerate}
+
+\hwcategory{Allee Effect Model}
+
+\item \label{ex:hw_allee_pf}
+% (expected time: 30 to 45 min)
+Let $r > 0$, $K > L > 0$. Find implicit solutions $P(t)$ to the Allee ODE $\frac{dP}{dt} = -rP(1-\frac{P}{K})(1-\frac{P}{L})$ as functions of $r > 0$, $K > L > 0$, and $P_0 = P(0) > 0$ using the method of partial fractions.
+
+\item \label{ex:hw_allee_cubic}
+% (expected time: 45 to 60 min)
+Since $-rP(1-\frac{P}{L})(1-\frac{P}{K})$ is a cubic polynomial which passes through $P=0$, a generalization of the Allee model is $\frac{dP}{dt} = aP + bP^2 + cP^3$. However, this model may lack real-valued equilibria other than $P = 0$. Determine conditions on $a$, $b$, and $c$ that guarantee three equilibria are present, and show that when these conditions hold, a re-parameterization recovers the Allee effect\index{Allee effect} model.
+
+\item \label{ex:hw_allee_steady_states}
+% (expected time: 20 to 30 min)
+The ODE from Example~\ref{ex:allee} has $3$ steady states such that $\frac{dP}{dt} = 0$, namely $P = 0$, $P = L$, and $P = K$. In these cases, the ODE stops changing in time. Explain what happens with the Doob-Gillespie implementation.
+
+\item \label{ex:hw_allee_stochastic}
+% (expected time: 3 to 4 hours)
+Modify the Allee effect simulation code (in the Python repository, \url{https://github.com/b-g-goodell/stoch-ode}) to produce $100$ stochastic trajectories for Example~\ref{ex:allee} using parameters $r=0.01\textup{ days}^{-1}$, $L=10$, $K=1000$, initial condition $P(0) = L$, and maximum run-time $T = 365$ days. Use your $100$ stochastic trajectories to answer the following questions.
+\begin{enumerate}[(i)]
+\item Find the sample five-number summary,\index{summary, five-number} the sample mean, the sample median, and the sample variance in the number of individuals in the population on day $80$.
+\item From just those trajectories that have $P(T) \leq L$, find the sample five-number summary, the sample mean, the sample median, and the sample variance of $P(T)$.
+\item From just those trajectories that have $P(T) > L$, find the sample five-number summary, the sample mean, the sample median, and the sample variance of $P(T)$. Compare to your results above.
+\item Find the proportion of simulations whose population eventually exceeds the carrying capacity within a simulation.
+\item Find the proportion of simulations whose population go extinct.
+\item Hypothesize how your answers above will change if we increase $L$ to $100$.
+\item Modify the Allee effect simulation code (in the Python repository, \url{https://github.com/b-g-goodell/stoch-ode}) to test your hypothesis.
+\item Use your results to estimate model sensitivity with respect to $L$ when $L$ is on the interval $[10, 100]$, using the elasticity formula $\mathcal{E}_{V}(r,s)$ from Section~\ref{sec:sensitivity_analysis}.
+\end{enumerate}
+
+\hwcategory{SIR Epidemiological Model}
+
+\item \label{ex:hw_zombie}
+% (expected time: 1 to 2 hours)
+For a human-scale example, consider the case of a zombie apocalypse modeled with ordinary differential equations. We have classes of individual, $H$ for humans and $Z$ for zombies. Their values at time $t$ form the system state, the pair $(H(t), Z(t))$. Construct a system of ODEs describing how $H$ and $Z$ evolve in time using the following assumptions.
+
+\begin{itemize}
+\item Assume that the human population gives birth at a rate proportional to the population with per-capita rate $\rho$.
+\item Assume that the human population dies natural deaths at a rate proportional to the population with per-capita rate $\mu_1$
+\item Assume that every fresh zombie bite immediately turns a human into a zombie with no time spent transitioning.
+\item Assume the number of fresh zombie bites occur at a rate jointly proportional to both the zombie and the human population with per-capita rate $\beta$.
+\item Lastly, assume the zombie population naturally dies at a rate proportional to the zombie population with per-capita rate $\mu_2$.
+\end{itemize}
+
+\begin{enumerate}[(a)]
+\item State the ODE model obtained from making these assumptions.
+\item Identify all state-change events the model describes, identify how each state-change event changes the state, and identify the rates of occurrence of each.
+\item Given an exponential random variable with parameter $\lambda$, the mean time until the next event occurs is $1/\lambda$. If $\rho = 2 \times 10^{-6}$, $\mu_1 = 10^{-6}$, $\beta = 10^{-5}$, $\mu_2 = 10^{-4}$, $H = 10^6$ humans, and $Z = 1$ zombie, find the probabilities of occurrence of each of these events, compute the total rate $\lambda$ (the sum of the individual event rates) governing the exponential distribution describing the time until the next event occurs, and find the mean time until the next event occurs.
+\item Find the probability that the next event to occur is a zombie biting a human.
+\item If $H$ randomly becomes $0$ in the course of a simulation, explain what happens to that simulation over a long period of time with high probability.
+\item If $Z$ randomly becomes $0$ in the course of a simulation, explain what happens to the simulation over a long period of time with high probability.
+\end{enumerate}
+
+\item \label{ex:hw_sir_pandemic}
+% (expected time: 3 to 4 hours)
+A more complete model of an epidemic\index{model!SIR} includes a natural per-capita birth rate $r > 0$ (all newborns enter the susceptible class), carrying capacity $K > 0$, natural per-capita death rate $\mu > 0$, and a mortality rate $\xi > 0$ of infected individuals.
+\begin{align*}
+\frac{dS}{dt} =& r(S+I+R)(1-\frac{S+I+R}{K}) - \alpha \frac{SI}{S+I+R} - \mu S\\
+\frac{dI}{dt} =& \alpha \frac{SI}{S+I+R} - (\beta + \mu + \xi) I\\
+\frac{dR}{dt} =& \beta I - \mu R
+\end{align*}
+\begin{sloppypar}
+Generate $1000$ stochastic trajectories of a global pandemic using $S(0) = 8 \times 10^9$, $I(0) = 1$, $R(0) = 0$, simulation runtime $T = 90\text{ days}$, per-capita birth rate $r = 1.2 \times 10^{-4}$, per-capita death rate $\mu = 4\times10^{-5}$, and carrying capacity $K = 10^{10}$. Assume sick individuals recover and die with equal probability at per-capita rate $\beta = \xi \approx 4.621 \times 10^{-2}\textup{ days}^{-1}$, and that the disease has transmissibility coefficient $\alpha = 10^{-7}\beta$.
+\end{sloppypar}
+\begin{enumerate}[(a)]
+\item Find the proportion of simulations that terminate with $I(T) = 0$.
+\item From the simulations that terminate with $I(T) > 0$, plot a histogram of $I(T)$ and compute the five-number summary, sample mean, sample median, and sample variance of $I(T)$.
+\item Perform a general parameter space exploration nearby these parameters and write a report describing all qualitatively distinct behaviors you discover.
+\end{enumerate}
+
+\hwcategory{Simulation Farming and Statistics}
+
+\item \label{ex:hw_chemical_rxn}
+% (expected time: 2 to 3 hours)
+Consider simulating the number of molecules of each of the chemical species $X$, $Y$, $Z$ with the following behavior. When a molecule of $X$ and a molecule of $Y$ collide, they tend to bond to form a molecule $Z$. When $Y$ and $Z$ collide, they interact and $Z$ tends to break apart into its component $X$ and $Y$. Given parameters $\alpha, \beta > 0$ governing the rates of these two phenomena, the following system of ordinary differential equations describes the concentration of these chemical species in a well-mixed tank.\begin{align*}
+\frac{dX}{dt} =& -\alpha X Y + \beta Y Z\\
+\frac{dY}{dt} =& -\alpha X Y + \beta Y Z\\
+\frac{dZ}{dt} =& \alpha X Y - \beta Y Z
+\end{align*}
+\begin{enumerate}[(i)]
+\item Find the equilibria of this system such that $X \geq 0$, $Y \geq 0$, and $Z \geq 0$.
+\item Show that if $Y = 0$ then no further events can occur.
+\item If you measure $t$ in seconds and $X$ is the chemical concentration in mass per units volume, determine the units that $\alpha$ and $\beta$ must use.
+
+\item Assuming the total volume of solvent is $V$, the mass of one $X$ molecule is $m_X$, the mass of one $Y$ molecule is $m_Y$, and the mass of one $Z$ molecule is $m_Z=m_X + m_Y$, re-scale this system to find a similar system in $\widetilde{X}, \widetilde{Y}, \widetilde{Z}$ modeling the total number of molecules of each species. Identify all the parameters in this new model.
+
+\item Write a Doob-Gillespie implementation of this re-scaled model. Use $V = 1\textup{ liter}$, $\alpha = 0.1\textup{ }(\textup{molecule}\cdot\textup{time})^{-1}$, $\beta = 0.2\textup{ }(\textup{molecule}\cdot\textup{time})^{-1}$, $m_X = 10^{-4}\textup{ grams}$, $m_Y = 10^{-5}\textup{ grams}$, and starting with initial condition $(\widetilde{X}(0), \widetilde{Y}(0), \widetilde{Z}(0)) = (10, 10, 0)$, determine the proportions of simulations whose populations of $X$ and $Y$ both go extinct (leaving a mixed tank filled with $Z$).
+\end{enumerate}
+
+\hwcategory{Sensitivity Analysis}
+
+\item \label{ex:hw_brusselator_transform}
+% (expected time: 45 to 60 min)
+Consider the following system of ODEs for parameters $k_1, k_2, k_3, k_4, A, B > 0$.
+\begin{align*}
+\frac{dX}{dT} =& k_1 A - k_2 B X - k_4 X + k_3 X^2 Y\\
+\frac{dY}{dT} =& k_2 B X - k_3 X^2 Y
+\end{align*}
+Apply a linear transformation of variables and time, and then re-parameterize, to obtain the following system of ODEs for parameters $a, b$.
+\begin{align*}
+\frac{dx}{dt} =& a - (b+1)x + x^2 y\\
+\frac{dy}{dt} =& bx - x^2 y
+\end{align*}
+Prigogine and Lefever \cite{prigogine1968symmetry} introduced the \textit{Brusselator equations}\index{Brusselator equations} as a model of autocatalytic oscillating chemical reactions. The system governs $(\frac{dx}{dt}, \frac{dy}{dt})$ as above.
+
+\item \label{ex:hw_brusselator_stochastic}
+% (expected time: 3 to 4 hours)
+The \textit{Brusselator equations} from above describe the evolution of the concentration of two molecular species $X$ and $Y$ over time during a certain class of chemical reaction.
+\begin{align*}
+\frac{dX}{dt} =& a - (b+1)X + X^2 Y \\
+\frac{dY}{dt} =& bX - X^2 Y
+\end{align*}
+Fix $a > 0$ and explore the parameter space around $b = 1 + a^2$ (Section~\ref{sec:parameter_sweep}). The threshold $b = 1 + a^2$ is a bifurcation\index{bifurcation} point of the Brusselator ODE (Section~\ref{sec:sensitivity_analysis}). Investigate the possibility of \textit{oscillating stochastic trajectories} when $b \approx 1 + a^2$.
+
+\item \label{ex:hw_logistic_growth_extinction_sensitivity}
+% (expected time: 45 to 60 min)
+Fix $r = 0.001$ and investigate the sensitivity of ``odds of extinction'' to the carrying capacity $K$ in the logistic growth\index{logistic growth} model as we vary $1 \leq K \leq 100$, using the elasticity formula $\mathcal{E}_{V}(r,s)$ from Section~\ref{sec:sensitivity_analysis}.
+
+\item \label{ex:hw_wilson_cowan}
+% (expected time: 5 to 8 hours)
+Wilson and Cowan \cite{wilson1972excitatory}\index{model!Wilson-Cowan} introduced a model of interacting excitatory and inhibitory neural populations. Under some simplifying assumptions, it reduces to the following two-dimensional system of nonlinear ODEs, which we explain below.
+\begin{align*}
+\tau_E \frac{dE}{dt} =& -E + (1-r_E E)F_E\left(aE - bI + G_E(t)\right)\\
+\tau_I \frac{dI}{dt} =& -I + (1-r_I I)F_I\left(cE - dI + G_I(t)\right)
+\end{align*}
+The Wilson-Cowan model describes the dynamics of neural activity in a population of neurons called a \textit{cortical column}. Within the column, there are two sub-populations: excitatory ($E$) neurons and inhibitory ($I$) neurons. Excitatory neurons raise activity in connected cells. Inhibitory neurons suppress it. In the model, $E(t)$ describes the proportion of excitatory neurons in the column which are spiking at time $t$. Similarly, $I(t)$ describes the proportion of inhibitory neurons in the column which are spiking at time $t$. The functions $F_E$ and $F_I$ are \textit{sigmoid functions} in the sense that they are monotonically increasing functions with ranges $[0, 1]$. The functions $G_E$ and $G_I$ describe arbitrary external electrical input currents. The parameters $\tau_E$ and $\tau_I$ describe the time-scales at which each sub-population relaxes in the absence of input. The parameters $a, b, c, d > 0$ describe connectivity and synaptic strength between the two sub-populations. The parameters $r_E$ and $r_I$ relate to the saturated steady-state solutions when neural response to external inputs reaches its maximum.
+\begin{enumerate}
+\item Assuming that there are $N_E$ total excitatory neurons and $N_I$ inhibitory neurons in the cortical column, re-scale the model to describe $\widetilde{E}(t)$ and $\widetilde{I}(t)$, the absolute number of excitatory and inhibitory neurons which are spiking at time $t$, instead of the proportions $E$ and $I$.
+\item Identify all state-change events this model describes.
+\item Compute the rate of occurrence of any event $\lambda$.
+\item Compute the PMF (probability mass function) of these different events.
+\item Write a function that inputs $N_E, N_I, \tau_E, \tau_I, r_E, r_I, a, b, c, d, t_{\textup{on}}, G_{\textup{max}}$, a maximum runtime $T$, uses the common choice of sigmoid function $F(x) = (1+e^{-x})^{-1}$, and uses the input current function $G(t) = G_E(t) = G_I(t) = G_{max}F(t)$ to simulate a stochastic trajectory for $\widetilde{E}$ and $\widetilde{I}$.
+\item We say the excitatory sub-population is \textit{saturated} if $F_E(aE - bI + G_E(t)) \approx 1$, and we similarly say the inhibitory sub-population is \textit{saturated} if $F_I(cE - dI + G_I(t)) \approx 1$. If both sub-populations are saturated, compute the steady-state solution $(\widetilde{E}^*, \widetilde{I}^*)$ as a function of $\tau_E$, $\tau_I$, $r_E$, $r_I$, $N_E$, and $N_I$.
+\item Neurons tend to operate on millisecond time-scales, so let $\tau_E = \tau_I = 1\textup{ millisecond}$. Let $N_E + N_I = 100$ and $N_E = 5N_I$. If $E^* = N_E/4$, $I^* = N_I/4$, solve for $r_E$, $r_I$, $N_E$, and $N_I$.
+\item Setting $t_{\textup{on}} = 100 \tau$ and using all the above, there are five remaining unspecified parameters: $a$, $b$, $c$, $d$, and $G_{\textup{max}}$. Use the function you wrote above to generate $1000$ stochastic trajectories for each choice of $a, b, c, d, G_{\textup{max}} \in \left\{10^{-2}, 10^{-1}, 10^0, 10^1, 10^2\right\}$.
+\begin{itemize}
+\item Identify dynamical regimes that trajectories from a common parameter set tend to follow.
+\item Presume the test statistic $V(a, b, c, d, G_{\textup{max}})$ is the odds that fewer excitatory neurons are firing at the end of the simulation $t=T$ than the saturated steady-state solution $E^*$, and estimate the model sensitivity.
+\item Suppose instead  $V$ is the odds that fewer inhibitory neurons are firing at the end of the simulation $t=T$ than the saturated steady-state solution $I^*$, and estimate the model sensitivity.
+\end{itemize}
+\item Find a parameter set $(a, b, c, d, G_{\textup{max}})$ that gives rise to oscillatory behavior between $\widetilde{E}$ and $\widetilde{I}$.
+\item Form a hypothesis about whether solutions to the Wilson-Cowan ODE are a good approximation of the mean simulation.
+\item Fix some parameters $a, b, c, d, G_{\textup{max}}$ and use a numerical solver to approximate the continuous-state solution to the Wilson-Cowan ODE.
+\item Using these parameters, examine a large sample of simulation results and test your hypothesis.
+\end{enumerate}
+
+\end{exercises}

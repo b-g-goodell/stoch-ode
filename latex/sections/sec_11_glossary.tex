@@ -1,0 +1,33 @@
+\section{Glossary}\label{sec:glossary}\label{subsec:background}
+
+The following terms appear throughout this chapter. Readers who have encountered them before may treat this section as a reference, and readers who meet an unfamiliar term in the body may look it up here.
+
+\begin{itemize}
+
+\item \textbf{Probability mass function (PMF).}\index{probability mass function (PMF)}\index{PMF|see{probability mass function (PMF)}} Given a finite or countable outcome set $\Omega$, a \textit{probability mass function} is a function $p:\Omega\to[0,1]$ satisfying $\sum_{\omega\in\Omega} p(\omega)=1$. The value $p(\omega)$ gives the probability that a random variable takes the outcome $\omega$.
+
+\item \textbf{Probability density function (PDF).}\index{probability density function (PDF)}\index{PDF|see{probability density function (PDF)}} A \textit{probability density function} for a real-valued random variable $X$ is a non-negative measurable function $f:\mathbb{R}\to[0,\infty)$ such that $\mathbb{P}[a \leq X \leq b] = \int_a^b f(x)\,dx$ for all $a \leq b$. The PDF integrates to $1$ over $\mathbb{R}$ and determines the cumulative distribution function via $F(x) = \int_{-\infty}^x f(u)\,du$.
+
+\item \textbf{Cumulative distribution function (CDF).}\index{cumulative distribution function (CDF)}\index{CDF|see{cumulative distribution function (CDF)}} The \textit{cumulative distribution function} of a real-valued random variable $X$ is $F:\mathbb{R}\to[0,1]$ defined by $F(x)=\mathbb{P}[X\leq x]$. It is non-decreasing, right-continuous, and satisfies $\lim_{x\to-\infty}F(x)=0$ and $\lim_{x\to+\infty}F(x)=1$.
+
+\item \textbf{Inverting the CDF (inverse CDF method).}\index{inverse CDF method} If $U$ follows the uniform distribution on $(0,1)$ and $F^{-1}(u)=\inf\{x:F(x)\geq u\}$ is the generalized inverse of a CDF $F$, then the random variable $F^{-1}(U)$ has CDF $F$. This is the basis of the inverse CDF method for sampling: to generate a sample from a distribution with CDF $F$, sample $u$ uniformly at random and return $F^{-1}(u)$.
+
+\item \textbf{Phase diagram.}\index{phase diagram}\index{phase portrait|see{phase diagram}} A \textit{phase diagram} (or phase portrait) for an ODE $\frac{dy}{dt}=f(t,y)$ is a plot in the $(t,y)$-plane displaying solution trajectories as curves, with arrows indicating the direction of increasing time. Phase diagrams reveal the global qualitative behavior of an ODE without requiring closed-form solutions.
+
+\item \textbf{Piecewise-constant function.}\index{function!piecewise-constant} A function $f:\mathbb{R}\to\mathbb{R}$ is \textit{piecewise-constant} if there exist breakpoints $t_0<t_1<\cdots<t_n$ such that $f$ is constant on each sub-interval $(t_{i-1},t_i)$. The graph of a piecewise-constant function resembles a staircase.
+
+\item \textbf{Changepoint.}\index{changepoint} In the context of a stochastic trajectory, a \textit{changepoint} is a time at which the state variable changes value. Between consecutive changepoints the state is constant, so a stochastic trajectory is a piecewise-constant function of time with changepoints at each state-change event.
+
+\item \textbf{Heat map.}\index{heat map} A \textit{heat map} of stochastic trajectories is a two-dimensional histogram over the $(t,\text{state})$-plane. The color intensity of each cell $(t_i, y_j)$ is proportional to the number of simulated trajectories whose state is approximately $y_j$ at time $t_i$. Heat maps convert a large ensemble of individual trajectories into a single image that reveals collective probabilistic behavior.
+
+\item \textbf{Distribution of trajectories.}\index{trajectories, distribution of} The \textit{distribution of trajectories} is the probabilistic description of all possible stochastic trajectories and their relative likelihoods under a given model and initial condition. In practice we approximate it by generating a large sample of trajectories and examining their aggregate statistics.
+
+\item \textbf{Unimodal and bimodal distributions.}\index{distribution!unimodal}\index{distribution!bimodal} A probability distribution is \textit{unimodal} if it has a single peak (mode). It is \textit{bimodal} if it has two distinct peaks. A bimodal distribution of simulation outcomes often indicates that trajectories separate into two qualitatively distinct behavioral regimes. The Allee effect (Section~\ref{sec:algorithm}) provides a concrete example.
+
+\item \textbf{Sample proportion as an estimator.}\index{proportion, sample} If a binary event has true probability $p$ and we observe $k$ successes in $n$ independent trials, the \textit{sample proportion} $\hat{p}=k/n$ is an unbiased estimator of $p$.
+
+\item \textbf{Hat notation.}\index{hat notation} The hat $\hat{\phantom{V}}$ denotes an estimate of a quantity computed from a sample. For example, $\hat{p}$ is an estimate of the true probability $p$, and $\hat{V}$ is an estimate of the statistic $V$.
+
+\item \textbf{Five-number summary.}\index{summary, five-number} The \textit{five-number summary} of a dataset is the ordered tuple $(\min,\, Q_1,\, Q_2,\, Q_3,\, \max)$, where $Q_1$, $Q_2$ (the median), and $Q_3$ are the first, second, and third quartiles. The five-number summary provides a concise description of the center, spread, and extremes of a distribution without assuming any parametric form.
+
+\end{itemize}

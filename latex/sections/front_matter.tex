@@ -1,0 +1,49 @@
+\setcounter{chapter}{-1}
+\chapter[Doob-Gillespie Stochastic Simulation]{Simulating ODEs Stochastically with Doob-Gillespie Algorithms}
+\label{chap:doob_gillespie}
+
+Summary: How to simulate discrete populations using continuous models, how to test the quality of those simulations, and how to seek bifurcations.
+
+\bigskip
+
+Prerequisites: Calculus, Probability and Statistics, and programming experience. Experience in Ordinary Differential Equations aids comprehension but the chapter does not require it.
+
+\bigskip
+
+%Instructional Time: 30 to 40 hours.
+
+\bigskip
+
+Learning Objectives
+\begin{itemize}
+\item Identify shortfalls in using deterministic, continuous-state models like ODEs for probabilistic, discrete-state real-life phenomena.
+\item Explain the re-interpretation of ODEs underlying the Doob-Gillespie approach.
+\item Convert ODE models to Doob-Gillespie simulations.
+\item Study probabilistic properties of models with statistics.
+\item Explore parameter space to assess model sensitivity and model reliability.
+\item Explain why ODE solutions differ from the stochastic mean.
+\item Describe bifurcations, detect them, and account for them in sensitivity analysis.
+\item Sample distributions by the inverse-CDF method.
+\end{itemize}
+
+\bigskip
+
+Learning Outcomes
+\begin{itemize}
+\item Make stream plots of solution trajectories to non-linear ODEs.
+\item Provide examples of discrete-state and deterministic real-life systems.
+\item Provide examples of continuous-state and stochastic real-life systems.
+\item Interpret an ODE in terms of state-change events, and determine the PMF (probability mass function) governing which event is next to occur.
+\item Find equilibria of an ODE and analyze their stability.
+\item Prove that exponentially distributed random variables are memoryless, and that the only continuous random variables which are memoryless are all exponentially distributed.
+\item Scale or parameterize a system of ODEs so that the state space is on the scale of individuals.
+\item Identify the relevant state-change events in a system of ODEs and their effects.
+\item Parameterize ODE tank mixing models, ecological population models, epidemiological population models, and other models.
+\item Convert ODE tank mixing models, ecological population models, epidemiological population models, and other models to Doob-Gillespie simulation farms.
+\item Know stream plots fail for the SIR model, and identify when stream plots are not useful.
+\item Capture distributional behavior using heat maps of stochastic trajectories.
+\item Collect statistical data from simulation results and perform parameter space exploration, controlling for qualitative changes in behavior.
+\item Use parameter space exploration to estimate and interpret univariate model sensitivity.
+\item Use model sensitivity as a proxy to assess model reliability.
+\item Identify bimodal or multimodal output with heatmaps and informally describe how to handle multimodal data.
+\end{itemize}
