@@ -1,0 +1,21 @@
+\section{Summary}
+\label{sec:summary}
+
+Real physical systems (such as population counts of atoms or organisms) jump discretely and randomly from one state to another as time evolves continuously, but ODE models are continuous and deterministic. The Doob-Gillespie algorithm bridges this gap by realizing ODE models as stochastic simulations.
+
+The algorithm re-interprets each term in the system of ODEs as a rate of occurrence of an independent point-process event. Each ODE term corresponds to a state-change event, and the magnitude $\lambda$ of the term is proportional to the probability of that event. The algorithm accumulates an open interval of continuous deterministic change into a randomly generated wait-time and state-change event in which the population changes by exactly $\pm 1$. The algorithm samples the time until the next occurrence of that event from an exponential distribution with rate equal to the magnitude of the corresponding ODE term. Because the events are independent, the time until any event occurs is the minimum of these independent exponential waiting times.
+
+A larger ODE term raises the event rate and shortens the average wait between events.
+
+Once we generate stochastic trajectories, we must assess simulation quality before drawing biological conclusions, because two runs with identical parameters may look different. We introduced univariate model elasticity\index{elasticity!univariate} (the log-ratio $\mathcal{E}_V(r, s) = (\ln V(r) - \ln V(s))/(\ln r - \ln s)$, measuring how sensitive the simulation statistic $V$ is to a proportional change in a single parameter $r$) to assess model robustness. Insensitive models tolerate rough parameter estimates and invite simplification, while sensitive ones demand precise measurements.
+
+Model elasticity also serves as a statistical indicator that a bifurcation\index{bifurcation} (a qualitative change in model behavior as a parameter crosses a threshold value called the bifurcation point\index{bifurcation!point}) has occurred. Elasticity is a finite-difference approximation of a logarithmic derivative. If the underlying statistic changes smoothly, elasticity stays stable. If the parameter crosses a bifurcation point, the statistic may change discontinuously and elasticity spikes.
+
+Returning to the modeling cycle of the introductory chapter on the mathematical modeling process, this chapter supplied tools for two of its stages. The Doob-Gillespie algorithm gets a solution by realizing an ODE as stochastic trajectories. Parameter sweeps and elasticity scores serve the analysis and model assessment stage, measuring how much to trust those trajectories. After the modeler reports their results, they return to the start of the cycle.
+
+\textup{{\bf Questions for Reflection:}}
+\begin{enumerate}
+\item In the logistic growth model, the birth rate equals the death rate when $P = K$. Describe qualitatively how a DG simulation behaves near $P = K$ compared to the deterministic ODE solution, and explain what drives the difference.
+
+\item Model elasticity spikes near a bifurcation point. In what sense can a sudden spike in $\mathcal{E}_V(r,s)$ serve as an alert that the model is approaching a qualitative change in behavior, and what follow-up analysis should that alert trigger?
+\end{enumerate}

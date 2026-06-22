@@ -1,0 +1,108 @@
+﻿\subsection{Re-Scaling and Re-Parameterizing to Integer Counts}\label{subsec:alg_rescaling}
+
+%\textbf{Instructional Time:} 2 hours
+
+The DG algorithm\index{Doob-Gillespie algorithm} simulates discrete jumps in state by $\pm 1$ at a time, so we scale\index{rescaling} the ODE system such that the state variable discretely counts individuals (such as molecules or organisms). This requires a change of variables.\index{change of variables}
+
+
+\begin{example}\label{ex:radioactive_decay_units}
+Take a fictional isotope with measured half-life $\tau = 5.00 \times 10^{3}\,\mathrm{s}$ and initial sample mass $M_0 = 2.5\,\mathrm{lb}$. Your boss demands a simulation running in years and kilograms. The per-second decay rate is
+\[
+  \mu = \frac{\ln 2}{\tau}
+      = \frac{\ln 2}{5.00 \times 10^{3}\,\mathrm{s}}
+      \approx 1.386 \times 10^{-4}\,\mathrm{s}^{-1}.
+\]
+The relevant conversion factors are
+\[
+  1\,\mathrm{lb} = 0.4536\,\mathrm{kg},
+  \qquad
+  1\,\mathrm{yr} = 3.156 \times 10^{7}\,\mathrm{s}.
+\]
+Whereas $M_0$ is measured in pounds and $\tau$ is measured in seconds, let $\widetilde{M}$ denote mass in kilograms and $T$ time in years.
+Substituting $M = \widetilde{M}/0.4536$ and $t = T \cdot 3.156 \times 10^{7}$
+into $\frac{dM}{dt} = -\mu M$ gives
+\[
+  \frac{1}{0.4536} \cdot \frac{1}{3.156 \times 10^{7}}
+  \frac{d\widetilde{M}}{dT}
+  =
+  -\mu \cdot \frac{\widetilde{M}}{0.4536}.
+\]
+The factor $1/0.4536$ appears on both sides and cancels, leaving
+\[
+  \frac{d\widetilde{M}}{dT}
+  = -\underbrace{\bigl(\mu \cdot 3.156 \times 10^{7}\bigr)}_{\displaystyle\widetilde{\mu}}\,
+  \widetilde{M}
+  \approx -4374\,\mathrm{yr}^{-1} \cdot \widetilde{M}.
+\]
+The initial condition converts as
+$\widetilde{M}_0 = 2.5 \times 0.4536 \approx 1.134\,\mathrm{kg}$.
+Because the ODE is linear in mass, and with the same unit on both sides,
+the mass conversion factor cancels. Only the time unit requires a numerical
+change to $\mu$.
+\end{example}
+
+\begin{example}\label{ex:saline_tank}
+\textbf{Saline Tank Model.} A nanomachinery manufacturer has made a motivating observation for mathematical modeling: a sensitive manufacturing process requires a saline solution with precise quantities of salt to avoid failure. The manufacturer articulates the problem in the following way.
+\begin{itemize}
+\item If too many or too few NaCl molecules (really, Na-Cl ion pairs in aqueous solution) enter the mixing tank, the industrial process fails, so we must model the absolute number of molecules.
+\item A tank with $V$ units of volume, two inlet pipes, and one outlet pipe holds the well-mixed saline solution.
+\item One inlet pipe brings in distilled water at rate $a$ units of volume per unit of time.
+\item Another inlet pipe brings in a saline solution at $b$ units of volume per unit of time with concentration $c$ units of mass per unit of volume.
+\item The outlet pipe drains $a+b$ units of volume of the well-mixed solution per unit of time.
+\end{itemize}
+
+We formulate an ODE governing the salt concentration in the tank as $\frac{dX}{dt} = \frac{bc}{V} - \frac{a+b}{V}X$. The saline inlet adds $bc$ units of mass per unit time to a tank of volume $V$, so the concentration increases at rate $bc/V$. The outlet removes the well-mixed solution at total volumetric rate $a+b$, diluting the concentration at rate $(a+b)X/V$.
+
+The number of molecules $M$ times mass per molecule $m$ is the total mass, and the total mass per volume $V$ is the concentration. Let $X = mM/V$, where $M$ is the number of NaCl molecules in the tank, $m$ is the mass of each molecule in the same mass units as $X$ and $c$, and $V$ is the volume. Taking the derivative of both sides of $X = mM/V$ gives us the following.
+\begin{align}
+\frac{m}{V}M =& X \notag \\
+\frac{d}{dt} \frac{m}{V}M =& \frac{d}{dt} X \notag \\
+\frac{m}{V} \frac{dM}{dt} =& \frac{dX}{dt} \notag \\
+\frac{m}{V} \frac{dM}{dt} =& \frac{bc}{V} - \frac{a+b}{V}X \notag \\
+\frac{m}{V} \frac{dM}{dt} =& \frac{bc}{V} - \frac{a+b}{V} \frac{mM}{V} \notag \\
+m \frac{dM}{dt} =& bc - m\frac{a+b}{V}M \notag \\
+\frac{dM}{dt} =& \frac{bc}{m} - \frac{a+b}{V}M \label{eqn:saline_tank}
+\end{align} Now the evolution of $M$ takes place on the scale of individual molecules. This process works regardless of the underlying parameters $a$, $b$, $c$, $m$, and $V$.
+
+\end{example}
+
+Sometimes a change of variables requires changing time as in Example~\ref{ex:radioactive_decay_units} or Homework Problem~\ref{ex:hw_brusselator_transform}
+Sometimes, different system parameters are given in different unit systems (e.g., a volume measured in liters but a flow rate in gallons per second).
+Example~\ref{ex:saline_tank_with_repar} illustrates unit-conversion with mixed units.
+When mixed units are on the table, we can get real weird with it.
+
+
+
+\begin{example}\label{ex:saline_tank_with_repar}
+\textbf{Saline Tank Model with Mixed Units.}
+Mixed units occur frequently during meta-analyses comparing data from multiple sources, measured in units distinct to each source. Convert all variables to compatible unit systems before applying the methods in this chapter.
+
+Consider the tank in the previous problem, except the parameters $V$, $a$, $b$, $c$, and $m$ appear in inconsistent units: say $V$ is in liters, $a$ and $b$ are both in cubic light-years per year, $c$ is in kilograms per gallon, and $m$ is in pounds. Because the units are inconsistent, the concentration of salt in the tank no longer obeys the differential equation $\frac{dX}{dt} = \frac{bc}{V} - \frac{a+b}{V}X$ and the mass does not obey $\frac{dM}{dt} = \frac{bc}{m} - \frac{a+b}{V}M$. The term $bc/V$ adds a quantity with units $\frac{(\text{light-year})^3}{\text{year}} \cdot \frac{\text{kg}}{\text{gal}} \cdot \frac{1}{\text{liter}}$, which one cannot add to $\frac{a+b}{V}X$, measured in different units. Do not perform arithmetic on quantities with mismatched units.
+
+
+Reformulate the model using liters, hours, and grams, with new parameters $\widetilde{V}$, $\widetilde{a}$, $\widetilde{b}$, $\widetilde{c}$, and $\widetilde{m}$.
+\begin{itemize}
+\item The parameter $V$ is already in liters, so set $\widetilde{V} = V$.
+\item The parameters $a$ and $b$ are both in cubic light-years per year,
+$\frac{(\textup{light year})^3}{year}$,
+which is a measure of volume over time. We need these parameters in liters per hour,
+$\frac{\textup{liter}}{\textup{hour}}$
+. Readers should verify for themselves that there are $9.667\times 10^{46} \frac{\textup{liter}}{\textup{hour}}$ in
+$1 \frac{(\textup{light year})^3}{\textup{year}}$.
+So, $a \frac{(\textup{light year})^3}{\textup{year}} =  9.667 a \times 10^{46} \frac{\textup{liter}}{\textup{hour}}$. Set $\widetilde{a} = 9.667a \times 10^{46} \frac{\textup{liter}}{\textup{hour}}$ and, similarly, $\widetilde{b} = 9.667b\times 10^{46} \frac{\textup{liter}}{\textup{hour}}$.
+\item The parameter $c$ is in kilograms per gallon $\frac{\textup{kg}}{\textup{gal}}$. There are $264.2$ grams per liter $\frac{\textup{gram}}{\textup{liter}}$ in $1 \frac{\textup{kilogram}}{\textup{gallon}}$. So, set $\widetilde{c} = 264.2c \frac{\textup{gram}}{\textup{liter}}$.
+\item The parameter $m$ is in pounds $\textup{lbs}$ per molecule. There are $453.6\textup{ grams}$ per $1\textup{ lbs}$. So, set $\widetilde{m} = 453.6m \frac{\textup{grams}}{\textup{molecule}}$.
+\end{itemize} Now the parameters $\widetilde{V}$, $\widetilde{a}$, $\widetilde{b}$, $\widetilde{c}$, and $\widetilde{m}$ can replace $V, a, b, c, m$ as in Example~\ref{ex:saline_tank}, giving $\frac{dM}{dt} = \frac{\widetilde{b}\widetilde{c}}{\widetilde{m}} - \frac{\widetilde{a}+\widetilde{b}}{\widetilde{V}}M$. The equation has the same algebraic form as before. Only the numerical values of the parameters have changed for consistency in units.
+
+
+
+\end{example}
+
+\textup{{\bf Questions for Reflection:}}
+\begin{enumerate}
+\item In Example~\ref{ex:radioactive_decay_units}, the factor $1/0.4536$ appeared on both sides of the rescaled ODE and canceled. Explain in general why a multiplicative rescaling of the state variable does not change the qualitative dynamics of a linear ODE, but does change the numerical value of the rate parameter.
+
+\item The saline tank model introduces the mass per molecule $m$ to convert mass to molecule count. As $m \to 0$ with total mass held fixed, the molecule count grows without bound. Describe what happens to the DG simulation in this limit and why the continuous ODE remains a valid description.
+
+\item A colleague proposes running a DG simulation with parameters measured in inconsistent units, arguing that the results will look reasonable enough. Construct a specific counterexample using the saline tank model to show that unit inconsistency produces a numerically incorrect simulation, and identify the symptom a researcher would observe.
+\end{enumerate}

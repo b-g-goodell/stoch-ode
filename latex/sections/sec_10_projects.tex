@@ -1,0 +1,49 @@
+﻿\section{Modeling Projects}
+\label{sec:projects}
+
+The projects below pose open-ended investigations that start capstone or thesis work. Each names a modeling context and some entry points, and leaves the scope, depth of analysis, and choice of tools to the reader. The projects have no unique correct answers.
+
+\begin{enumerate}
+
+\item % (expected time: 10 to 20 hours)
+Select a radioactive decay chain\index{radioactive decay} from among the following list. Use whatever source you like to determine half-lives of each element in the chain, and investigate your models for some fixed initial number of atoms, say $1000$.
+\begin{itemize}
+\item Neptunium-$237$.
+\item Thorium-$232$.
+\item Uranium-$235$ (distinct from the Uranium-$234$ chain).
+\end{itemize}
+
+
+
+
+\item % (expected time: 10 to 20 hours)
+The Wilson-Cowan model from cognitive neuroscience models neural populations in an ensemble with a continuous-state compartment model, and researchers consider it a basic model of \textit{biological memory}. The neural ensemble transiently sustains elevated firing rates when input activates it. These ensembles spontaneously deactivate over time unless recurrent excitatory input maintains them. Neurons can be either \textit{excitatory} ($E$) or \textit{inhibitory} ($I$), and they can be either \textit{active} or \textit{inactive}. Excitatory neurons increase the activity of all other neurons in the assembly, and inhibitory neurons decrease the activity. The Wilson-Cowan system of ODEs is in Homework Problem \ref{ex:hw_wilson_cowan}. Handling $E$ and $I$ as discrete populations, convert this ODE to a discrete-state version with the Doob-Gillespie algorithm, investigate the model (e.g.\ find the typical lifespan of a memory trace across the parameter space), and determine model sensitivity.
+
+
+
+
+\item % (expected time: 10 to 20 hours)
+The classical Lotka-Volterra\index{Lotka-Volterra equations}\index{predator-prey model|see{Lotka-Volterra equations}} predator-prey model with prey $H$ (hosts) and predators $P$ is as follows, where $\alpha, \beta, \delta, \gamma > 0$.
+\begin{align*}
+\frac{dH}{dt} &= \alpha H - \beta H P \\
+\frac{dP}{dt} &= \delta H P - \gamma P
+\end{align*}
+The term $\alpha H$ models prey births, $\beta HP$ models predator-prey interactions that remove prey, $\delta HP$ models the same interactions that increase predators, and $\gamma P$ models predator deaths. The deterministic system oscillates, but both populations approach extinction\index{extinction!stochastic} in stochastic simulations. Adding a second prey species $H_2$ with its own birth rate and predation rate reportedly improves survivability of all three species. Investigate this claim. Formulate the extended model, implement the DG algorithm, and report how added prey diversity affects the survival of all three species.
+
+
+
+
+\item % (expected time: 10 to 20 hours)
+Dead biomass decays into ammonia, which is toxic to most life in high concentrations. \textit{Nitrosomona} bacteria are an exception. Ubiquitous on Earth, they eat ammonia to build their biomass and excrete nitrites, which are even more toxic. \textit{Nitrobacter} bacteria are another exception, and also ubiquitous. They eat both ammonia and nitrites to build their biomass and excrete \textit{nitrates}. Nitrates are toxic in large enough concentrations, but plants use them as a nitrogen source and they are necessary to life in low concentrations. Algae and plants can consume low levels of ammonia and nitrites as further nitrogen sources. Fish tanks suffer ``new tank syndrome'' as follows:
+\begin{enumerate}
+\item A new aquarium owner fills a new tank with water, substrate, and a few fish.
+\item Ammonia builds up before the \textit{Nitrosomona} population is large enough to process the ammonia. Everything dies.
+\item The owner goes to get new fish. After an additional week, the Nitrosomona bacteria are sufficient to support a few fish. But then the nitrites build up before the \textit{Nitrobacter} is large enough to process the ammonia. Everything dies again.
+\item The owner goes back to get more fish. After an additional few weeks, the bacteria are sufficient to process the ammonia and the nitrites. But then the nitrates build up because the owner did not include any plants in the tank. Everything dies again.
+\item Finally, the owner goes back to get more fish, discusses the issue with the fish shop owner, and also gets some plants. After a few chemically chaotic days, the tank settles down to a nice equilibrium and everything can survive.
+\end{enumerate}
+Model this situation and analyze your model. ODE models of the nitrogen cycle already exist in the literature, so peer-reviewed papers suggest models you can adapt. This situation requires a \textit{hybrid model}, because animals and large plants suit discrete-state models, while the chemical concentrations, bacterial biomass, and algae biomass suit continuous-state variables. Researchers have studied hybrid models less thoroughly than purely discrete or continuous ones.
+
+Beware: this problem can be a rabbit hole. Introducing more detailed dynamics leads to a more complicated model. Two chemical species of ammonia with different properties exist, and their dynamics both influence and respond to other chemical properties of the water. Each additional individual the aquarium houses complicates the situation further.
+
+\end{enumerate}

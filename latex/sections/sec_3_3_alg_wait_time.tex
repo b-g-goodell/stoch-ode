@@ -1,0 +1,22 @@
+\subsection{Sampling the Waiting Time Between Events}\label{subsec:wait_time}\index{distribution!exponential}
+
+%\textbf{Instructional Time:} 1 hour
+
+Inter-event waiting times follow a memoryless\index{memoryless property} exponential distribution with rate parameter equal to the total event rate\index{total event rate} $\lambda = \sum_i \lambda_i$. The same $\lambda$ also normalizes the PMF in Step 4 (Section~\ref{subsec:compute_pmf} treats that role). Given a known $\lambda$, the following algorithm samples $\Delta t$.
+
+\begin{enumerate}
+\item Sample $U \in (0, 1]$ uniformly at random.
+\item Compute $\Delta t = -\ln(U)/\lambda$. Since $U \neq 0$, $\Delta t$ is well-defined.
+\end{enumerate}
+
+This applies the inverse CDF method (see Section~\ref{subsec:background}).
+The exponential CDF has a simple closed-form inverse, so this is cheaper and more numerically stable than generic rejection sampling\index{inverse CDF method}.
+The inverse CDF method, also called inverse transform sampling, transforms a single uniform sample into a sample from the desired distribution.
+Given a distribution with cumulative distribution function $F$, generate $U$ uniformly on $(0, 1]$ and return $X = F^{-1}(U)$, where $F^{-1}$ is the quantile function\index{quantile function} of $F$.
+The quantile function of a CDF $F$ is the function $Q$ such that $u=\mathbb{P}\left[X \leq Q(u)\right]$, and for suitably well-behaved CDFs, the quantile function is just the function inverse.
+For the exponential CDF $F(x) = 1 - e^{-\lambda x}$, this inverts to $X = -\ln(1 - V)/\lambda$ where $V \sim \text{Unif}[0,1)$ (equivalently, $X = -\ln(U)/\lambda$ where $U \sim \text{Unif}(0,1]$).
+So, if $U$ is a uniform random variable on the interval $(0,1]$, the function $-\ln(U)/\lambda$ is an exponential random variable with parameter $\lambda$.
+Readers may take our word for it, or see~\cite{grimmett2020probability} for a rigorous treatment of this problem.
+Figure~\ref{fig:dg_subroutines_a} gives the pseudocode, and the Python repository (\url{https://github.com/b-g-goodell/stoch-ode}) provides a Python implementation.
+Most programming languages provide libraries that efficiently sample from the exponential distribution, replacing this with a one-line command.
+We include the full description of the sampling method to demonstrate the process is not magic.

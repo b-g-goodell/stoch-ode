@@ -1,0 +1,148 @@
+﻿\subsection{Identifying Events and Their State Changes}\label{subsec:events}\index{state-change event}
+
+%\textbf{Instructional Time:} 1 hour
+
+The next step in the Doob-Gillespie\index{Doob-Gillespie algorithm} framework is to identify the state-change events and their effects. Each independent model event corresponds to a \textit{distinct} analytic term in a reduced representation of the ODE (see Section~\ref{sec:resolving}). Each term with its own sign and functional dependence corresponds to one independent event, so count the distinct terms, not the equations.
+
+For example, $\frac{dY}{dt} = \lambda Y + \mu Y^2 = \frac{\lambda}{2}Y + \frac{\lambda}{2}Y + \frac{\mu}{3}Y^2 + \frac{\mu}{3}Y^2 + \frac{\mu}{3}Y^2$, where the former is the reduced representation. This ODE has two distinct terms, $\lambda Y$ and $\mu Y^2$.
+
+See Section~\ref{sec:events_in_odes} for model events in Examples~\ref{ex:radioactive_decay} and~\ref{ex:logistic_growth}. In Example~\ref{ex:saline_tank}, two events appear: salt entering or leaving the tank.\index{model!saline tank} The term $+\frac{bc}{m}$ corresponds to the event in which a salt molecule arrives via the inlet pipe, increasing $M$ by $1$. The term $-\frac{a+b}{V} M$ corresponds to the event in which a salt molecule leaves via the outlet pipe, decreasing $M$ by $1$. The salt-arrival rate $\frac{bc}{m}$ does not depend on $M$, but the departure rate does. Here are fourth and fifth examples.
+
+\begin{example}
+\label{ex:allee}
+\textbf{Allee Effect Model.}\index{Allee effect}
+Let $K > L > 0$ and $r > 0$. Allee \cite{allee1931animal} showed that many populations exhibit reduced per-capita growth rates at low density, a phenomenon researchers now call the Allee effect.
+A long time in the future, in our own galaxy, a certain organism produces a magic spice which runs the entire galactic economy.
+In addition to the usual carrying capacity imposed by a natural environment with finite resources, Imperial Planetologists have discovered that the species is subject to the \textit{Allee effect}.
+The emperor wishes to determine the probability that a colony of this species goes extinct.
+Imperial Planetologists refine the logistic model of Equation~\ref{eqn:logistic_growth} to include the Allee effect during model formulation.
+In the logistic model, the population size modulates the \textit{effective} per-capita birth rate with respect to a carrying capacity $K > 0$, giving birth rate $r(1-\frac{P}{K})$.
+The Allee model applies the same idea twice, modulating the effective birth rate according to both a \textit{cooperation threshold}\index{cooperation threshold} and the carrying capacity\index{carrying capacity} $K$.
+\begin{equation}
+\label{eqn:allee}
+\frac{dP}{dt} = -r P(1-\frac{P}{L})(1- \frac{P}{K})
+\end{equation}
+Each term in $\frac{dP}{dt}$ needs units $\frac{\textup{individual}}{\textup{time}}$, so $r$ must be in units $(\textup{time})^{-1}$, and both $L$, $K$ must be in units $\textup{individuals}$. The state is $P(t)$, a non-negative real number. The factor $(1 - P/L)(1 - P/K)$ is dimensionless and modifies the per-capita growth rate, analogous to the factor $(1 - P/K)$ in the logistic growth model. $P = L$ and $P = K$ are equilibria (substituting either into $\frac{dP}{dt}$ gives $0$). The equilibrium $P = L$ is \emph{locally unstable}\index{equilibrium!unstable}: small perturbations away from $L$ grow rather than shrink, so the population drifts away from $L$. The equilibrium $P = K$ is \emph{locally stable}\index{equilibrium!stable}: the system corrects small perturbations, so the population returns to $K$.
+Expand the right-hand side of $\frac{dP}{dt}$ like so.
+\[
+-rP\left(1 - \tfrac{P}{L} - \tfrac{P}{K} + \tfrac{P^2}{LK}\right)
+= -rP + \frac{r}{L}P^2 + \frac{r}{K}P^2 - \frac{r}{LK}P^3.
+\]
+This yields four terms, hence four state-change events:
+\begin{itemize}
+\item a natural death event, decreasing $P$ by $1$, occurring with rate $rP$;
+\item a death event which would not have occurred without competition, decreasing $P$ by $1$, occurring with rate $\frac{r}{LK}P^3$;
+\item a birth event related to the carrying capacity, increasing $P$ by $1$, occurring with rate $\frac{r}{K}P^2$; and
+\item a birth event related to the cooperation threshold, increasing $P$ by $1$, occurring with rate $\frac{r}{L}P^2$.
+\end{itemize}
+
+In the (continuous-state) ODE, if $\frac{dP}{dt} = 0$, then $P = 0$, $P = L$, or $P = K$. These are the equilibria.
+However, the total rate of all events is $\lambda = rP + \frac{r}{L}P^2 + \frac{r}{K}P^2 + \frac{r}{LK}P^3 = rP(1 + \frac{P}{L})(1 + \frac{P}{K})$.
+So, the only equilibrium which has a zero total rate is $P = 0$.
+At $P = K$ or $P = L$, the net population growth rate is zero because the birth events and death events are happening at equal rates.
+On the other hand, when $P = 0$, the rate of each individual event drops to $0$, so no further events are possible.
+If $0 < P < L$, or $K < P$, then $\frac{dP}{dt} < 0$, so trajectories are decreasing.
+If $L < P < K$, then $\frac{dP}{dt} > 0$, so trajectories are increasing.
+The continuous-state ODE allows trajectories with negative states, but these require a negative initial population, which is non-physical.
+Nevertheless, the negative trajectories are solutions to the ODE. All have $\frac{dP}{dt} > 0$, and all converge to $P = 0$.
+No solution to the ODE crosses the lines $P = 0$, $P = L$, or $P = K$.
+
+The DG simulations preserve the stability properties of the (continuous ODE) equilibria $P = 0, L, K$, at least in probabilistic spirit.
+Any one stochastic simulation is random, but a large sample will reveal a probabilistic pattern of instability at $P = L$ and stability at $P = K$ and $P = 0$.
+At the ODE equilibrium $P = 0$, no events are possible at all, so the population is stuck at $0$ forever.
+This is a stochastic absorbing state\index{stochastic absorbing state}.
+If $0 < P < L$ or $K < P$, then  death events are more likely than birth events, and the population is more likely to drift down than up.
+If $L < P < K$, then birth events are more likely than death events, and the population is more likely to drift up than down.
+At the ODE equilibria $P = L$ and $P = K$, birth events are exactly as likely as death events, so the population is equally likely to drift up or down.
+However, even after one birth from either of these states, the population has slipped away from the ODE equilibrium, and the system enters one of intermediate states between ODE equilibria, with likelihoods of drifting up or down according to the above.
+\end{example}
+
+Sometimes a state-change event corresponds to a term appearing multiple times in the ODE.
+This occurs when an event is a transition of an individual from one state to another rather than an arrival or removal.
+For example, in an epidemiological context, a susceptible person becoming infectious removes a susceptible individual and adds an infectious one.
+The arithmetic erm governing the rate appears multiple times in the ODE, but it is still only \emph{one} event.
+Count events by counting the number of distinct causal mechanisms, not by the number of terms across all equations.
+
+Below is the epidemiological example we promised.
+Mathematical modeling plays an important role in epidemiology and informing public policy.
+Refresh yourself on the chapter on ethics in mathematics, since this model relates to public health issues.
+\begin{example}\label{ex:sir_first}
+\textbf{SIR epidemiological model.}\index{model!SIR}
+Charlie had too many cats, and monetized his collection by selling cat milk at the local farmer's market.
+Charlie observed that some of his cats contracted a fungal infection, lowering milk production.
+Charlie articulates the problem as follows.
+\begin{itemize}
+\item There are three types of cat: susceptible ($S$), infectious ($I$), or recovered ($R$).
+\begin{itemize}
+\item Susceptible cats can only become recovered by first becoming infectious.
+\item The infection is not deadly. Infectious cats do not die from the infection, cannot become susceptible, and recover on their own given enough recovery time.
+\item Recovered cats are immune to future infection and are never susceptible again.
+\end{itemize}
+\item Charlie is a responsible citizen. He has spayed and treated all his cats well, so there will be no natural births or deaths on his watch. The total population is constant, so the only changes are individuals moving between compartments.
+\item Cats interact with each other in random pairs at constant rates. Each interaction between a susceptible cat and an infectious cat has an independent probability that the susceptible cat catches the infection. The rate at which susceptible cats interact with infectious individuals is jointly proportional to $S$, $I$, and $(S+I+R)^{-1}$, proportional to the analytic term $\frac{SI}{S+I+R}$. This is a \emph{frequency-dependent} contact rate\index{frequency-dependent contact rate}: what matters is the fraction of infectious cats in the total population, because a cat is equally likely to meet any other cat. This follows from the following observations.
+\begin{itemize}
+\item If Charlie doubles either the $S$ or the $I$ population, he can expect to double the number of interactions between $S$ and $I$ individuals in a small interval of time.
+\item If Charlie doubles the total population $S+I+R$ by adding recovered ($R$) cats while holding $S$ and $I$ constant, he can expect to halve the number of $S$-$I$ interactions in a short period of time.
+\end{itemize}
+\end{itemize}
+
+This is enough for Charlie to formulate his mathematical model.
+Kermack and McKendrick \cite{kermack1927contribution} introduced the susceptible-infectious-recovered (SIR) compartment model\index{compartment model} to model the spread of infectious diseases for just this situation.
+Given parameters $\alpha, \beta > 0$, the following system of ODEs models the cat population.
+\begin{align*}
+\frac{dS}{dt} =& -\widetilde{\alpha} \frac{SI}{S+I+R}\\
+\frac{dI}{dt} =& -\beta I + \widetilde{\alpha} \frac{SI}{S+I+R}\\
+\frac{dR}{dt} =& \beta I
+\end{align*}
+Since the total population $N = S+I+R$ is constant (no births or deaths), $\frac{\widetilde{\alpha}}{S+I+R} = \frac{\widetilde{\alpha}}{N}$ is also a constant. Renaming $\alpha \equiv \widetilde{\alpha}/N$ simplifies $\widetilde{\alpha}\frac{SI}{N}$ to $\alpha SI$.
+\begin{align}\label{eqn:sir}
+\begin{cases}\frac{dS}{dt} =& -\alpha SI\\
+\frac{dI}{dt} =& -\beta I + \alpha SI\\
+\frac{dR}{dt} =& \beta I
+\end{cases}
+\end{align}
+The parameter $\beta$ has units $(\textup{time})^{-1}$ and relates to a ``recovery half-life'' as infectious individuals develop natural resistance.
+The parameter $\alpha$ has units $(\textup{individual}\cdot\textup{time})^{-1}$ and relates to the time between susceptible-infectious interactions and the probability that such an interaction leads to infection.
+Since there are only three compartments and all events are moves from one compartment to another, there are six possible events: $S \to I$, $S \to R$, $I \to S$, $I \to R$, $R \to S$, $R \to I$.
+However, susceptible individuals cannot proceed directly to recovery without getting sick, infectious individuals cannot recover without gaining resistance, and resistant individuals remain resistant.
+Hence, there are only two events: $S \to I$ and $I \to R$.
+After all, the right-hand side of the system of ODEs has only two distinct terms, $\pm \alpha SI$ and $\pm \beta I$.
+The term $-\alpha SI$ in $\frac{dS}{dt}$ and $+\alpha SI$ in $\frac{dI}{dt}$ both correspond to the same $S \to I$ event (when an infection occurs, $S$ goes down by $1$ and $I$ goes up by $1$).
+Similarly, $-\beta I$ in $\frac{dI}{dt}$ and $+\beta I$ in $\frac{dR}{dt}$ correspond to the same $I \to R$ event (when an infectious person recovers, $I$ goes down by $1$ and $R$ goes up by $1$).
+
+Unfortunately, the SIR model does not have a closed-form solution.
+However, it lends itself to analysis without solving.
+For example, the rates are all proportional to $I$, so if $I = 0$ but $S, R \neq 0$, then all rates vanish. The system freezes in place with some individuals susceptible, some resistant, but none infectious.
+If Charlie could not make the assumption that no births or deaths would occur, the model would have to change to include natural birth and death events, the total population would no longer be constant, and the re-parameterization would not be so nice.
+This means that every initial condition $(S(0), I(0), R(0)) = (S_0, 0, R_0)$ is an equilibrium solution to the ODE system.
+These equilibria form a plane $I = 0$ in the three-dimensional $(S, I, R)$ state-space, all with the same total population $S_0 + R_0 = N$ and no infectious individuals.
+These equilibria are not isolated, they bundle nearby each other to make a plane.
+If you imagine a sphere centered around any $(S_0, 0, R_0)$ point, the plane of equilibria intersects the sphere, so the sphere contains infinitely many equilibria.
+This is only possible because ODE solutions allow continuous states, so the system can be at any point on the plane of equilibria.
+A trajectory with some initial condition $(S_0, I_0, R_0)$ with $I_0 \neq 0$ but nearby $(S_0, 0, R_0)$ may settle at a different nearby equilibrium.
+
+The reader should work out the rates of all the remaining events in the following edge-case scenarios: $S = I = R = 0$, $S = I = 0$ but $R \neq 0$, $S = R = 0$ but $I \neq 0$, $I = R = 0$ but $S \neq 0$, $S = 0$ but $I, R \neq 0$, and lastly $R = 0$ but $S, I \neq 0$.
+
+\begin{table}[htbp]
+\centering
+\caption{State-change events for the SIR model.}\label{tab:sir_events}
+\begin{tabular}{llll}
+\hline
+Event & Description & Rate & $\Delta$State \\
+\hline
+$S \to I$ & Susceptible cat becomes infectious & $\alpha SI$ & $S \mathrel{-}= 1$, $I \mathrel{+}= 1$ \\
+$I \to R$ & Infectious cat recovers & $\beta I$ & $I \mathrel{-}= 1$, $R \mathrel{+}= 1$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\end{example}
+
+\textup{{\bf Questions for Reflection:}}
+\begin{enumerate}
+\item The Allee model contains the cubic term $-\frac{r}{LK}P^3$, which the DG framework treats as a death event with rate $\frac{r}{LK}P^3$. Give a physical interpretation of this rate as a three-body interaction and contrast it with the two-body interaction rate $\frac{r}{K}P^2$ from the logistic growth model.
+
+\item In the SIR model, $I = 0$ is an absorbing state: once the trajectory reaches it, no further events can occur. Verify this claim by inspecting the event rates, and describe what the simulation output looks like for $t$ after absorption.
+
+\item A modeler adds a constant immigration term $+c$ to the logistic growth ODE to represent periodic restocking of the population. Identify the new event this term introduces, write its rate and state-change effect, and explain how this event changes the probability of extinction compared to the unmodified logistic model.
+\end{enumerate}

@@ -1,0 +1,104 @@
+﻿\section{The Doob-Gillespie Interpretation}\label{sec:resolving}\index{master equation|seealso{Doob-Gillespie algorithm}}
+
+%\textbf{Instructional Time:} 3 hours
+
+In this section, we describe the re-interpretation of ODEs behind the DG algorithm.
+
+Instead of a list of derivatives that change with time and state, the Doob-Gillespie algorithm\index{Doob-Gillespie algorithm} \cite{doob1942topics,doob1945markoff,gillespie1976general,gillespie1977exact} re-interprets the ODE as a \textit{master equation}, which tracks the probability of the system being in each possible discrete state at each moment in time. The master equation describes a \textit{discrete-state stochastic process}\index{simulation!stochastic} governing the system state, the distribution of events in time, and the distribution of occurring events. That is to say, we simply pseudorandomly determine the time until the next event occurs and which event occurs next.   The DG algorithm is therefore an example of a Monte Carlo algorithm, as the Monte Carlo chapter describes.
+
+We do not need to write or handle the master equation explicitly. The DG algorithm instead generates random samples in a way which is statistically consistent with the master equation.
+\begin{itemize}
+\item Replace non-negative real number states (e.g.\ mass in the radioactive decay\index{radioactive decay} ODE, population in the logistic growth\index{logistic growth} ODE) with non-negative integer states (e.g.\ number of atoms, population counts, respectively).
+\item Assign an independent state-change event to each rate of change in the model, using the sign to determine if the state-change event is an increase or decrease.
+\item Interpret the magnitude of each term in a rate-of-change as the rate of its contributing event. For examples:
+\begin{itemize}
+      \item the term $- \mu M$ in the radioactive decay ODE corresponds to $E_{\texttt{decay}}$, signifying that $E_{\texttt{decay}}$ has rate $\lambda_{\texttt{decay}} = \mu M$, and
+      \item the term $rP$ in the logistic growth ODE corresponds to $E_{\texttt{birth}}$ and the term $-rP/K$ corresponds to $E_{\texttt{death}}$, signifying that $E_{\texttt{birth}}$ has rate $\lambda_{\texttt{birth}} = rP$ and $E_{\texttt{death}}$ has rate $\lambda_{\texttt{death}} = rP^2/K$.
+\end{itemize}
+\item The rate of any event occurring in a small time interval is the sum of the rates of all events, $\lambda = \sum_{i=0}^{n-1} \lambda_i$. For example, in the logistic growth model, the rate of any event occurring is $\lambda_{\texttt{birth}} + \lambda_{\texttt{death}} = rP + rP^2/K$. Later, we show this implies a specific wait-time distribution called the \textit{exponential distribution}.
+\item The probability that some event $E$ occurs in a small time interval $\left[t, t + s\right)$ is proportional to $s$ and the rate of $E$. For example, in the radioactive decay model, the probability that $E_{\texttt{decay}}$ occurs in $\left[t, t + s\right)$ is proportional to $s$ and $\lambda_{\texttt{decay}} = \mu M(t)$.
+\item Given $n$ independent state-change events $E_0, E_1, \ldots, E_{n-1}$ with corresponding rates $\lambda_0, \lambda_1, \ldots, \lambda_{n-1}$, the probability that the next event to occur in a small time interval is $E_i$ (conditioned on the event that at least one of them occurs) is $\mathbb{P}\left[\text{next event is }E_i\right] = \frac{\lambda_i}{\sum_j \lambda_j}$. For example, in the logistic growth model, the probability that the next event is $E_{\texttt{birth}}$ is $\frac{rP}{rP + rP^2/K} = \frac{K}{P + K}$, and the probability that the next event is $E_{\texttt{death}}$ is $\frac{rP^2/K}{rP + rP^2/K} = \frac{P}{P + K}$.
+\end{itemize}
+
+
+
+
+\subsection{Examples Revisited}
+\label{sec:events_in_odes}
+
+%\textbf{Instructional Time:} 1 hour
+
+When converting an ODE model to a model of disjoint, discrete state-change events, each population can either go up or down by some fixed amount. Their cause (whether biological, social, physical, or otherwise) uniquely identifies these events.
+
+For Example~\ref{ex:radioactive_decay}, the radioactive decay ODE is $\frac{dM}{dt} = -\mu M$. We re-interpret the state $M(t)$ as a non-negative integer, which is a count of atoms. There is only one term, $-\mu M$, so this system describes only one independent state-change event. This term is always negative, so it corresponds to a state-change event wherein $M$ decreases, i.e.\ a decay event, say $E_{\mathrm{decay}}$. The probability that $E_{\mathrm{decay}}$ occurs in a small time interval $[t, t+s)$ is proportional to $\lambda_{\mathrm{decay}} = \left|-\mu M(t)\right| = \mu M(t)$. There is only one possible event, so the probability mass function\index{probability mass function (PMF)} is $\mathbb{P}[\textup{next event is }E_{\mathrm{decay}}] = 1$.
+
+We can re-write the model in Example~\ref{ex:logistic_growth} as $\frac{dP}{dt} = rP - \frac{r}{K}P^2$, which has two terms, $+rP$ and $-\frac{r}{K}P^2$. The new state is $P(t)$, which we re-interpret to be a non-negative integer. The first term $rP$ corresponds to a state-change event wherein $P$ increases (a birth event\index{birth rate}, say $E_{\mathrm{birth}}$). The second term $-\frac{r}{K}P^2$ corresponds to a state-change event wherein $P$ decreases (a death event\index{death rate}, say $E_{\mathrm{death}}$).
+
+The probability that $E_{\mathrm{birth}}$ occurs in a time interval $[t, t+s)$ is proportional to $s$ and $\lambda_{\mathrm{birth}} = \left|+rP\right| = rP$, and the probability that $E_{\mathrm{death}}$ occurs in a time interval $[t, t+s)$ is proportional to $s$ and $\lambda_{\mathrm{death}} = \left|-\frac{r}{K}P^2\right| = \frac{r}{K}P^2$. Hence, when $s$ is small the probability that $E_{\mathrm{birth}}$ or $E_{\mathrm{death}}$ occurs in $[t, t+s)$ is proportional to $s$ and $\lambda_{\mathrm{birth}}+\lambda_{\mathrm{death}}$.
+
+The probability that the next event is $E_{\mathrm{birth}}$ is proportional to $\lambda_{\mathrm{birth}}$, and the probability that the next event is $E_{\mathrm{death}}$ is proportional to $\lambda_{\mathrm{death}}$. Hence, $\mathbb{P}[\textup{next event is }E_{\mathrm{birth}}] = \frac{\lambda_{\mathrm{birth}}}{\lambda_{\mathrm{birth}}+\lambda_{\mathrm{death}}} = \frac{rP}{rP + \frac{r}{K}P^2} = \frac{K}{K+P}$ and $\mathbb{P}[\textup{next event is }E_{\mathrm{death}}] = \frac{\lambda_{\mathrm{death}}}{\lambda_{\mathrm{birth}}+\lambda_{\mathrm{death}}} = \frac{rP/K}{rP + \frac{r}{K}P^2} = \frac{P}{K+P}$.
+
+\needspace{5\baselineskip}
+\subsection{Generating Wait-Time Between Events}\label{subsec:wait_time_prelim}
+
+
+%\textbf{Instructional Time:} 1 hour
+
+
+
+The Doob-Gillespie re-interpretation implies memorylessness. If events arrive in a memoryless way, then the amount of time already waited has no impact on how much more time remains before the next event. Knowing that a radioactive atom has existed for a certain age provides no information about how long until it decays. To discuss memorylessness, we need to discuss disjoint events, conditional probability, and independent events.
+Two events $E_1, E_2$ are \textit{disjoint as sets}\index{events!disjoint} if $E_1 \cap E_2 = \emptyset$. In this case, knowledge that one occurs forbids the occurrence of the other, because the event in which both occur is the empty set. By contrast, $E_1$ and $E_2$ are \textit{independent} if knowing one occurred gives no information about whether the other occurred: formally, $\mathbb{P}[E_1 \cap E_2] = \mathbb{P}[E_1]\mathbb{P}[E_2]$.
+
+\begin{definition}[Memoryless random variable]\label{def:memoryless}\index{memoryless property}
+A random variable $T$ is \textit{memoryless} if $\mathbb{P}[T > t + s \mid T > t] = \mathbb{P}[T > s]$ for all $t, s > 0$.
+\end{definition}
+
+
+In a radioactive decay model with a long half-life\index{half-life}, the probability that any one atom decays in a short time interval is low. The instantaneous rate of decay at time $t$ is $\lambda(t) = \left|-\mu M(t)\right|$, which is a function of $M(t)$. If $s$ is sufficiently small, then a state-change event in $[t, t + s)$ is unlikely to occur, in which case $M(t+s) = M(t)$. Therefore, $\lambda(t+s) = \mu M(t+s) \approx \mu M(t) = \lambda(t)$. Memorylessness means an event has approximately constant probability of occurrence over short intervals of time.
+
+\begin{example}\label{ex:exponential_memoryless}
+\textbf{The Exponential Distribution is Memoryless.}
+Let $T \sim \text{Exp}(\lambda)$ be an \textit{exponentially distributed random variable}\index{distribution!exponential}. Then $T$ is memoryless. $T$ has cumulative distribution function\index{cumulative distribution function (CDF)} $1 - e^{-\lambda t} = \mathbb{P}[T \leq t]$ (equivalently, $e^{-\lambda t} = \mathbb{P}[T > t]$). Recall the conditional probability of event $A$ conditioned on event $B$ as $\mathbb{P}[A \mid B] = \mathbb{P}[A \cap B]/\mathbb{P}[B]$. So $\mathbb{P}[T > t + s \mid T > t] = \tfrac{\mathbb{P}[T > t + s\text{ and } T > t]}{\mathbb{P}[T > t]}$. For $t, s \geq 0$, $T > t + s$ implies $T > t$, reducing to $\frac{\mathbb{P}[T > t + s]}{\mathbb{P}[T > t]} = \frac{e^{-\lambda (t + s)}}{e^{-\lambda t}} = e^{-\lambda s} = \mathbb{P}[T > s]$.
+\end{example}
+
+It turns out that the only continuous memoryless random variable is the \textit{exponential random variable} (see \cite{grimmett2020probability}). Inter-event wait times in the Doob-Gillespie algorithm must be memoryless, so simulating a continuous-time ODE requires wait times sampled from an exponential distribution.
+Wait times follow the exponential distribution, so we sample them exactly using the inverse CDF method\index{inverse CDF method}. Recall the cumulative distribution function for a random variable $X$ is the function $F(x) = \mathbb{P}\left[X \leq x\right]$. The inverse CDF method samples a random variable $X$ with CDF $F$ by sampling $U \sim \text{Uniform}(0, 1)$ and returning $F^{-1}(U)$. For an exponential random variable with parameter $\lambda$, the CDF is $F(t) = 1 - e^{-\lambda t}$, so the inverse CDF is $F^{-1}(U) = -\frac{1}{\lambda}\ln(1-U)$. See \cite{grimmett2020probability} for more details on the exponential distribution and the inverse CDF method.
+
+The exponential distribution has a single parameter, $\lambda > 0$, which equals the total rate of all events. The Doob-Gillespie algorithm models the time until the next event as an exponential random variable and uses the sum of the rate of change magnitudes as $\lambda$. We call a process in which events arrive independently at a constant rate $\lambda$ a \textit{Poisson process}\index{Poisson process}. Every time the DG algorithm changes the simulated state, the rates of change and therefore $\lambda$ change, so the process is not properly a Poisson process.
+
+In the case of Example~\ref{ex:radioactive_decay}, the time until the next event occurs is exponentially distributed with parameter $\lambda = \mu M(t)$. In the case of Example~\ref{ex:logistic_growth}, the time until the next event occurs is also exponentially distributed, but with parameter $\lambda = rP(t)\left(1 + \frac{1}{K}P(t)\right)$. The total event rate has a factor $1 + P/K$, not the $1 - P/K$ of the ODE, because $\lambda$ sums the birth and death rate magnitudes $rP$ and $rP^2/K$, whereas the ODE takes their difference.
+
+{\bf Questions for Reflection:}
+\begin{enumerate}
+\item Radioactive decay is a memoryless process. Interpret memorylessness in the context of the radioactive decay model.
+
+\item In the logistic growth model, the total event rate is $\lambda = rP(1 + P/K)$. As $P$ grows from $1$ to $K$, by what factor does $\lambda$ increase? What does this imply for the expected wait time between events and for simulation runtime at large populations?
+
+\item The DG algorithm samples a fresh wait time from the exponential distribution after every event. A student proposes a shortcut: sample one large exponential wait time at the start and ``spend'' it across multiple events. Explain why this shortcut is incorrect.
+
+\end{enumerate}
+
+
+\subsection{Determining Which Event Occurs Next}\label{subsec:which_event}
+
+
+%\textbf{Instructional Time:} 1 hour
+
+If the next event to occur is $E_i$ with a probability proportional to $\lambda_i$, and the only possible next events are $E_0, E_1, \ldots, E_{n-1}$, then the probability that the next event is $E_i$ is exactly $\frac{\lambda_i}{\sum_j \lambda_j}$. This value follows from normalization: the probabilities sum to $1$, and each is proportional to its rate.
+
+\begin{example}\label{ex:normalize_pmf}
+\textbf{Normalizing a PMF from Event Rates.}
+For example, presume we have events $E_0, E_1, E_2$ with rates $\lambda_0, \lambda_1, \lambda_2$. Further presume that $\lambda_1 = 2\lambda_0$ and $\lambda_2 = 3 \lambda_0$. Let $p_i$ be the probability that the next event is $E_i$ for each $i=0,1,2$. These probabilities are proportional to their events' rates, so $p_0 = c \lambda_0$, $p_1 = c \lambda_1 = 2c\lambda_0$, and $p_2 = c \lambda_2 = 3c\lambda_0$. The probabilities sum to $1$, so $p_0 + p_1 + p_2 = 6c\lambda_0 = 1$. Thus, $c = \frac{1}{6\lambda_0}$, so $p_0 = \frac{1}{6}$, $p_1 = \frac{1}{3}$, and $p_2 = \frac{1}{2}$.
+\end{example}
+
+In Example~\ref{ex:radioactive_decay}, there is only one event, the death event, which must occur with probability $1$. In Example~\ref{ex:logistic_growth}, there are two events, birth and death; normalizing their rates $rP$ and $\frac{r}{K}P^2$ as above gives next-event probabilities $\frac{K}{P+K}$ for a birth and $\frac{P}{P+K}$ for a death.
+
+\textup{{\bf Questions for Reflection:}}
+\begin{enumerate}
+\item Geometric random variables are also memoryless. They are discrete and take on positive integer values $1$, $2$, $3$, $\ldots$. They have one parameter, $0 < p \leq 1$, and represent the number of flips of a biased coin with bias $p$ until the first heads-up flip occurs. Postulate why we should not use geometric random variables to increment time while simulating an ODE.
+
+
+\item Explain why simulating a trajectory of an asteroid headed for earth is not a good task for the Doob-Gillespie algorithm.
+
+\item A reaction network has one fast event with rate $\lambda_1 = 10^6$ and one slow event with rate $\lambda_2 = 1$. Approximately what fraction of simulated events are the fast event? Discuss the implications when the scientists want to observe the slow event.
+\end{enumerate}

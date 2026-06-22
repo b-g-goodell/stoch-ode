@@ -1,0 +1,107 @@
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{epsfig}
+\usepackage{makeidx}
+\usepackage{multicol}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{epstopdf}
+\usepackage{xcolor}
+\usepackage{overpic}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{matlab-prettifier}
+\usepackage{algpseudocode}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage{framed}
+\usepackage{mathptmx}
+\usepackage{setspace}
+\usepackage[mathscr]{eucal}
+\usepackage{tikz,pgfplots}
+\usepackage{color}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[export]{adjustbox}
+\usepackage{wrapfig}
+\usepackage{enumerate}
+\usepackage{needspace}
+\usepackage{placeins}
+\usepackage{cryptocode}
+\providecommand{\pcand}{\highlightkeyword{and}}
+\providecommand{\pcor}{\highlightkeyword{or}}
+\providecommand{\pcnot}{\highlightkeyword{not}}
+
+\definecolor{codegreen}{rgb}{0.12, 0.68, 0.12}
+\definecolor{codegray}{rgb}{0.03, 0.03, 0.03}
+\definecolor{backcolour}{rgb}{1, 1, 1}
+\definecolor{codeyellow}{rgb}{0.03,0.03,0.03}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{codeyellow},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{codegray},
+    basicstyle=\ttfamily\footnotesize\color{codegray},
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstdefinestyle{pseudostyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{codeyellow},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{codegray},
+    basicstyle=\sffamily\footnotesize\color{codegray},
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=none,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\makeindex
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\ttdefault}{txtt}
+\renewcommand\bfdefault{b}
+
+\pgfplotsset{compat=1.18}
+
+\newtheoremup{remark}[theorem]{Remark}
+
+\parskip 8pt
+\parindent 0pt
+
+\numberwithin{equation}{section}
+
+\newcommand{\lambdadecay}{\lambda_{\mathrm{decay}}}
+\newcommand{\lambdabirth}{\lambda_{\mathrm{birth}}}
+\newcommand{\lambdadeath}{\lambda_{\mathrm{death}}}
+\newcommand{\lambdain}{\lambda_{\mathrm{in}}}
+\newcommand{\lambdaout}{\lambda_{\mathrm{out}}}
+\newcommand{\Edecay}{E_{\mathrm{decay}}}
+\newcommand{\Ebirth}{E_{\mathrm{birth}}}
+\newcommand{\Edeath}{E_{\mathrm{death}}}
+\newcommand{\Prob}[1]{\mathbb{P}\!\left[#1\right]}

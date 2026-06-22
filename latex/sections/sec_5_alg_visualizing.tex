@@ -1,0 +1,135 @@
+\section{Visualizing and Interpreting Simulated Trajectories}\label{sec:visualizing_interpreting}
+
+%\textbf{Instructional Time:} 3 hours
+
+\subsection{Visualizing Simulated Trajectories}\label{subsec:visualizing}
+
+Section~\ref{sec:farming} produces trajectories. This subsection addresses how to display them. We plot stochastic trajectories rather than phase diagrams of deterministic ODE solutions. These trajectories hover near the deterministic solution but are noisy, discrete-state realizations, not smooth curves.
+
+\subsubsection{A single trajectory is a step function}\label{subsubsec:single_traj_step}
+
+Because the DG algorithm changes the state by exactly one integer at each event, the state remains constant between events and jumps discontinuously at each one. Thus, a stochastic trajectory the DG algorithm simulates is a piecewise-constant function\index{function!piecewise-constant} of time: the state holds constant between consecutive change points\index{change point} and jumps by $\pm 1$ at each event.
+
+Consider a single run of the saline tank model (Example~\ref{ex:saline_tank_code}). The state variable is $M$, the number of NaCl molecules. The tank starts at $M = 300$ NaCl molecules. The deterministic equilibrium is $M \approx 150$, so the system is initially above equilibrium: departures are more likely than arrivals. After an exponentially distributed waiting time, the first event occurs. Suppose it is a departure. The state steps down to $M = 299$. We sample a new waiting time, the second event occurs, and the state steps again. The process repeats. Wait-times are random, so the events do not spread evenly in time. Sometimes, events occur often, with very little wait time. Sometimes, events occur seldomly, with long periods of stagnation. Over simulated time, many such steps accumulate. The result is a noisy staircase that drifts downward toward equilibrium and then fluctuates around it indefinitely.
+
+This staircase is the raw output of the DG algorithm. Each changepoint $(t_i, M_i)$ is a corner of the step function, and the state is constant on each time interval $[t_i, t_{i+1})$. See Section~\ref{subsec:plotting_utilities} for the code that renders a stochastic trajectory as a step graph.
+
+\subsubsection{Every run is different: motivating the heat map}\label{subsubsec:motivating_heatmap}
+
+One trajectory is one sample from a distribution. Just as a single coin flip does not reveal the bias of the coin, a single trajectory does not reveal the probability of extinction or the range of typical outcomes.
+
+Each run of the DG algorithm yields a distinct staircase. Two runs with the same initial conditions and parameters will agree in trend but differ in every individual step, because each waiting time and each event choice is random. Running the simulation $100{,}000$ times produces $100{,}000$ different staircases (usually).
+
+If every run is different, how do we summarize all of them?
+
+One approach is to overlay all trajectories on a single plot. For a small number of trajectories this works well, as seen in Figure~\ref{fig:allee_two_trajs}. For thousands of trajectories it produces an unreadable smear.
+
+A more informative approach is a heat map:\index{heat map} a two-dimensional histogram over the $(t, Y)$-plane in which the color intensity of each cell is proportional to the number of simulated trajectories that pass through that cell. Cells that many trajectories visit appear bright. Cells that few visit appear dark. The heat map renders $100{,}000$ step functions as a single image. It shows whether the distribution of the state at a given time is unimodal,\index{distribution!unimodal} bimodal,\index{distribution!bimodal} or multimodal.
+
+\subsubsection{Preparing trajectories for a heat map}\label{subsubsec:prep_heatmap}
+
+Bright regions in a heat map show where many trajectories spend time. Multiple bright spots signal bimodal behavior.
+
+The DG algorithm outputs change points at random times, not on a regular grid. To aggregate trajectories into a grid-based heat map, the heat map routine resamples every trajectory onto a common, uniform time grid before binning.
+This piecewise-constant interpolation records the state at each grid time using the most recent changepoint, converting a sparse list of change points into a dense list of $(t, Y)$ pairs suitable for binning.
+
+Filling at a random or too-coarse spacing introduces a small bias\index{heat map!binning bias} into the heat map.
+When events occur frequently relative to the grid, several change points can fall between consecutive grid points, so the grid samples miss them and over-represent the states that happen to lie on grid lines. The bias worsens as events become more frequent. A finer partition reduces it, and we can show the error is $O(\Delta)$ in the grid spacing $\Delta$.
+However, as $\Delta \to 0$, the graph approaches the unreadable smear we get when plotting all trajectories plainly, and there's a trade-off in cost. A heatmap with grid spacing $\Delta$ requires painting $O(\Delta^{-2})$ pixels. So in practice, we hand-tune $\Delta$ to get an informative heat map.
+
+See Section~\ref{subsec:plotting_utilities} for the heat-map plotting code.
+
+\subsection{The Plotting Utilities}\label{subsec:plotting_utilities}
+
+We draw every figure in this chapter with one of four single-function modules in \texttt{tools/plots/}.
+These modules are plotting code, not algorithms, so they have no pseudocode counterpart.
+The scripts in \texttt{scripts/} use these tools to make the figures.
+This way, the scripts play double duty as usage examples.
+
+Three of our plotting utilities share one structure, the template of Listing~\ref{lst:plots_template}: set the page style, draw, then save or show.
+Recall the template in Figure~\ref{fig:dg_algorithm} and Listing~\ref{lst:dg_algorithm_python_template} uses $\texttt{...}$ to mark the block in the DG algorithm which we must tailor for the ODE model.
+Similarly, we use \texttt{...} to mark the block in the plotting template which we must tailor for the kind of image we generate.
+The heat map follows the same template, but with an additional block that prepares the trajectories for binning before drawing.
+
+Our plotting template's styling preamble converts two width fractions into \texttt{matplotlib} settings.
+Publishers often resize images in LaTeX. The fraction \texttt{width\_frac} is the figure width as a fraction of the text width and \texttt{display\_frac} is the fraction at which we place the figure on the page, so their ratio \texttt{scale} undoes any later shrinkage.
+The size \texttt{on\_page\_pt} is one point below the $10$-point body, which we rescale by \texttt{scale} to ensure that graph titles, legends, and labels have a common font size with the body. We store the width of the figure in inches in \texttt{width}.
+Python's dictionary comprehension is sort of like set builder notation. We use it to store \texttt{on\_page\_pt} as font sizes for titles, labels, and legends in the dictionary \texttt{rc}. We use \texttt{rc.update} to add the serif font family, the STIX math font, $150$ dpi, the figure size, and a scaled line width. When a \texttt{latex} executable is on the path, the code enables \texttt{usetex} to match fonts. Writing \texttt{rc} into \texttt{rcParams} applies the settings.
+
+After the drawing block, the tail sets the title and axis labels, tightens the margins, and either writes the figure to \texttt{save\_path}, creating its directory first, or shows it on screen.
+
+\lstinputlisting[float=htbp, language=Python, numbers=none, caption={The shared template for the \texttt{tools/plots/} plotters. The styling preamble and the save-or-show tail are common to the trajectory, phase-diagram, and mean-versus-ODE plotters; each replaces the \texttt{...} block with its own drawing.}, label={lst:plots_template}]{../tools/plots/plot_template.py}
+
+\subsubsection{Plotting trajectories}\label{subsubsec:code_plot_trajs}
+
+The drawing block of \PlotTrajs{} (Listing~\ref{lst:plots_trajectories}) renders trajectories as step graphs. \texttt{draw\_labels} substitutes a list of \texttt{None} when the caller gives no labels, keeping the loop uniform. The loop unzips each trajectory into times and states and draws it as a right-continuous step (\texttt{where='post'}). A legend appears only when the caller supplies real labels. The \texttt{xlim} and \texttt{ylim} calls fix the axis ranges to the supplied bounds.
+
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-37}, caption={The drawing block of \PlotTrajs{} in \texttt{tools/plots/plot\_trajectories.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws Figures~\ref{fig:saline_tank}, \ref{fig:allee_two_trajs}, and~\ref{fig:sir}.}, label={lst:plots_trajectories}]{../tools/plots/plot_trajectories.py}
+
+\subsubsection{Plotting phase diagrams}\label{subsubsec:code_phase}
+
+The drawing block of \MakePhaseDiagram{} (Listing~\ref{lst:plots_vector_field}) draws the streamplot of a scalar ODE. \texttt{mgrid} builds a grid of resolution \texttt{res} over the time-state rectangle. The horizontal arrow component is $1$ since time advances at unit rate, and the vertical component is the caller's \texttt{y\_len\_fun} on the grid. To use this to make a phase diagram of an ODE of the form $y^\prime = f(y)$, just express $f(y)$ as \texttt{y\_len\_fun}. The \texttt{streamplot} call draws the field in blue with arrow size scaled to the page, and an optional \texttt{axhspan} shades the non-physical region below zero red.
+
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={31-38}, caption={The drawing block of \MakePhaseDiagram{} in \texttt{tools/plots/plot\_vector\_field.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws the phase diagrams in Figures~\ref{fig:ode_examples} and~\ref{fig:allee_ode}.}, label={lst:plots_vector_field}]{../tools/plots/plot_vector_field.py}
+
+\subsubsection{Plotting the mean against the ODE}\label{subsubsec:code_mean}
+
+The drawing block of \PlotMeanVsOde{} (Listing~\ref{lst:plots_mean_vs_ode}) overlays a stochastic mean on a deterministic solution. An optional \texttt{axhspan} shades the non-physical region. The code plots the stochastic mean as a solid curve and the ODE solution as a dashed curve, sets the axes to the data range, and places a legend at the lower right.
+
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-35}, caption={The drawing block of \PlotMeanVsOde{} in \texttt{tools/plots/plot\_mean\_vs\_ode.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws Figure~\ref{fig:logistic_growth_mean_vs_ode}.}, label={lst:plots_mean_vs_ode}]{../tools/plots/plot_mean_vs_ode.py}
+
+\subsubsection{Plotting the heat map}\label{subsubsec:code_heatmap}
+
+The heat map follows the template, adding a block that prepares the trajectories before the drawing block.
+\PlotHeatmap{} (Listing~\ref{lst:plots_heatmap}) first re-samples trajectories by laying \texttt{grid} equal time bins, finding their centers, and reading each trajectory's state at those centers by looking at the latest change point with \texttt{searchsorted}. Section~\ref{subsubsec:prep_heatmap} explains why this matters. \PlotHeatmap{} then stacks the re-sampled trajectories. \texttt{histogram2d} bins the $(t, y)$ pairs into a \texttt{grid}-by-\texttt{grid} count array. This count array determines brightness, but we cap the brightness at the $95$th percentile of counts as \texttt{vmax}. This way, the brightest cells saturate while dimmer occupancy bands stay visible, showing multimodal distributions. Finally, the code draws the transposed counts as a rasterized image with the \texttt{magma} colormap and bilinear smoothing, adds a color bar labeled from \emph{Few} to \emph{Many}, labels the axes, and saves or shows the figure through the shared tail.
+
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={30-55}, caption={The drawing block of \PlotHeatmap{} in \texttt{tools/plots/plot\_heatmap\_histogram.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws the heat map in Figure~\ref{fig:allee_heat}.}, label={lst:plots_heatmap}]{../tools/plots/plot_heatmap_histogram.py}
+
+\subsection{Reading and Statistically Measuring Stochastic Output}\label{subsec:output}
+
+%\textbf{Instructional Time:} 1 hour
+
+Examples~\ref{ex:saline_tank_code}, \ref{ex:allee_code}, and \ref{ex:sir_code} reported results as sample proportions and five-number summaries without justifying why these statistics are appropriate or how to interpret them. We provide a light refresher on statistics in this section.
+
+\subsubsection{Sample proportion as a probability estimator}\label{subsubsec:sample_proportion}
+
+As a rule, if the event has probability $p$, run at least $1/p$ simulations to observe it reliably. For rare events ($p$ near $0$), you need much larger samples.
+
+Many questions about a model reduce to a binary outcome: does the population go extinct? Does the process succeed before time $T$? Does the state ever exceed a threshold? For any such binary event with true probability $p$, a large sample of $n$ independent simulations, and $k$ observations, the sample proportion\index{proportion, sample} $\hat{p} = k/n$ is an unbiased estimator\index{estimator, unbiased} of $p$: on average, $\hat{p} = p$. The precision of $\hat{p}$ improves as $n$ increases, with standard error $\sqrt{p(1-p)/n}$.
+
+If $\hat{p} = 3/100{,}000 = 3\times 10^{-5}$, the estimate is not robust: observing even one less observation would reduce our estimate to $2/100{,}000$, a $50\%$ drop.
+
+\subsubsection{Five-number summary for a continuous-valued statistic}\label{subsubsec:five_number}
+
+The mean is misleading for skewed or multimodal distributions. The five-number summary\index{summary, five-number} describes center, spread, and extremes without assuming a symmetric shape.
+
+When the statistic of interest is continuously valued (for example, the time until extinction, the time until full recovery, or the peak state), the five-number summary (see Section~\ref{subsec:background}) provides a concise description of the distribution without assuming any parametric form.
+
+In Example~\ref{ex:sir_code}, we restricted to the simulations in which all cats recovered within the year.
+We computed the five-number summary of the recovery time and saw the following.
+\begin{itemize}
+\item The fastest recovery took about $161.5$ days ($Q_0 = \min$).
+\item The median recovery time was about $316$ days.
+\item $75\%$ of recoveries took more than $288$ days ($Q_1$).
+\item The slowest recovery in the sample reached $364.998$ days ($Q_4 = \max$), strictly inside the simulation window.
+\end{itemize}
+Determining these statistics requires no distributional assumption (normal, exponential, etc.). We call the five-number summary \textit{non-parametric}.
+
+\subsubsection{Non-unimodal distributions and their interpretation}\label{subsubsec:non_unimodal}
+
+Before coming to any conclusions, inspect whether the distribution is unimodal. Conclusions based on the mean or median for a strongly bimodal or multimodal distribution is misleading, because the central value may fall in a trough between two peaks where few trajectories reside.
+
+The Allee effect simulation (Example~\ref{ex:allee_code}) illustrates this. The heat map in Figure~\ref{fig:allee_heat} shows two distinct clusters of trajectories at the end of the simulation: one near the stable carrying capacity $K = 200$ and one near extinction\index{extinction!stochastic} at $P = 0$. The distribution of final states is strongly bimodal. A single average final state conveys almost no useful information.
+
+The conditional distribution of the final state given survival, i.e.\ the \textit{survivorship bias}, is more informative, but is misleading for its own reasons. Statistical patterns which matter only indirectly are less informative than direct causes, and those are less informative than firm predictions. Like a good prediction of weather should provid a probability of rain, a good analysis of a population ecology model should estimate extinction probability $\hat{p}$.
+
+No matter the stastics we decide to measure, it is wise to inspect a heat map or histogram of the simulation output. If the distribution has more than one mode, partition the trajectories into qualitatively distinct groups and perform separate statistical analyses for each group.
+
+\textup{{\bf Questions for Reflection:}}
+\begin{enumerate}
+\item A social researcher finds that the average American family has decreased in size from $1.7$ parents and $2.3$ children to $1.1$ parents and $1.9$ children. Explain why this might be misleading and discuss what you would report instead.
+
+\item The heat map of the Allee effect simulation shows two bright bands at $P = 0$ and $P = K$ at time $T$; extinction appears highly likely, say with probability $p$. Using the standard-error rule from Section~\ref{subsec:output}, approximately how many simulations do you need to estimate $p$ with a standard error of at most $0.01$?
+
+\item The heat map routine records the state at each grid time using the last observed state before that time. A colleague suggests linear interpolation between change points instead. Describe one scenario in which linear interpolation would give a visually smoother heat map yet misrepresent the true probability distribution of the process.
+\end{enumerate}

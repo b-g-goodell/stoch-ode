@@ -1,0 +1,139 @@
+\section{Model Sensitivity Analysis}\label{sec:sensitivity_analysis}\index{analysis!sensitivity}\index{sensitivity analysis}
+
+%\textbf{Instructional Time:} 4 hours
+
+Sensitivity analysis quantifies how model outputs respond to changes in individual parameters. It tells us whether simulation results are reliable given the precision of our parameter measurements. It belongs to the analysis and model assessment stage of the modeling cycle: once we have a solution, we judge how much to trust it.
+
+If the model is highly sensitive to a parameter $r$, small errors in measuring $r$ can produce qualitatively different simulation outputs. The researcher must then secure high-precision, high-accuracy estimates of $r$. If the model is insensitive to $r$, even rough estimates suffice.
+
+The elasticity score we define below uses sample statistics (sample proportions\index{proportion, sample}, five-number summaries\index{summary, five-number}) introduced in Section~\ref{subsec:background} and used throughout Section~\ref{sec:farming}. Readers should consult Section~\ref{subsec:output} on reading stochastic output before proceeding. An elasticity score derived from a bimodal output distribution can be severely misleading.
+
+We use a scalar elasticity score, the univariate elasticity, and apply it to the logistic growth model\index{logistic growth} from Example~\ref{ex:logistic_growth}. Bifurcations\index{bifurcation}, qualitative changes in model behavior, can make the score misleading, so we address them as well. The same methods apply to any model in this chapter.
+
+
+\needspace{5\baselineskip}
+\subsection{Assessing and Interpreting Univariate Model Sensitivity}\label{subsec:elasticity}\index{elasticity!univariate}
+
+%\textbf{Instructional Time:} 2 hours
+
+To stochastically simulate trajectories of an ODE model, we must parameterize it from empirical observations, which always have error margins. Model sensitivity measures how much those error margins affect the simulation output.
+
+One definition of model sensitivity is \textit{univariate elasticity}\index{elasticity!univariate} of an observed statistic $V(r)$. The word `elasticity' comes from economics, where it measures how sensitive demand is to a price change. Here it plays the same role: if we change one parameter $r$ by a small percentage, by what percentage does our simulation output $V$ change?
+
+Elasticity answers the question ``if I mismeasure a parameter by 10 percent, how wrong will my output be?''
+
+\begin{definition}[Elasticity of $V$]\label{def:elasticity}
+Let $r, s > 0$ with $r \neq s$, and let $V(r), V(s) > 0$. The \textit{elasticity of $V$ at $(r,s)$}, written $\mathcal{E}_{V}(r,s)$, is
+\[\mathcal{E}_{V}(r,s) = \frac{\ln V(r) - \ln V(s)}{\ln r - \ln s}.\]
+Elasticity is unitless: $\ln(V(r)/V(s))$ and $\ln(r/s)$ are dimensionless ratios.
+\end{definition}
+
+The definition requires $V(r), V(s) > 0$, since the logarithm of a non-positive statistic is undefined. A parameter sweep can produce a statistic equal to $0$ or $1$ (for instance, an extinction proportion of $0$). In that case, apply a continuity correction, or for a probability replace it with its odds $V/(1-V)$, before computing elasticity.
+
+For example, say $r, s$ are birth rates in the logistic growth model such that $r \approx 1.1 \cdot s$, say $V$ is the average time until extinction in a stochastic simulation, and presume $V(r) \approx 1.05 \cdot V(s)$. Then $r/s = 1.1$, $V(r)/V(s) = 1.05$, so $\mathcal{E}_{V}(r,s) = \frac{\ln(1.05)}{\ln(1.10)} \approx 0.512$. The sign is positive: when $r > s$, we see $V(r) > V(s)$. The value near $\frac{1}{2}$ says the relative change in $V$ is about half the relative change in $r$.
+
+Now, maintain the assumption that $r \approx 1.1 \cdot s$, but presume $V(r) \approx 0.8 \cdot V(s)$ instead. Then $\mathcal{E}_{V}(r,s) = \frac{\ln(0.8)}{\ln(1.10)} \approx -2.341$. The sign is negative: when $r > s$, we see $V(r) < V(s)$. The value $-2.341$ says the relative change in $V$ is about two to three times the relative change in $r$ in magnitude.
+
+The magnitude of $\mathcal{E}_{V}(r,s)$ sorts sensitivity into three regimes.
+\begin{itemize}
+\item $\left|\mathcal{E}_{V}(r,s)\right| \approx 1$: $V$ is approximately linearly sensitive to $r$. One order-of-magnitude change in $r$ leads to about one order-of-magnitude change in $V(r)$.
+\item $\left|\mathcal{E}_{V}(r,s)\right| < 1$: $V$ is sub-linearly sensitive to $r$. $V(r)$ suppresses error margins on $r$, so even rough parameter estimates may suffice.
+\item $\left|\mathcal{E}_{V}(r,s)\right| > 1$: $V$ is super-linearly sensitive to $r$. $V(r)$ amplifies error margins on $r$, requiring high-precision parameterization.
+\end{itemize}
+
+If $r \neq s$ are both positive, then $r = \mu s$ for some $\mu > 0$. When $\mu$ is close to $1$, $r$ is close to $s$, corresponding to small error margins. Using the definition of $\mathcal{E}$, the relationship between $V(r)$ and $V(s)$ is:
+\begin{align*}
+\mu^{\mathcal{E}} = \frac{V(r)}{V(s)}, \qquad \text{i.e.,} \qquad V(r) = \mu^{\mathcal{E}} V(s).
+\end{align*}
+Inspecting this equation, note the following qualitative trends.
+\begin{itemize}
+\item If $\mathcal{E} \gg 0$ and $\mu > 1$, then $V(r) > V(s)$.
+\item If $\mathcal{E} > 0$ and $\mu \approx 1$, then $V(r) \approx V(s)$.
+\item If $\mathcal{E} \gg 0$ and $\mu < 1$, then $V(r) < V(s)$.
+\end{itemize}
+Using similar reasoning, try to work out trends corresponding to the scenarios where $\mathcal{E} \approx 0$ and $\mathcal{E} \ll 0$. Note why $\mu$ and $\mathcal{E}$ must be unitless: $\mu^{\mathcal{E}}$ is a multiplicative factor.
+
+\begin{example}\label{ex:basic_sensitivity_analysis}
+\textbf{Sensitivity of Logistic Growth to $r$ and $K$.}
+From Example~\ref{ex:exploration}, we can select any two entries in the same column or row in Table~\ref{table:pcap} and estimate the elasticity using those values.
+
+For example, if $r = 0.0047$, then as we vary $K$ from $K_1 = 10$ to $K_2 = 100$, we have \[\mathcal{E}_{V}(K_1,K_2) = \frac{\ln(0.388) - \ln(0.107)}{\ln(10) - \ln(100)} \approx -0.559.\]
+The negative sign indicates that the ``slope'' of $p_{\text{cap}}$ with respect to $K$ is negative.
+That is to say, if $K$ increases, then $p_{\text{cap}}$ decreases. This makes intuitive sense, because if $K$ large compared to the population's current effective per-capita birth rate, it will take a simulation a longer time than $365$ days to attain the carrying capacity.
+records the inverse relationship between the probability of exceeding carrying capacity and $K$. Since $\left|\mathcal{E}_{V}(K_1,K_2)\right| < 1$, the model is insensitive as we vary $K$, and because the magnitude is near $1/2$, approximately quadrupling carrying capacity is necessary to halve the probability of exceeding carrying capacity. The model is therefore forgiving of inaccurate or imprecise measurements of $K$.
+
+On the other hand, if $K = 32.5$, then varying $r$ from $r_1 = 0.0038$ to $r_2 = 0.0152$ gives
+\[\mathcal{E}_{V}(r_1,r_2) = \frac{\ln(0.181) - \ln(0.942)}{\ln(0.0038) - \ln(0.0152)} \approx 1.190.\]
+Since $\mathcal{E}_{V}(r_1,r_2) > 1$ and positive, this indicates model sensitivity as we vary $r$, with a direct relationship between the probability of exceeding carrying capacity and $r$. The model is moderately sensitive to $r$.
+\end{example}
+
+
+\begin{example}[Parameterizing the Logistic Growth Model]\label{ex:logistic_growth_parameterizing}
+Suppose a field study reports that a population of California ground squirrels breeds approximately once per year (birth interval $T_b \approx 1$ year), with adult lifespan $T_\ell \approx 4$ years, and typical colony size $K \approx 180$ individuals. We set
+\[r = \frac{1}{T_b} - \frac{1}{T_\ell} = 1 - 0.25 = 0.75 \text{ year}^{-1}, \qquad K = 180.\]
+These are rough estimates derived from life-history data. The roughness warrants sensitivity analysis to assess how much the simulation output changes if, say, $r$ is off by 20\%. Computing $\mathcal{E}_{V}(r, s)$ with $s = 0.8 \cdot r = 0.6$ or $s = 1.2 \cdot r = 0.9$ gives a practical measure of how consequential that measurement error is.
+\end{example}
+
+\textup{{\bf Questions for Reflection:}}
+\begin{enumerate}
+\item In Example~\ref{ex:basic_sensitivity_analysis}, we showed $\mathcal{E}_{V}(K_1,K_2) \approx -0.56$ when $r = 0.0047$ and $K$ is in the interval $[10, 100]$. What happens outside this range? Why?
+\item Consider the sensitivity of the SIR model, when measuring the \textit{odds of extinction} as $V$. If $p$ is the probability of extinction, then the odds of extinction is the statistic $\frac{p}{1-p}$. What happens if we cannot estimate odds of extinction because every simulation stochastically resulted in the first infected individual recovering? What can we do to handle the situation?
+
+\item The elasticity formula $\mathcal{E}_V(r,s)$ uses two concrete parameter values rather than an infinitesimal perturbation. Explain why choosing $r$ and $s$ very close together can be unreliable in practice when simulation estimates $V$, and how a practitioner should choose the gap between them.
+\end{enumerate}
+
+\subsection{Controlling for Qualitative Changes in Behavior}\label{subsec:qualitative_changes}
+
+%\textbf{Instructional Time:} 2 hours
+
+A bifurcation is a parameter value at which the qualitative behavior of the model changes abruptly. A population under a constant harvest\index{model!harvest} may settle to a stable size when the harvest rate is low, but may crash to extinction\index{extinction!stochastic} if the harvest rate exceeds a certain threshold.
+The parameter value at which this transition occurs is the \textit{bifurcation point}\index{bifurcation!point}.
+
+Bifurcations merit independent study. Kuznetsov \cite{kuznetsov1998elements} provides a rigorous treatment of bifurcation theory for ODE systems.
+When a parameter change shifts the model into a different behavioral regime, the analysis must account for that shift.
+Bifurcations are worth identifying because the elasticity formula $\mathcal{E}_{V}(r,s)$ can give misleading results when $r$ and $s$ straddle a bifurcation point. We call a complete analysis of all bifurcation points in a system a \textit{bifurcation portrait}\index{bifurcation!portrait}.
+
+Formally constructing a bifurcation portrait is involved. Elasticity is a useful back-of-the-envelope diagnostic for determining whether a bifurcation has occurred. A sharp change in elasticity is a sign to partition the parameter space, so that the results we compare within one region share the same qualitative behavior.
+
+\begin{example}\label{ex:const_harvest}
+\textbf{Logistic Growth under Constant Harvest.}
+Here is an ecological model of an organism with a population capacity under constant harvest. Let $r, K, \alpha > 0$.
+\begin{align*}
+\frac{dP}{dt} &= rP(1-\frac{P}{K}) - \alpha
+\end{align*}
+Observe the following about this model.
+\begin{enumerate}[(i)]
+\item The units of $\frac{dP}{dt}$ are in individuals per unit time (say $I/t$). So the units of the right hand side are also individuals per unit time, $I/t$. This provides the units of $\alpha$ as the $I/t$, number of individuals harvested per unit time. Note that if $K$ is in units of individuals, then $1 - \frac{P}{K}$ is unit-less. Hence, $r$ has units $1/t$.
+
+\item We have a steady-state solution when $\frac{dP}{dt} = 0$. Solving gives $-\frac{r}{K}P^2 + rP - \alpha = 0$. The quadratic formula gives us steady-state solutions when $P = P^* = \frac{K}{2}\left(1 \pm \sqrt{1-\frac{4\alpha}{rK}}\right)$. Since $P(t)$ is a non-negative number, a negative or complex steady state indicates an unrealistic trajectory that does not correspond with a real-life scenario.
+
+\item If $\alpha > 0$, the origin $P=0$ is not an equilibrium, and a trajectory starting here has $\frac{dP}{dt} = -\alpha < 0$. When $\alpha < \frac{rK}{4}$, write the two steady states as $P_- = \frac{K}{2}\left(1 - \sqrt{1-\frac{4\alpha}{rK}}\right)$ and $P_+ = \frac{K}{2}\left(1 + \sqrt{1-\frac{4\alpha}{rK}}\right)$, with $P_- < P_+$. A trajectory with $P_0 < P_-$ has $\frac{dP}{dt} < 0$, so it is strictly decreasing and falls to extinction (becoming negative and unbounded below if we do not stop the simulation). A trajectory with $P_- < P_0 < P_+$ instead rises to the stable upper equilibrium $P_+$. To prevent numerical overflow errors during simulations, we terminate the simulation when $P=0$.
+
+\item Note that if $\alpha < \frac{rK}{4}$, then there exist two real steady state solutions. If $\alpha = \frac{rK}{4}$, then there is exactly one real steady state solution. If $\alpha > \frac{rK}{4}$, then there are no real steady state solutions. This suggests a qualitative difference in the behavior of the system when $\alpha < \frac{rK}{4}$, when $\alpha = \frac{rK}{4}$, and when $\alpha > \frac{rK}{4}$. In fact, these are three distinct dynamical regimes, one for each case below.
+
+\begin{itemize}
+\item When $\alpha < \frac{rK}{4}$, there are two steady state solutions. The greater of the two is a stable equilibrium, and the lesser of the two is an unstable equilibrium. The farther away from $\frac{rK}{4}$ we can make $\alpha$, the lower the likelihood of stochastic extinction and the longer the residence time near the stable steady state solution. As $\alpha$ approaches $\frac{rK}{4}$, the two steady state solutions get close to each other. The \textit{basin of attraction}\index{attraction, basin of}\index{basin of attraction} around the stable steady state is the set of initial conditions from which the population will eventually approach the steady state. The basin of attraction gets smaller as these two solutions approach each other. The amount of time trajectories spend near the stable steady state solution decreases, and trajectories wander further and wider. Consequently, stochastic extinction becomes more likely.
+\item When $\alpha = \frac{rK}{4}$, one steady state solution exists, and we call it ``half-stable:''\index{equilibrium!half-stable} trajectories coming from above tend to linger, and trajectories from below tend to escape. In practice this means that any small random downward fluctuation pushes the population irreversibly toward extinction. The ``half-stable'' point is a temporary stop on the way to extinction, because death events are more likely than birth events on both sides of the equilibrium. The likelihood of stochastic extinction is greater than when $\alpha < \frac{rK}{4}$, and residence time at the steady state solution is as low as can be.
+\item When $\alpha > \frac{rK}{4}$, no steady state solution exists, and the likelihood of stochastic extinction approaches certainty. There is no residency time near the steady state solution, because there is no steady state solution.
+\end{itemize}
+
+\end{enumerate}
+
+We have three classes of parameters: $\alpha < \frac{rK}{4}$, $\alpha = \frac{rK}{4}$, and $\alpha > \frac{rK}{4}$. Moreover, we expect qualitatively similar trajectories from the case $\alpha = \frac{rK}{4}$ and the case $\alpha > \frac{rK}{4}$ due to the aforementioned ``half-stable'' point. Thus, these conditions define three different parametric cases to study, and we have reason to believe that two of them lead to dynamic regimes which are qualitatively similar (a convenient hypothesis to test with simulations).
+
+\end{example}
+
+$\mathcal{E}_{V}(r,s)$ is a finite-difference approximation of a kind of logarithmic derivative, meaningful only when the function it approximates is smooth, with no sudden jumps or tears. In Example~\ref{ex:const_harvest}, the statistic $V$ behaves differently depending on which side of the bifurcation point $\frac{rK}{4}$ the harvest rate $\alpha$ sits. If both $\alpha, s < \frac{rK}{4}$ or $\alpha, s \geq \frac{rK}{4}$, then $\alpha$ crosses no discontinuities as it smoothly varies to $s$. Under these conditions, $\mathcal{E}_{V}(r,s)$ is a reliable measure of sensitivity. If $\alpha$ and $s$ sit on different sides of $\frac{rK}{4}$, then $\mathcal{E}_{V}(r,s)$ conflates qualitatively distinct dynamical regimes and is unreliable.
+
+Discontinuities or tears in $\mathcal{E}_{V}(r,s)$, when viewed as a purportedly smooth function, are indicators of bifurcation points. If there is a region in parameter space $R$ and some constant $c$ such that $\mathcal{E}_{V}(r,s) \approx c$ whenever both $r$ and $s$ lie within $R$, yet varying $s$ a little outside of $R$ causes $\mathcal{E}_{V}(r,s)$ to jump dramatically, then a bifurcation has likely occurred on or near the boundary of $R$.
+
+Two cautions follow. First, a non-smooth $\mathcal{E}_{V}(r,s)$ indicates that a bifurcation may have occurred which impacts the statistic $V$. Second, avoid drawing \textit{global} conclusions about a model's sensitivity when comparing qualitatively different dynamical regimes \textit{locally}. Before computing elasticity, confirm that both parameter values sit on the same side of any bifurcation point, or the score is meaningless.
+
+\textup{{\bf Questions for Reflection:}}
+\begin{enumerate}
+\item In the logistic growth with constant harvest model, suppose you compute $\mathcal{E}_V(\alpha, s)$ with $\alpha = 0.99 \cdot rK/4$ and $s = 1.01 \cdot rK/4$. Would you trust this elasticity score? Explain why or why not.
+
+\item A large elasticity score across an entire range of a parameter could arise from either a smooth but highly sensitive relationship between $V$ and $r$, or from a bifurcation within the range. Propose an experimental strategy using only the tools in this chapter to distinguish between these two explanations.
+
+\item A practitioner must make a policy recommendation (for example, setting a harvest rate) when they suspect the model is near a bifurcation point. What does high elasticity near a bifurcation imply for the reliability of that recommendation, and what precaution should the practitioner take?
+\end{enumerate}

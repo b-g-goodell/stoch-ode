@@ -1,0 +1,116 @@
+﻿\section{The Doob-Gillespie Algorithm in Detail with Examples}\label{sec:algorithm}
+
+%\textbf{Instructional Hours:} 12-18 hours
+
+The Doob-Gillespie algorithm uses the ODE parameters and initial conditions to generate a \textit{stochastic trajectory}\index{trajectory!stochastic}. The word \textit{stochastic} means \textit{random}. Unlike ODE solutions, which system parameters and initial conditions fully determine, a stochastic trajectory is one possible random realization of the system evolution. Concretely, a stochastic trajectory is a sequence of time-state tuples $(t_0, {\tt state}_0), (t_1, {\tt state}_1), (t_2, {\tt state}_2), \ldots$, where $(t_i, {\tt state}_i)$ records the time and system state immediately after the $i^{th}$ state-change event occurs. The algorithm proceeds as follows. Steps 0 and 1 are pre-processing steps: run them once before any simulation begins. Step 2 initializes the simulation bookkeeping. Steps 3 and forward constitute the main loop, which repeats while the clock $t$ remains below the simulation run time $T$.
+\begin{enumerate}
+\item[\textbf{Step 0.}] (Pre-processing.) Scale\index{rescaling} and/or re-parameterize\index{re-parameterization} the system so that the state variable counts discrete individuals. Perform this step once, before the simulation loop begins.
+\item[\textbf{Step 1.}] (Pre-processing.) Identify all the state-change events $\left\{E_i\right\}_i$ and their effects on the state $\left\{\delta_i\right\}_i$.
+\item[\textbf{Step 2.}] (Initial bookkeeping.) Set $t = 0$, set the state to the initial conditions, and record the time and state.
+\item[\textbf{Step 3.}] Use the current state to compute the rate $\lambda_i$ of each event.
+\item[\textbf{Step 4.}] Compute the total rate $\lambda = \sum_i \lambda_i$ and the PMF $p_i = \lambda_i/\lambda$.
+\item[\textbf{Step 5.}]   If $\lambda = 0$, terminate. 
+\item[\textbf{Step 6.}] Sample $U \sim \text{Uniform}(0,1]$ and compute $\Delta t \sim Exp(\lambda)$ by setting $\Delta t = -\ln(U)/\lambda$.
+\item[\textbf{Step 7.}] Sample $W \sim \text{Uniform}(0,1]$, compute the index $j$ of the next event $E_j$ from the PMF $\left\{p_i\right\}_i$ by setting $j = \min\left\{k \middle| \sum_{i \leq k} p_i \geq W\right\}$, and look up the state-change event $\delta_j$.
+\item[\textbf{Step 8.}] Update the clock $t \leftarrow t + \Delta t$, the state $\texttt{state} \leftarrow \texttt{state} + \delta_j$, record the new time and state, and, if $t < T$, go back to step 3.
+\end{enumerate}
+
+The algorithm calls five subroutines: $\textsf{MakeDeltaStates}$ tabulates the state changes once in Step 1, and the main loop then calls $\textsf{MakeRates}$ to evaluate the event rates, $\textsf{RatesToPmf}$ to form the PMF and total rate, $\textsf{RateToDeltaTime}$ to sample the waiting time, and $\textsf{PmfToEventIndex}$ to select the next event.
+Note that computing rates, and looking up the state-change event after sampling an index $j$, both depend on the ODE model.
+All else is the same for every ODE model, and we implement it generically. We index the $n$ events from $0$ to $n-1$ throughout, matching the companion \texttt{Python}.
+
+We assemble these subroutines into the full algorithm. Figure~\ref{fig:dg_algorithm} presents it symbolically, the numbered steps above explain it, and each line of the figure shows its step. Figures~\ref{fig:dg_subroutines_a} and~\ref{fig:dg_subroutines_b} collect the pseudocode for the five subroutines it calls. Listing~\ref{lst:dg_algorithm_python_template} gives the \texttt{Python 3.12} implementation, a template that follows the same steps line for line. It diverges from the pseudocode only at Step 5: rather than breaking out of the loop, it returns the trajectory as soon as \RatesToPmf{} yields a total rate of zero.
+
+\begin{figure}[htbp]
+\centering
+{\footnotesize
+\fbox{\procedure{Doob-Gillespie Algorithm $\textsf{DG}(T,\, x_0,\, \theta) \to \textsf{traj}$:}{
+\pcind (\delta_j)_{j=1}^{N} \leftarrow \textsf{MakeDeltaStates}(\theta)\,; \pccomment{\text{Step 1}}\\
+\pcind t \leftarrow 0 \,;\; x \leftarrow x_0 \,;\; \textsf{traj} \leftarrow [(0,\, x_0)]\,; \pccomment{\text{Step 2}}\\
+\pcind \pcwhile t < T \pcdo \\
+\pcind\pcind \vec{\lambda} \leftarrow \textsf{MakeRates}(x,\, \theta)\,; \pccomment{\text{Step 3}} \\
+\pcind\pcind (\vec{p},\, \lambda) \leftarrow \textsf{RatesToPmf}(\vec{\lambda})\,; \pccomment{\text{Step 4}}\\
+\pcind\pcind\pcif \lambda = 0 \pcthen \textbf{break}\,; \pccomment{\text{Step 5}} \\
+\pcind\pcind \Delta t \leftarrow \textsf{RateToDeltaTime}(\lambda)\,; \pccomment{\text{Step 6}} \\
+\pcind\pcind j \leftarrow \textsf{PmfToEventIndex}(\vec{p})\,; \pccomment{\text{Step 7}} \\
+\pcind\pcind t \leftarrow t + \Delta t \,;\; x \leftarrow x + \delta_j \,; \pccomment{\text{Step 8}} \\
+\pcind\pcind \textsf{traj} \leftarrow \textsf{append}\left(\textsf{traj}, [(t,\, x)]\right)\,; \\
+\pcind\pcendwhile\\
+\pcind \pcreturn \textsf{traj}
+}}}
+\caption{Doob-Gillespie algorithm, Steps 1 to 8. Here $T$ is the simulation run time, $x_0$ is the initial state, $\theta$ is the parameter vector, $\vec{\lambda}$ is the event-rate vector, $\vec{p}$ is the event PMF, and $(\delta_j)_{j=1}^{N}$ are the state changes from the $N$ events. The subroutines $\textsf{MakeDeltaStates}$, $\textsf{MakeRates}$, $\textsf{RatesToPmf}$, $\textsf{RateToDeltaTime}$, and $\textsf{PmfToEventIndex}$ appear in Figures~\ref{fig:dg_subroutines_a} and~\ref{fig:dg_subroutines_b}. The list $\textsf{traj}$ accumulates the $(t, x)$ pairs.}
+\label{fig:dg_algorithm}
+\end{figure}
+
+\lstinputlisting[float=htbp,
+language=Python,
+numbers=none,
+caption={Python template for DG simulations. Compare to Figure~\ref{fig:dg_algorithm}. See \texttt{/stoch-ode/simulation\_frameworks/framework\_template.py} in the Python repository.},
+label={lst:dg_algorithm_python_template}]{../simulation_frameworks/framework_template.py}
+
+\begin{figure}[htbp]
+\centering
+{\footnotesize
+\adjustbox{valign=t}{\fbox{\procedure{$\textsf{MakeRates}(x,\, \theta) \to \vec{\lambda}$:}{
+\pcind \pcforeach \text{event } E_i \pcdo \\
+\pcind\pcind \lambda_i \leftarrow \lambda_i(x;\, \theta)\,; \\
+\pcind \pcendforeach \\
+\pcind \pcreturn \vec{\lambda} = (\lambda_0, \ldots, \lambda_{n-1})
+}}}\hfill
+\adjustbox{valign=t}{\fbox{\procedure{$\textsf{RateToDeltaTime}(\lambda) \to \Delta t$:}{
+\pcind \pcif \lambda \leq 0 \pcthen \textbf{error}\,; \\
+\pcind V \sim \mathrm{Uniform}(0,1]\,; \\
+\pcind \pcreturn -\ln(V)/\lambda
+}}}\hfill
+\adjustbox{valign=t}{\fbox{\procedure{$\textsf{MakeDeltaStates}(\theta) \to (\delta_j)_j$:}{
+\pcind \pcreturn (\delta_j)_{j=1}^{N}
+}}}\par}
+\caption{Three Doob-Gillespie subroutines, each in its own box. $\textsf{MakeRates}$ evaluates the rate $\lambda_i$ of each event $E_i$ at the current state $x$ under parameters $\theta$. $\textsf{RateToDeltaTime}$ samples an exponential waiting time $\Delta t$ with rate parameter $\lambda$ by inverse-CDF sampling, and \RateToDeltaTime{} implements it generically. $\textsf{MakeDeltaStates}$ returns the vector $(\delta_j)_{j=1}^{N}$ of state changes for the $N$ events, which we tabulate once in Step 1. The bodies of $\textsf{MakeRates}$ and $\textsf{MakeDeltaStates}$ are model-specific: each model supplies its own, for example \MakeLogisticRates{} and \MakeLogisticDeltaStates.}
+\label{fig:dg_subroutines_a}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+{\footnotesize
+\adjustbox{valign=t}{\fbox{\procedure{$\textsf{RatesToPmf}(\vec{\lambda}) \to (\vec{p},\, \lambda)$:}{
+\pcind \pcif \lambda_i < 0 \;\text{for any}\; i \pcthen \textbf{error}\,; \\
+\pcind \lambda \leftarrow \textstyle\sum_i \lambda_i\,; \\
+\pcind \pcif \lambda = 0 \pcthen \pcreturn \bot\,; \\
+\pcind \pcforeach i \in \{0, \ldots, n-1\} \pcdo \\
+\pcind\pcind p_i \leftarrow \lambda_i/\lambda\,; \\
+\pcind \pcendforeach \\
+\pcind p_{n-1} \leftarrow 1 - \textstyle\sum_{i < n-1} p_i\,; \\
+\pcind \pcreturn (\vec{p},\, \lambda)
+}}}\hfill
+\adjustbox{valign=t}{\fbox{\procedure{$\textsf{PmfToEventIndex}(\vec{p}) \to j$:}{
+\pcind \pcif p_i \notin [0,1] \;\text{for any}\; i \pcthen \textbf{error}\,; \\
+\pcind \pcif \left\lvert \textstyle\sum_i p_i - 1 \right\rvert > \varepsilon \pcthen \textbf{error}\,; \\
+\pcind U \sim \mathrm{Uniform}(0,1]\,; \\
+\pcind j \leftarrow 0 \,;\; c \leftarrow p_0\,; \\
+\pcind \pcwhile (c < U \;\textbf{or}\; p_j = 0) \;\textbf{and}\; j < n-1 \pcdo \\
+\pcind\pcind j \leftarrow j + 1 \,;\; c \leftarrow c + p_j\,; \\
+\pcind \pcendwhile \\
+\pcind \pcreturn j
+}}}\par}
+\caption{Two generic Doob-Gillespie subroutines, each in its own box. $\textsf{RatesToPmf}$ rejects a negative rate, sums the total rate $\lambda$, and returns the PMF $\vec{p}$ with $p_i = \lambda_i/\lambda$. Setting $p_n$ by subtraction forces $\sum_i p_i = 1$. A zero total rate signals an absorbing state, so it returns $\lambda = 0$ for the caller to terminate (Step 5). $\textsf{PmfToEventIndex}$ samples $U \sim \mathrm{Uniform}(0,1]$ and returns the index $j$ of the selected event by a cumulative scan of $\vec{p}$, with the tolerance $\varepsilon$ guarding the normalization check. Both are the same for every model, and \RatesToPmf{} and \PmfToEventIndex{} implement them.}
+\label{fig:dg_subroutines_b}
+\end{figure}
+
+$\textsf{MakeRates}$ loops over the events $E_0, \ldots, E_{n-1}$, evaluates each rate $\lambda_i$ at the current state, and returns the rate vector $\vec{\lambda}$. $\textsf{RateToDeltaTime}$ rejects a non-positive total rate, samples $V$ uniformly from $(0,1]$, and returns the waiting time $-\ln(V)/\lambda$ (Section~\ref{subsec:wait_time} derives this inverse-CDF formula). $\textsf{MakeDeltaStates}$ returns the vector $(\delta_j)_{j=1}^{N}$ of state changes for the $N$ events, which we tabulate once in Step 1. $\textsf{RatesToPmf}$ rejects any negative rate, sums the total rate $\lambda$, and returns a distinct failure symbol $\bot$ when $\lambda = 0$ to flag an absorbing state for the caller. Otherwise it sets each $p_i = \lambda_i/\lambda$, replaces the last entry by $1 - \sum_{i < n-1} p_i$ so the probabilities sum to one despite rounding, and returns the pair $(\vec{p}, \lambda)$. $\textsf{PmfToEventIndex}$ rejects a $\vec{p}$ with an entry outside $[0,1]$ or a sum more than $\varepsilon$ from one, samples $U$ uniformly from $(0,1]$, initializes the index $j$ and the cumulative sum $c$ at the first probability, advances $j$ while $c < U$ or the current probability is zero and while $j$ stays below $n-1$, and returns the selected index $j$ (Section~\ref{subsubsec:construct_pmf} develops the cumulative scan).
+
+Three of these subroutines are model-independent and live in the companion code's simulation core, \texttt{tools/simcore.py}. In Figure~\ref{fig:dg_subroutines_a}, $\textsf{RateToDeltaTime}$ inputs a total rate $\lambda$ and outputs an exponential waiting time $\Delta t$ by inverse-CDF sampling. Listing~\ref{lst:framework_rate_to_delta_time} gives its \texttt{Python} implementation \RateToDeltaTime{}, which realizes the sample $V \sim \mathrm{Uniform}(0,1]$ as \texttt{1.0 - random()} because \texttt{random()} returns a value in $[0,1)$. In Figure~\ref{fig:dg_subroutines_b}, $\textsf{RatesToPmf}$ inputs the rate vector $\vec{\lambda}$ and outputs the PMF $\vec{p}$ and total rate $\lambda$, and $\textsf{PmfToEventIndex}$ inputs $\vec{p}$ and outputs the index $j$ of the next event. Listing~\ref{lst:framework_dg_core} gives their \texttt{Python} implementations \RatesToPmf{} and \PmfToEventIndex{}. The \texttt{Python} diverges from the pseudocode in two ways: \RatesToPmf{} also rejects an empty rate vector, and it clamps the normalized last entry with \texttt{max(0.0, ...)} so a small negative rounding error becomes zero rather than a negative probability.
+
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={34-38}, caption={The generic \texttt{Python} waiting-time subroutine \RateToDeltaTime{}, paired with the pseudocode $\textsf{RateToDeltaTime}$ of Figure~\ref{fig:dg_subroutines_a}.}, label={lst:framework_rate_to_delta_time}]{../tools/simcore.py}
+
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={7-31}, caption={The generic \texttt{Python} subroutines \RatesToPmf{} and \PmfToEventIndex{}, paired with the pseudocode of Figure~\ref{fig:dg_subroutines_b}.}, label={lst:framework_dg_core}]{../tools/simcore.py}
+
+Section~\ref{sec:resolving} introduced three of the four probabilistic concepts the algorithm requires. Each corresponds to a step in the list above. Section~\ref{sec:events_in_odes} introduced the identification of distinct model events and their rate functions from the ODE (Step 1), which the algorithm evaluates at runtime in Step 3. Section~\ref{sec:resolving}'s subsection on wait-time developed the memoryless property of inter-event times and showed that those times are exponentially distributed, with the total rate $\lambda$ as the distribution parameter (Step 6). The subsection on which event occurs next showed that the probability of each event is proportional to its rate, yielding the PMF $p_i = \lambda_i/\lambda$ (Step 4). Section~\ref{sec:resolving} does not develop Step 0: the examples there (radioactive decay, logistic growth) already use integer-count units and require no rescaling.
+
+\FloatBarrier
+
+\input{sections/sec_3_1_alg_rescaling}
+\input{sections/sec_3_2_alg_events}
+\input{sections/sec_3_3_alg_wait_time}
+\input{sections/sec_3_4_alg_pmf}
+\input{sections/sec_4_alg_farming}
+\input{sections/sec_5_alg_visualizing}

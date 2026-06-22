@@ -1,0 +1,75 @@
+\section{Parameter Space Exploration}\label{sec:parameter_sweep}\index{exploration!parameter space}\index{parameter space exploration}
+
+%\textbf{Instructional Time:} 3 hours
+
+A parameter sweep surveys how a model behaves across a range of parameter values. Such sweeps are costly, but they show how sensitive the model is to measurement error in its parameters and reveal qualitative changes in behavior that a single run hides.
+
+The sweep steps through part of the parameter space, generates many stochastic trajectories for each parameter combination, and collects summary statistics. We perform a small-scale sweep for the logistic growth model\index{logistic growth} in Example~\ref{ex:exploration}. The same approach applies to any of the models in this chapter.
+
+Readers who recreate the results below will see different numbers, even with the same parameters and sample sizes, because the DG algorithm is stochastic.
+
+
+\subsection{Exploring Parameter Space}\label{subsec:exploring_parameter_space}
+
+%\textbf{Instructional Time:} 2 hours
+
+We select two parameters $r$ and $K$ from small sets of possibilities and measure two statistics across those choices.
+
+\begin{example}\label{ex:exploration}
+\textbf{Logistic Growth Parameter Space Exploration.}
+We revisit Example~\ref{ex:logistic_growth}. Assuming all simulations start with their populations at half their carrying capacity\index{carrying capacity}, we explore the parameter space by determining two statistics: the proportion\index{proportion, sample} of simulations out of $100$ that go extinct within $365$ days, $p_{\texttt{extinct}}$ and the proportion of simulations in which the population exceeds its carrying capacity within $365$ days, $p_{\texttt{cap}}$.
+
+These are not mutually exclusive events, and neither may occur during a simulation. We investigate simulations with $r = \ln(2)/\tau$, where $\tau$ is a base population doubling time varying uniformly between some minimal and maximal value. We select $\frac{1}{8}$ of the total simulation time as the minimal value of $\tau$ and $\frac{1}{2}$ as the maximal value of $\tau$. The total simulation time is $365$ days and $\tau$ is measured in days, so the smallest growth rate is $r = \ln(2)/(365/2) \approx 0.0038\,\text{day}^{-1}$ and the largest is $r = \ln(2)/(365/8) \approx 0.0152\,\text{day}^{-1}$. We use $r \in \left\{0.0038, 0.0047, 0.0061, 0.0087, 0.0152\right\}\,\text{day}^{-1}$ and we explore carrying capacities $K \in \left\{10, 32.5, 55, 77.5, 100\right\}$.
+
+Higher precision in both $r$ and $K$ is possible, but the stochasticity of the DG algorithm washes it out except when large samples are feasible. This is a property of the exponential distribution from which we sample durations between events. Four decimals of precision in $r$ suffice for up to $10,000$ simulations, provided each simulation lasts $365$ days.
+
+See Table~\ref{table:pcap} for the resulting $p_{\texttt{cap}}$ estimates. Logistic populations starting at $K/2$ effectively never go extinct over $365$ days, so $p_{\texttt{extinct}}$ is negligible across this grid and we tabulate only $p_{\texttt{cap}}$. The code for \MakeLogisticRates{} and \DgSimulateLogisticOde{} is in the Python repository (\url{https://github.com/b-g-goodell/stoch-ode}). The constants ${\tt LOGISTIC\_SAMPLE\_SIZE} = 100$ and ${\tt PARAMETER\_SPACE\_EXPLORATION\_RESOLUTION} = 5j$ configure the number of trajectories per parameter combination and the resolution of the parameter grid, here a $5 \times 5$ grid matching Table~\ref{table:pcap}. The suffix $j$ is Python's notation for $\sqrt{-1}$. Passing it to \texttt{mgrid} signals that the preceding integer is a point count rather than a step size.
+
+The logistic growth DG simulation models two competing events at each step, listed with their rates in Table~\ref{tab:ode_events}.
+
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{||c | c | c | c | c | c ||}
+ \hline
+ $p_{\textup{cap}}$ & $K = 10$ & $K = 32.5$ & $ K = 55$ & $ K = 77.5$ & $K = 100$ \\ [0.5ex]
+ \hline\hline
+ $r = 0.0038$ & $0.309$ & $0.181$ & $0.093$ & $0.05$ & $0.026$ \\
+ \hline
+ $r = 0.0047$ & $0.388$ & $0.26$ & $0.207$ & $0.155$ & $0.107$  \\
+ \hline
+ $r = 0.0061$ & $0.528$  & $0.485$ & $0.369$ & $0.332$ & $0.255$ \\
+ \hline
+ $r = 0.0087$ & $0.66$  & $0.71$ & $0.659$ & $0.601$ & $0.61$ \\
+ \hline
+ $r = 0.0152$ & $0.862$  & $0.942$ & $0.936$ & $0.934$ & $0.937$ \\
+ \hline
+\end{tabular}
+\caption{Estimates of $p_{\textup{cap}}$, the proportion of logistic-growth simulations (out of $100$) whose population exceeds the carrying capacity within $365$ days, across growth rates $r$ (rows) and carrying capacities $K$ (columns).}
+\label{table:pcap}
+\end{table}
+
+
+\end{example}
+
+
+\subsection{Scale and Cost of Parameter Space Exploration}\label{subsec:scale_cost_parameter_sweep}
+
+%\textbf{Instructional Time:} 1 hour
+
+A thorough parameter space exploration spans more than one order of magnitude for each parameter, with more than one sample point per order of magnitude. For example, using $r \in \left\{10^{-3}, 10^{-2.9}, 10^{-2.8}, \ldots, 10^{2.8}, 10^{2.9}, 10^3\right\}$ (there are $61$ possible choices of $r$ in this set) and $K \in \left\{10^1, 10^{1.1}, 10^{1.2}, \ldots, 10^{5.8}, 10^{5.9}, 10^6\right\}$ (there are $51$ choices of $K$ in this set) would be more appropriate. This would require generating a sample size $N$ of simulations for each of these $51\cdot 61 = 3111$ different parameter choices.
+
+Parameter space exploration is computationally costly. It also suffers the \textit{curse of dimensionality}\index{curse of dimensionality}, a phrase describing the explosive growth in the number of cases to check as the number of parameters grows. With 5 parameters each taking 10 values, a complete sweep requires 100,000 simulation runs. Adding one more parameter multiplies the work tenfold. Given $m$ parameters with $n$ possible values, there are $n^m$ total parameter choices. Checking ``only'' $n=30$ possibilities for $m=50$ different parameters requires generating $30^{50} N$ simulation results. The number $30^{50}$ is astronomically large, far more simulations than anyone could ever run.
+
+This trade-off deepens because parameter space exploration is most useful when the researcher can individually inspect plots of simulated results to identify qualitatively different behaviors.
+In a weird version of Heisenberg's uncertainty principle, the more thoroughly we search the parameter space, the less thoroughly we can inspect simulation results.
+Estimate the total runtime of a parameter sweep before launching it.
+
+\textup{{\bf Questions for Reflection:}}
+\begin{enumerate}
+\item In Table~\ref{table:pcap}, $p_{\text{cap}}$ is uniformly high across all values of $K$ when $r = 0.0152$, but depends strongly on $K$ when $r = 0.0038$. Using the logistic growth event rates, explain analytically why a higher growth rate makes exceeding the carrying capacity likely regardless of $K$.
+
+\item You have $m = 6$ parameters and a computational budget of $10^6$ simulation runs, each lasting one simulated year. A complete factorial design with $n$ values per parameter requires $n^6$ runs. How many values per parameter does the budget allow? Propose an alternative sampling strategy that uses the budget more efficiently without sacrificing coverage of qualitatively distinct regions.
+
+\item Parameter space exploration is most useful when a researcher visually inspects each result, but inspection does not scale to thousands of plots. Using only the statistical tools introduced in this chapter, propose an automated summary for parameter sweep output and identify what information it loses compared to visual inspection of individual plots.
+\end{enumerate}
