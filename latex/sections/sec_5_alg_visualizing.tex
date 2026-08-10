@@ -57,32 +57,32 @@ Python's dictionary comprehension is sort of like set builder notation. We use i
 
 After the drawing block, the tail sets the title and axis labels, tightens the margins, and either writes the figure to \texttt{save\_path}, creating its directory first, or shows it on screen.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, caption={The shared template for the \texttt{tools/plots/} plotters. The styling preamble and the save-or-show tail are common to the trajectory, phase-diagram, and mean-versus-ODE plotters; each replaces the \texttt{...} block with its own drawing.}, label={lst:plots_template}]{\detokenize{17StochasticODEs/stoch-ode/latex/tools/plots/plot_template.py}}
+\lstinputlisting[float=htbp, language=Python, numbers=none, caption={The shared template for the \texttt{tools/plots/} plotters. The styling preamble and the save-or-show tail are common to the trajectory, phase-diagram, and mean-versus-ODE plotters; each replaces the \texttt{...} block with its own drawing.}, label={lst:plots_template}]{\detokenize{../tools/plots/plot_template.py}}
 
 \subsubsection{Plotting trajectories}\label{subsubsec:code_plot_trajs}
 
 The drawing block of \PlotTrajs{} (Listing~\ref{lst:plots_trajectories}) renders trajectories as step graphs. \texttt{draw\_labels} substitutes a list of \texttt{None} when the caller gives no labels, keeping the loop uniform. The loop unzips each trajectory into times and states and draws it as a right-continuous step (\texttt{where='post'}). A legend appears only when the caller supplies real labels. The \texttt{xlim} and \texttt{ylim} calls fix the axis ranges to the supplied bounds.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-37}, caption={The drawing block of \PlotTrajs{} in \texttt{tools/plots/plot\_trajectories.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws Figures~\ref{fig:saline_tank}, \ref{fig:allee_two_trajs}, and~\ref{fig:sir}.}, label={lst:plots_trajectories}]{\detokenize{17StochasticODEs/stoch-ode/latex/tools/plots/plot_trajectories.py}}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-37}, caption={The drawing block of \PlotTrajs{} in \texttt{tools/plots/plot\_trajectories.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws Figures~\ref{fig:saline_tank}, \ref{fig:allee_two_trajs}, and~\ref{fig:sir}.}, label={lst:plots_trajectories}]{\detokenize{../tools/plots/plot_trajectories.py}}
 
 \subsubsection{Plotting phase diagrams}\label{subsubsec:code_phase}
 
 The drawing block of \MakePhaseDiagram{} (Listing~\ref{lst:plots_vector_field}) draws the streamplot of a scalar ODE. \texttt{mgrid} builds a grid of resolution \texttt{res} over the time-state rectangle. The horizontal arrow component is $1$ since time advances at unit rate, and the vertical component is the caller's \texttt{y\_len\_fun} on the grid. To use this to make a phase diagram of an ODE of the form $y^\prime = f(y)$, just express $f(y)$ as \texttt{y\_len\_fun}. The \texttt{streamplot} call draws the field in blue with arrow size scaled to the page, and an optional \texttt{axhspan} shades the non-physical region below zero red.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={31-38}, caption={The drawing block of \MakePhaseDiagram{} in \texttt{tools/plots/plot\_vector\_field.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws the phase diagrams in Figures~\ref{fig:ode_examples} and~\ref{fig:allee_ode}.}, label={lst:plots_vector_field}]{\detokenize{17StochasticODEs/stoch-ode/latex/tools/plots/plot_vector_field.py}}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={31-38}, caption={The drawing block of \MakePhaseDiagram{} in \texttt{tools/plots/plot\_vector\_field.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws the phase diagrams in Figures~\ref{fig:ode_examples} and~\ref{fig:allee_ode}.}, label={lst:plots_vector_field}]{\detokenize{../tools/plots/plot_vector_field.py}}
 
 \subsubsection{Plotting the mean against the ODE}\label{subsubsec:code_mean}
 
 The drawing block of \PlotMeanVsOde{} (Listing~\ref{lst:plots_mean_vs_ode}) overlays a stochastic mean on a deterministic solution. An optional \texttt{axhspan} shades the non-physical region. The code plots the stochastic mean as a solid curve and the ODE solution as a dashed curve, sets the axes to the data range, and places a legend at the lower right.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-35}, caption={The drawing block of \PlotMeanVsOde{} in \texttt{tools/plots/plot\_mean\_vs\_ode.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws Figure~\ref{fig:logistic_growth_mean_vs_ode}.}, label={lst:plots_mean_vs_ode}]{\detokenize{17StochasticODEs/stoch-ode/latex/tools/plots/plot_mean_vs_ode.py}}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-35}, caption={The drawing block of \PlotMeanVsOde{} in \texttt{tools/plots/plot\_mean\_vs\_ode.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws Figure~\ref{fig:logistic_growth_mean_vs_ode}.}, label={lst:plots_mean_vs_ode}]{\detokenize{../tools/plots/plot_mean_vs_ode.py}}
 
 \subsubsection{Plotting the heat map}\label{subsubsec:code_heatmap}
 
 The heat map follows the template, adding a block that prepares the trajectories before the drawing block.
 \PlotHeatmap{} (Listing~\ref{lst:plots_heatmap}) first re-samples trajectories by laying \texttt{grid} equal time bins, finding their centers, and reading each trajectory's state at those centers by looking at the latest change point with \texttt{searchsorted}. Section~\ref{subsubsec:prep_heatmap} explains why this matters. \PlotHeatmap{} then stacks the re-sampled trajectories. \texttt{histogram2d} bins the $(t, y)$ pairs into a \texttt{grid}-by-\texttt{grid} count array. This count array determines brightness, but we cap the brightness at the $95$th percentile of counts as \texttt{vmax}. This way, the brightest cells saturate while dimmer occupancy bands stay visible, showing multimodal distributions. Finally, the code draws the transposed counts as a rasterized image with the \texttt{magma} colormap and bilinear smoothing, adds a color bar labeled from \emph{Few} to \emph{Many}, labels the axes, and saves or shows the figure through the shared tail.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={30-55}, caption={The drawing block of \PlotHeatmap{} in \texttt{tools/plots/plot\_heatmap\_histogram.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws the heat map in Figure~\ref{fig:allee_heat}.}, label={lst:plots_heatmap}]{\detokenize{17StochasticODEs/stoch-ode/latex/tools/plots/plot_heatmap_histogram.py}}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={30-55}, caption={The drawing block of \PlotHeatmap{} in \texttt{tools/plots/plot\_heatmap\_histogram.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws the heat map in Figure~\ref{fig:allee_heat}.}, label={lst:plots_heatmap}]{\detokenize{../tools/plots/plot_heatmap_histogram.py}}
 
 \subsection{Reading and Statistically Measuring Stochastic Output}\label{subsec:output}
 

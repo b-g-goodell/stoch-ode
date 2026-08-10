@@ -71,19 +71,13 @@ Green means good.
 The chapter is written in LaTeX. Inside the publisher's book,
 `latex/main.tex` is a fragment the book builds for itself. To build
 the chapter on your own you need a LaTeX install (TeX Live or
-MiKTeX), and the repo must sit inside a folder named
-`17StochasticODEs`, because the chapter's include paths start there:
+MiKTeX). Then:
 
-    mkdir 17StochasticODEs
-    cd 17StochasticODEs
-    git clone https://github.com/b-g-goodell/stoch-ode.git
-    cd stoch-ode/latex
+    cd latex
     latexmk -pdf standalone.tex
 
-Out comes `standalone.pdf`: the whole chapter, numbered as chapter 17.
-Already cloned? Move your repo into a folder named `17StochasticODEs`
-and pick up at `cd stoch-ode/latex`. Skip all this if you only want
-the code.
+Out comes `standalone.pdf`: the whole chapter. Skip this if you only
+want the code.
 
 ## Words you just met
 
