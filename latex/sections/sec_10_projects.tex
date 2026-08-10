@@ -1,7 +1,6 @@
-%\section{Modeling Projects}
 \begin{modelingproject}[\label{sec:projects}The projects below pose open-ended investigations that start capstone or thesis work. Each names a modeling context and some entry points, and leaves the scope, depth of analysis, and choice of tools to the reader. The projects have no unique correct answers.]
 
-\item % (expected time: 10 to 20 hours)
+\item %
 Select a radioactive decay chain\index{radioactive decay} from among the following list. Use whatever source you like to determine half-lives of each element in the chain, and investigate your models for some fixed initial number of atoms, say $1000$.
 \begin{itemize}
 \item Neptunium-$237$.
@@ -12,13 +11,13 @@ Select a radioactive decay chain\index{radioactive decay} from among the followi
 
 
 
-\item % (expected time: 10 to 20 hours)
+\item %
 The Wilson-Cowan model from cognitive neuroscience models neural populations in an ensemble with a continuous-state compartment model, and researchers consider it a basic model of \textit{biological memory}. The neural ensemble transiently sustains elevated firing rates when input activates it. These ensembles spontaneously deactivate over time unless recurrent excitatory input maintains them. Neurons can be either \textit{excitatory} ($E$) or \textit{inhibitory} ($I$), and they can be either \textit{active} or \textit{inactive}. Excitatory neurons increase the activity of all other neurons in the assembly, and inhibitory neurons decrease the activity. The Wilson-Cowan system of ODEs is in Homework Problem \ref{ex:hw_wilson_cowan}. Handling $E$ and $I$ as discrete populations, convert this ODE to a discrete-state version with the Doob-Gillespie algorithm, investigate the model (e.g.\ find the typical lifespan of a memory trace across the parameter space), and determine model sensitivity.
 
 
 
 
-\item % (expected time: 10 to 20 hours)
+\item %
 The classical Lotka-Volterra\cite{lotka1925elements,volterra1926variazioni}\index{Lotka-Volterra equations}\index{predator-prey model|see{Lotka-Volterra equations}} predator-prey model with prey $H$ (hosts) and predators $P$ is as follows, where $\alpha, \beta, \delta, \gamma > 0$.
 \begin{align*}
 \frac{dH}{dt} &= \alpha H - \beta H P \\
@@ -29,7 +28,7 @@ The term $\alpha H$ models prey births, $\beta HP$ models predator-prey interact
 
 
 
-\item % (expected time: 10 to 20 hours)
+\item %
 Dead biomass decays into ammonia, which is toxic to most life in high concentrations. \textit{Nitrosomona} bacteria are an exception. Ubiquitous on Earth, they eat ammonia to build their biomass and excrete nitrites, which are even more toxic. \textit{Nitrobacter} bacteria are another exception, and also ubiquitous. They eat both ammonia and nitrites to build their biomass and excrete \textit{nitrates}. Nitrates are toxic in large enough concentrations, but plants use them as a nitrogen source and they are necessary to life in low concentrations. Algae and plants can consume low levels of ammonia and nitrites as further nitrogen sources. Fish tanks suffer ``new tank syndrome'' as follows:
 \begin{enumerate}
 \item A new aquarium owner fills a new tank with water, substrate, and a few fish.

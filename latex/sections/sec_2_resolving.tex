@@ -1,6 +1,5 @@
 \section{The Doob-Gillespie Interpretation}\label{sec:resolving}\index{master equation|seealso{Doob-Gillespie algorithm}}
 
-%\textbf{Instructional Time:} 3 hours
 
 In this section, we describe the re-interpretation of ODEs behind the DG algorithm.
 
@@ -26,7 +25,6 @@ We do not need to write or handle the master equation explicitly. The DG algorit
 \subsection{Examples Revisited}
 \label{sec:events_in_odes}
 
-%\textbf{Instructional Time:} 1 hour
 
 When converting an ODE model to a model of disjoint, discrete state-change events, each population can either go up or down by some fixed amount. Their cause (whether biological, social, physical, or otherwise) uniquely identifies these events.
 
@@ -42,7 +40,6 @@ The probability that the next event is $E_{\mathrm{birth}}$ is proportional to $
 \subsection{Generating Wait-Time Between Events}\label{subsec:wait_time_prelim}
 
 
-%\textbf{Instructional Time:} 1 hour
 
 
 
@@ -82,7 +79,6 @@ In the case of Example~\ref{ex:radioactive_decay}, the time until the next event
 \subsection{Determining Which Event Occurs Next}\label{subsec:which_event}
 
 
-%\textbf{Instructional Time:} 1 hour
 
 If the next event to occur is $E_i$ with a probability proportional to $\lambda_i$, and the only possible next events are $E_0, E_1, \ldots, E_{n-1}$, then the probability that the next event is $E_i$ is exactly $\frac{\lambda_i}{\sum_j \lambda_j}$. This value follows from normalization: the probabilities sum to $1$, and each is proportional to its rate.
 

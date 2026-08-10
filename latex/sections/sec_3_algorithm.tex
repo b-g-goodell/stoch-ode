@@ -1,6 +1,5 @@
 \section{The Doob-Gillespie Algorithm in Detail with Examples}\label{sec:algorithm}
 
-%\textbf{Instructional Hours:} 12-18 hours
 
 The Doob-Gillespie algorithm uses the ODE parameters and initial conditions to generate a \textit{stochastic trajectory}\index{trajectory!stochastic}. The word \textit{stochastic} means \textit{random}. Unlike ODE solutions, which system parameters and initial conditions fully determine, a stochastic trajectory is one possible random realization of the system evolution. Concretely, a stochastic trajectory is a sequence of time-state tuples $(t_0, {\tt state}_0), (t_1, {\tt state}_1), (t_2, {\tt state}_2), \ldots$, where $(t_i, {\tt state}_i)$ records the time and system state immediately after the $i^{th}$ state-change event occurs. The algorithm proceeds as follows. Steps 0 and 1 are pre-processing steps: run them once before any simulation begins. Step 2 initializes the simulation bookkeeping. Steps 3 and forward constitute the main loop, which repeats while the clock $t$ remains below the simulation run time $T$.
 \begin{enumerate}

@@ -1,6 +1,5 @@
 \subsection{Sampling the Waiting Time Between Events}\label{subsec:wait_time}\index{distribution!exponential}
 
-%\textbf{Instructional Time:} 1 hour
 
 Inter-event waiting times follow a memoryless\index{memoryless property} exponential distribution with rate parameter equal to the total event rate\index{total event rate} $\lambda = \sum_i \lambda_i$. The same $\lambda$ also normalizes the PMF in Step 4 (Section~\ref{subsec:compute_pmf} treats that role). Given a known $\lambda$, the following algorithm samples $\Delta t$.
 
@@ -19,4 +18,4 @@ So, if $U$ is a uniform random variable on the interval $(0,1]$, the function $-
 Readers may take our word for it, or see~\cite{grimmett2020probability} for a rigorous treatment of this problem.
 Figure~\ref{fig:dg_subroutines_a} gives the pseudocode, and the Python repository (\url{https://github.com/b-g-goodell/stoch-ode}) provides a Python implementation.
 Most programming languages provide libraries that efficiently sample from the exponential distribution, replacing this with a one-line command.
-We include the full description of the sampling method to demonstrate the process.% is not magic.
+We include the full description of the sampling method to demonstrate the process.%
