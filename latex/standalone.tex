@@ -1,0 +1,17 @@
+\documentclass{SIAMbook2019}
+\input{17StochasticODEs/stoch-ode/latex/sections/preamble}
+\input{17StochasticODEs/stoch-ode/latex/python_macros}
+\newcounter{mprj}
+\newenvironment{modelingproject}[1][]{%
+  \section*{Modeling Projects}%
+  \addcontentsline{toc}{section}{Modeling Projects}%
+  #1\par
+  \begin{list}{{\hfill\upshape \arabic{chapter}.\arabic{mprj}.}}{\usecounter{mprj}%
+    \setlength{\leftmargin}{28pt}\labelwidth28pt\labelsep.5em%
+    \itemsep2pt\parsep0pt\setlength{\itemindent}{0pt}}%
+}{\end{list}}
+\begin{document}
+\setcounter{chapter}{16}%
+\chapter[Doob-Gillespie Stochastic Simulation]{Simulating ODEs Stochastically with Doob-Gillespie Algorithms}
+\input{17StochasticODEs/stoch-ode/latex/main}
+\end{document}
