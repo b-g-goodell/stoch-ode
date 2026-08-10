@@ -1,4 +1,4 @@
-﻿\section{The Doob-Gillespie Interpretation}\label{sec:resolving}\index{master equation|seealso{Doob-Gillespie algorithm}}
+\section{The Doob-Gillespie Interpretation}\label{sec:resolving}\index{master equation|seealso{Doob-Gillespie algorithm}}
 
 %\textbf{Instructional Time:} 3 hours
 
@@ -68,7 +68,7 @@ The exponential distribution has a single parameter, $\lambda > 0$, which equals
 
 In the case of Example~\ref{ex:radioactive_decay}, the time until the next event occurs is exponentially distributed with parameter $\lambda = \mu M(t)$. In the case of Example~\ref{ex:logistic_growth}, the time until the next event occurs is also exponentially distributed, but with parameter $\lambda = rP(t)\left(1 + \frac{1}{K}P(t)\right)$. The total event rate has a factor $1 + P/K$, not the $1 - P/K$ of the ODE, because $\lambda$ sums the birth and death rate magnitudes $rP$ and $rP^2/K$, whereas the ODE takes their difference.
 
-{\bf Questions for Reflection:}
+\noindent \textup{{\bf Questions for Reflection:}}
 \begin{enumerate}
 \item Radioactive decay is a memoryless process. Interpret memorylessness in the context of the radioactive decay model.
 
@@ -91,9 +91,9 @@ If the next event to occur is $E_i$ with a probability proportional to $\lambda_
 For example, presume we have events $E_0, E_1, E_2$ with rates $\lambda_0, \lambda_1, \lambda_2$. Further presume that $\lambda_1 = 2\lambda_0$ and $\lambda_2 = 3 \lambda_0$. Let $p_i$ be the probability that the next event is $E_i$ for each $i=0,1,2$. These probabilities are proportional to their events' rates, so $p_0 = c \lambda_0$, $p_1 = c \lambda_1 = 2c\lambda_0$, and $p_2 = c \lambda_2 = 3c\lambda_0$. The probabilities sum to $1$, so $p_0 + p_1 + p_2 = 6c\lambda_0 = 1$. Thus, $c = \frac{1}{6\lambda_0}$, so $p_0 = \frac{1}{6}$, $p_1 = \frac{1}{3}$, and $p_2 = \frac{1}{2}$.
 \end{example}
 
-In Example~\ref{ex:radioactive_decay}, there is only one event, the death event, which must occur with probability $1$. In Example~\ref{ex:logistic_growth}, there are two events, birth and death; normalizing their rates $rP$ and $\frac{r}{K}P^2$ as above gives next-event probabilities $\frac{K}{P+K}$ for a birth and $\frac{P}{P+K}$ for a death.
+In Example~\ref{ex:radioactive_decay}, there is only one event, the death event, which must occur with probability $1$. In Example~\ref{ex:logistic_growth}, there are two events, birth and death; normalizing their rates $rP$ and $\frac{r}{K}P^2$ as above gives next-event probabilities $\frac{K}{P+K}$ for a birth and $\frac{P}{P+K}$ for a death.\\
 
-\textup{{\bf Questions for Reflection:}}
+\noindent \textup{{\bf Questions for Reflection:}}
 \begin{enumerate}
 \item Geometric random variables are also memoryless. They are discrete and take on positive integer values $1$, $2$, $3$, $\ldots$. They have one parameter, $0 < p \leq 1$, and represent the number of flips of a biased coin with bias $p$ until the first heads-up flip occurs. Postulate why we should not use geometric random variables to increment time while simulating an ODE.
 

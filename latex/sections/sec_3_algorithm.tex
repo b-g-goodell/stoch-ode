@@ -1,4 +1,4 @@
-﻿\section{The Doob-Gillespie Algorithm in Detail with Examples}\label{sec:algorithm}
+\section{The Doob-Gillespie Algorithm in Detail with Examples}\label{sec:algorithm}
 
 %\textbf{Instructional Hours:} 12-18 hours
 
@@ -19,7 +19,7 @@ The algorithm calls five subroutines: $\textsf{MakeDeltaStates}$ tabulates the s
 Note that computing rates, and looking up the state-change event after sampling an index $j$, both depend on the ODE model.
 All else is the same for every ODE model, and we implement it generically. We index the $n$ events from $0$ to $n-1$ throughout, matching the companion \texttt{Python}.
 
-We assemble these subroutines into the full algorithm. Figure~\ref{fig:dg_algorithm} presents it symbolically, the numbered steps above explain it, and each line of the figure shows its step. Figures~\ref{fig:dg_subroutines_a} and~\ref{fig:dg_subroutines_b} collect the pseudocode for the five subroutines it calls. Listing~\ref{lst:dg_algorithm_python_template} gives the \texttt{Python 3.12} implementation, a template that follows the same steps line for line. It diverges from the pseudocode only at Step 5: rather than breaking out of the loop, it returns the trajectory as soon as \RatesToPmf{} yields a total rate of zero.
+We assemble these subroutines into the full algorithm. Figure~\ref{fig:dg_algorithm} presents it symbolically, the numbered steps above explain it, and each line of the figure shows its step. Figures~\ref{fig:dg_subroutines_a} and~\ref{fig:dg_subroutines_b} collect the pseudocode for the five subroutines it calls. Listing~\ref{lst:dg-algorithm-python-template} gives the \texttt{Python 3.12} implementation, a template that follows the same steps line for line. It diverges from the pseudocode only at Step 5: rather than breaking out of the loop, it returns the trajectory as soon as \RatesToPmf{} yields a total rate of zero.
 
 \begin{figure}[htbp]
 \centering
@@ -42,11 +42,11 @@ We assemble these subroutines into the full algorithm. Figure~\ref{fig:dg_algori
 \label{fig:dg_algorithm}
 \end{figure}
 
-\lstinputlisting[float=htbp,
+\lstinputlisting[
 language=Python,
 numbers=none,
 caption={Python template for DG simulations. Compare to Figure~\ref{fig:dg_algorithm}. See \texttt{/stoch-ode/simulation\_frameworks/framework\_template.py} in the Python repository.},
-label={lst:dg_algorithm_python_template}]{../simulation_frameworks/framework_template.py}
+label={lst:dg-algorithm-python-template}]{\detokenize{17StochasticODEs/stoch-ode/latex/simulation_frameworks/framework_template.py}}
 
 \begin{figure}[htbp]
 \centering
@@ -100,17 +100,17 @@ $\textsf{MakeRates}$ loops over the events $E_0, \ldots, E_{n-1}$, evaluates eac
 
 Three of these subroutines are model-independent and live in the companion code's simulation core, \texttt{tools/simcore.py}. In Figure~\ref{fig:dg_subroutines_a}, $\textsf{RateToDeltaTime}$ inputs a total rate $\lambda$ and outputs an exponential waiting time $\Delta t$ by inverse-CDF sampling. Listing~\ref{lst:framework_rate_to_delta_time} gives its \texttt{Python} implementation \RateToDeltaTime{}, which realizes the sample $V \sim \mathrm{Uniform}(0,1]$ as \texttt{1.0 - random()} because \texttt{random()} returns a value in $[0,1)$. In Figure~\ref{fig:dg_subroutines_b}, $\textsf{RatesToPmf}$ inputs the rate vector $\vec{\lambda}$ and outputs the PMF $\vec{p}$ and total rate $\lambda$, and $\textsf{PmfToEventIndex}$ inputs $\vec{p}$ and outputs the index $j$ of the next event. Listing~\ref{lst:framework_dg_core} gives their \texttt{Python} implementations \RatesToPmf{} and \PmfToEventIndex{}. The \texttt{Python} diverges from the pseudocode in two ways: \RatesToPmf{} also rejects an empty rate vector, and it clamps the normalized last entry with \texttt{max(0.0, ...)} so a small negative rounding error becomes zero rather than a negative probability.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={34-38}, caption={The generic \texttt{Python} waiting-time subroutine \RateToDeltaTime{}, paired with the pseudocode $\textsf{RateToDeltaTime}$ of Figure~\ref{fig:dg_subroutines_a}.}, label={lst:framework_rate_to_delta_time}]{../tools/simcore.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={34-38}, caption={The generic \texttt{Python} waiting-time subroutine \RateToDeltaTime{}, paired with the pseudocode $\textsf{RateToDeltaTime}$ of Figure~\ref{fig:dg_subroutines_a}.}, label={lst:framework_rate_to_delta_time}]{17StochasticODEs/stoch-ode/latex/tools/simcore.py}
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={7-31}, caption={The generic \texttt{Python} subroutines \RatesToPmf{} and \PmfToEventIndex{}, paired with the pseudocode of Figure~\ref{fig:dg_subroutines_b}.}, label={lst:framework_dg_core}]{../tools/simcore.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={7-31}, caption={The generic \texttt{Python} subroutines \RatesToPmf{} and \PmfToEventIndex{}, paired with the pseudocode of Figure~\ref{fig:dg_subroutines_b}.}, label={lst:framework_dg_core}]{17StochasticODEs/stoch-ode/latex/tools/simcore.py}
 
 Section~\ref{sec:resolving} introduced three of the four probabilistic concepts the algorithm requires. Each corresponds to a step in the list above. Section~\ref{sec:events_in_odes} introduced the identification of distinct model events and their rate functions from the ODE (Step 1), which the algorithm evaluates at runtime in Step 3. Section~\ref{sec:resolving}'s subsection on wait-time developed the memoryless property of inter-event times and showed that those times are exponentially distributed, with the total rate $\lambda$ as the distribution parameter (Step 6). The subsection on which event occurs next showed that the probability of each event is proportional to its rate, yielding the PMF $p_i = \lambda_i/\lambda$ (Step 4). Section~\ref{sec:resolving} does not develop Step 0: the examples there (radioactive decay, logistic growth) already use integer-count units and require no rescaling.
 
 \FloatBarrier
 
-\input{sections/sec_3_1_alg_rescaling}
-\input{sections/sec_3_2_alg_events}
-\input{sections/sec_3_3_alg_wait_time}
-\input{sections/sec_3_4_alg_pmf}
-\input{sections/sec_4_alg_farming}
-\input{sections/sec_5_alg_visualizing}
+\input{17StochasticODEs/stoch-ode/latex/sections/sec_3_1_alg_rescaling}
+\input{17StochasticODEs/stoch-ode/latex/sections/sec_3_2_alg_events}
+\input{17StochasticODEs/stoch-ode/latex/sections/sec_3_3_alg_wait_time}
+\input{17StochasticODEs/stoch-ode/latex/sections/sec_3_4_alg_pmf}
+\input{17StochasticODEs/stoch-ode/latex/sections/sec_4_alg_farming}
+\input{17StochasticODEs/stoch-ode/latex/sections/sec_5_alg_visualizing}

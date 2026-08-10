@@ -1,8 +1,6 @@
 # stoch-ode
 
-Simulate ordinary differential equations as discrete, random, step-by-step events
-
-Python3.12 code for simulating and visualizing, LaTeX for textbook chapter.
+Python code for simulating ordinary differential equations as discrete, random, step-by-step events.
 
 New to Python, git, and GitHub? Start here.
 

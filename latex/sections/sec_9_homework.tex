@@ -1,16 +1,12 @@
-﻿\section{Homework Problems}
-\label{sec:homework}
+%\section{Homework Problems}
 
-Several problems below require parameter space exploration\index{exploration!parameter space} (Section~\ref{sec:parameter_sweep}) and the univariate elasticity formula $\mathcal{E}_{V}(r,s)$ (Section~\ref{sec:sensitivity_analysis}). Students should read those sections before attempting the problems that call for parameter sweeps or elasticity scores.
+\noindent \textup{\it Several problems below require parameter space exploration\index{exploration!parameter space} (Section~\ref{sec:parameter_sweep}) and the univariate elasticity formula $\mathcal{E}_{V}(r,s)$ (Section~\ref{sec:sensitivity_analysis}). Students should read those sections before attempting the problems that call for parameter sweeps or elasticity scores.}\label{sec:homework}
 
-\newcommand{\hwcategory}[1]{\item[]\addtocounter{prob}{-1}\par\smallskip\noindent\rule{\linewidth}{0.4pt}\par\smallskip\noindent\textbf{#1}\par\smallskip}
+\newcommand{\hwcategory}[1]{\item[]\par\smallskip\noindent\rule{\linewidth}{0.4pt}\par\smallskip\noindent\textbf{#1}\par\smallskip}
 
 \begin{exercises}
 \hwcategory{Mathematical and Probabilistic Background}
-
-\item \label{ex:hw_memoryless_rigorous}
-% (expected time: 45 to 60 min)
-Work through the following steps to prove that the only continuous real-valued random variable $T$ which is memoryless\index{memoryless property} is the exponential random variable.
+\item Work through the following steps to prove that the only continuous real-valued random variable $T$ which is memoryless\index{memoryless property} is the exponential random variable.\label{ex:hw_memoryless_rigorous}% (expected time: 45 to 60 min)
 \begin{enumerate}[(a)]
 \item Let $f(t)$ be the probability density function for $T$, let $F(t) = \int_{-\infty}^{t} f(s) ds = \mathbb{P}[T \leq t]$ be the cumulative distribution function for $T$, and let $S(t) = 1 - F(t)$ be the \textit{survival function}\index{survival function}. Restate the memoryless property as a property of the survival function.
 \item Prove that your restatement is equivalent to the memoryless property.
@@ -56,7 +52,7 @@ We model $X$ molecules of one water-soluble chemical and $Y$ molecules of anothe
 \item \label{ex:hw_bound_ext_time}
 
 Let $(X_\tau)_{\tau \ge 0}$ be a continuous-time stochastic process with an absorbing state $0$. Let $T = \inf \{\tau \ge 0 : X_\tau = 0\}$ denote the time to extinction. Assume there exists a fixed time interval $t > 0$ and a minimum probability $p \in (0, 1]$ such that, for all $\tau > 0$ and for all initial conditions $X_0 \neq 0$, the probability of extinction occurring within the time interval $[0, t)$ satisfies $p \leq P(T \le \tau + t \mid X_\tau = X_0, T > \tau)$. Answer the following questions.
-\begin{enumerate}
+\begin{enumerate}[(a)]
     \item Divide time into discrete intervals of length $t$: $[0, t), [t, 2t), \dots, [(k-1)t, kt)$. Show that the probability the process survives past time $kt$ satisfies $P(T > kt) \leq (1-p)^k$. Hint: Express the probability of surviving past time $kt$ by conditioning on survival up to time $(k-1)t$. Then apply the definition of conditional probability and the definition of memoryless-ness.
     
     \item Let $N$ denote the discrete random variable representing the index of the interval $[(N-1)t, Nt)$ during which extinction occurs. Model $N$ by comparing it to a geometric random variable $Y \sim \text{Geometric}(p)$. Explain or prove that $\mathbb{P}\left(N>k\right)\leq \mathbb{P}\left(Y>k\right)$ for all $k > 0$.
@@ -97,7 +93,7 @@ Consider a random walk\index{random walk} $Y_0, Y_1, Y_2, \ldots$ on the set $\l
 \item \label{ex:hw_radioactive_decay_sim}
 % (expected time: 2 to 3 hours)
 Write Doob-Gillespie implementations of the model in Example~\ref{ex:radioactive_decay}. Answer the following questions.
-\begin{enumerate}[(i)]
+\begin{enumerate}[(a)]
 \item With a half-life of $100$ days, a sample size of $10,000$ simulations lasting $100$ days each, and with $M(0) = 100$, find the proportion of simulations of Example~\ref{ex:radioactive_decay} whose population drops below $M(t) < 40$ before $t = 100$.
 \item With a half-life of $100$ days and a sample size of $10,000$ simulations lasting $5000$ days each, find the mean, median, and variance in the wait time until $M(t) < 10$ in simulations.
 \item Fix a half-life $\tau > 0$ and generate a large sample size of simulations. Use these to investigate whether the continuous solutions $M(t)$ from Equation~\ref{eqn:radioactive_decay} are a good approximation for the expected state at time $t$.
@@ -107,7 +103,7 @@ Write Doob-Gillespie implementations of the model in Example~\ref{ex:radioactive
 \item \label{ex:hw_radioactive_decay_elasticity}
 % (expected time: 2 to 3 hours)
 Reconsider the radioactive decay model of Example~\ref{ex:radioactive_decay} with decay rate $\mu > 0$, and let the statistic $V(\mu)$ be the time until every atom has decayed, the first time at which $M(t) = 0$. Estimate $V(\mu)$ by the sample mean of this extinction time over a large sample of Doob-Gillespie simulations started from a fixed initial count $M(0)$.
-\begin{enumerate}[(i)]
+\begin{enumerate}[(a)]
 \item Fix $M(0) = 1000$. For the base rate $\mu = 1$ and the perturbed rate $\mu = 1 + \epsilon$, estimate $V(1)$ and $V(1+\epsilon)$ for each $\epsilon \in \left\{10^{-1}, 10^{-2}, 10^{-3}\right\}$, each from a large sample of simulations.
 \item For each $\epsilon$, compute the elasticity $\mathcal{E}_V(1, 1+\epsilon)$ using the formula from Section~\ref{sec:sensitivity_analysis}, and describe how the estimate behaves as $\epsilon$ shrinks, and compare it against the analytic extinction time $V(\mu) = \frac{1}{\mu}\sum_{k=1}^{M(0)} \frac{1}{k}$.
 \item Using your elasticity estimate, determine how many decimal digits of $\mu$ a researcher must measure to hold the relative change in extinction time below $1\%$. Explain how the required precision depends on the magnitude of the elasticity.
@@ -132,7 +128,7 @@ We use the following approximations. Uranium-234 (${}^{234}U$) has a half-life o
 \item Show that $(U, V, W, X) = (0, 0, 0, 0)$ is the only steady-state solution.
 
 \item Implement the Doob-Gillespie algorithm to simulate $(U(t), V(t), W(t), X(t))$ stochastically using the techniques in this chapter, and answer the following questions.
-\begin{enumerate}[(i)]
+\begin{enumerate}[(a)]
 \item With initial conditions $(U(0), V(0), W(0), X(0)) = (1, 0, 0, 0)$, simulate $10,000$ stochastic trajectories to estimate the probability that a simulation terminates with state $(U(t), V(t), W(t), X(t)) = (0, 0, 0, 0)$ within one half-life of Uranium-234.
 
 \item Modify your script to terminate when the first radon atom appears, and use it to simulate $10,000$ stochastic trajectories with initial conditions $(U(0), V(0), W(0), X(0)) = (10^8, 0, 0, 0)$. Use the sample mean of simulation time to estimate the expected time until the first Radon atom appears.
@@ -147,7 +143,7 @@ We use the following approximations. Uranium-234 (${}^{234}U$) has a half-life o
 \item \label{ex:hw_logistic_growth_sim}
 % (expected time: 2 to 3 hours)
 Write Doob-Gillespie implementations of the model in Example~\ref{ex:logistic_growth}. Answer the following questions.
-\begin{enumerate}[(i)]
+\begin{enumerate}[(a)]
 \item With a per-capita birth rate $r = 0.001$ and a carrying capacity $K = 100$, a sample size of $10,000$ simulations lasting $100$ days each, and with $P(0) = 10$, find the proportion of simulations of Example~\ref{ex:logistic_growth} whose population drops below $P(t) < 5$ before $t = 100$, and the proportion of simulations whose population goes extinct.
 \item With a per-capita birth rate $r = 0.01$, carrying capacity $K = 10$, a sample size of $10,000$ simulations lasting $1000$ days each, and with $P(0) = 10$, find the proportion of simulations of Example~\ref{ex:logistic_growth} whose populations go extinct.
 \item Fix a birth rate $r > 0$, fix a carrying capacity $K > 0$, and generate a large sample size of simulations. Use these to investigate whether the continuous solutions $P(t)$ from Equation~\ref{eqn:logistic_growth} are a good approximation for the expected state at time $t$.
@@ -172,7 +168,8 @@ Use $r = 10^{-3}, 10^{-2.5}, 10^{-2}, 10^{-1.5}, 10^{-1}$, carrying capacity $K 
 
 \item \label{ex:hw_two_tank}
 % (expected time: 3 to 4 hours)
-Consider a $2$-tank mixing problem with fixed inflow and fixed outflow with the following specifications:\begin{itemize}
+Consider a $2$-tank mixing problem with fixed inflow and fixed outflow with the following specifications:
+\begin{itemize}
 \item Tank $A$ and tank $B$ are both $200$ liters and well-mixed.
 \item Tank $A$ has a $5$ liter per minute inlet pipe that brings in a deadly solution with concentration $c$ grams solute per liter of solvent.
 \item Tank $A$ has a $5$ liter per minute inlet pipe that pumps in from tank $B$.
@@ -180,7 +177,7 @@ Consider a $2$-tank mixing problem with fixed inflow and fixed outflow with the 
 \item Tank $B$ has a $5$ liter outlet pipe that drains its mixture into the surrounding environment.
 \end{itemize}
 Answer the following questions.
-\begin{enumerate}[(i)]
+\begin{enumerate}[(a)]
 \item State an ODE model describing how the concentration (mass/vol) of deadly chemical changes in each tank over time.
 \item Find all steady-state solutions to the system of differential equations.
 \item Assume the mass of one particle of deadly substance is $m > 0$ grams. Change variables and parameters in this model so that the state space counts the deadly particles in each tank.
@@ -213,7 +210,7 @@ The ODE from Example~\ref{ex:allee} has $3$ steady states such that $\frac{dP}{d
 \item \label{ex:hw_allee_stochastic}
 % (expected time: 3 to 4 hours)
 Modify the Allee effect simulation code (in the Python repository, \url{https://github.com/b-g-goodell/stoch-ode}) to produce $100$ stochastic trajectories for Example~\ref{ex:allee} using parameters $r=0.01\textup{ days}^{-1}$, $L=10$, $K=1000$, initial condition $P(0) = L$, and maximum run-time $T = 365$ days. Use your $100$ stochastic trajectories to answer the following questions.
-\begin{enumerate}[(i)]
+\begin{enumerate}[(a)]
 \item Find the sample five-number summary,\index{summary, five-number} the sample mean, the sample median, and the sample variance in the number of individuals in the population on day $80$.
 \item From just those trajectories that have $P(T) \leq L$, find the sample five-number summary, the sample mean, the sample median, and the sample variance of $P(T)$.
 \item From just those trajectories that have $P(T) > L$, find the sample five-number summary, the sample mean, the sample median, and the sample variance of $P(T)$. Compare to your results above.
@@ -273,7 +270,7 @@ Consider simulating the number of molecules of each of the chemical species $X$,
 \frac{dY}{dt} =& -\alpha X Y + \beta Y Z\\
 \frac{dZ}{dt} =& \alpha X Y - \beta Y Z
 \end{align*}
-\begin{enumerate}[(i)]
+\begin{enumerate}[(a)]
 \item Find the equilibria of this system such that $X \geq 0$, $Y \geq 0$, and $Z \geq 0$.
 \item Show that if $Y = 0$ then no further events can occur.
 \item If you measure $t$ in seconds and $X$ is the chemical concentration in mass per units volume, determine the units that $\alpha$ and $\beta$ must use.
@@ -297,7 +294,7 @@ Apply a linear transformation of variables and time, and then re-parameterize, t
 \frac{dx}{dt} =& a - (b+1)x + x^2 y\\
 \frac{dy}{dt} =& bx - x^2 y
 \end{align*}
-Prigogine and Lefever \cite{prigogine1968symmetry} introduced the \textit{Brusselator equations}\index{Brusselator equations} as a model of autocatalytic oscillating chemical reactions. The system governs $(\frac{dx}{dt}, \frac{dy}{dt})$ as above.
+Gr{\'e}goire, Lefever, and Prigogine \cite{prigogine1968symmetry, lefever1971chemical} introduced the \textit{Brusselator equations}\index{Brusselator equations} as a model of autocatalytic oscillating chemical reactions. The system governs $(\frac{dx}{dt}, \frac{dy}{dt})$ as above.
 
 \item \label{ex:hw_brusselator_stochastic}
 % (expected time: 3 to 4 hours)
@@ -314,13 +311,13 @@ Fix $r = 0.001$ and investigate the sensitivity of ``odds of extinction'' to the
 
 \item \label{ex:hw_wilson_cowan}
 % (expected time: 5 to 8 hours)
-Wilson and Cowan \cite{wilson1972excitatory}\index{model!Wilson-Cowan} introduced a model of interacting excitatory and inhibitory neural populations. Under some simplifying assumptions, it reduces to the following two-dimensional system of nonlinear ODEs, which we explain below.
+Wilson and Cowan \cite{wilson1972excitatory,wilson1973mathematical}\index{model!Wilson-Cowan} introduced a model of interacting excitatory and inhibitory neural populations. Under some simplifying assumptions, it reduces to the following two-dimensional system of nonlinear ODEs, which we explain below.
 \begin{align*}
 \tau_E \frac{dE}{dt} =& -E + (1-r_E E)F_E\left(aE - bI + G_E(t)\right)\\
 \tau_I \frac{dI}{dt} =& -I + (1-r_I I)F_I\left(cE - dI + G_I(t)\right)
 \end{align*}
 The Wilson-Cowan model describes the dynamics of neural activity in a population of neurons called a \textit{cortical column}. Within the column, there are two sub-populations: excitatory ($E$) neurons and inhibitory ($I$) neurons. Excitatory neurons raise activity in connected cells. Inhibitory neurons suppress it. In the model, $E(t)$ describes the proportion of excitatory neurons in the column which are spiking at time $t$. Similarly, $I(t)$ describes the proportion of inhibitory neurons in the column which are spiking at time $t$. The functions $F_E$ and $F_I$ are \textit{sigmoid functions} in the sense that they are monotonically increasing functions with ranges $[0, 1]$. The functions $G_E$ and $G_I$ describe arbitrary external electrical input currents. The parameters $\tau_E$ and $\tau_I$ describe the time-scales at which each sub-population relaxes in the absence of input. The parameters $a, b, c, d > 0$ describe connectivity and synaptic strength between the two sub-populations. The parameters $r_E$ and $r_I$ relate to the saturated steady-state solutions when neural response to external inputs reaches its maximum.
-\begin{enumerate}
+\begin{enumerate}[(a)]
 \item Assuming that there are $N_E$ total excitatory neurons and $N_I$ inhibitory neurons in the cortical column, re-scale the model to describe $\widetilde{E}(t)$ and $\widetilde{I}(t)$, the absolute number of excitatory and inhibitory neurons which are spiking at time $t$, instead of the proportions $E$ and $I$.
 \item Identify all state-change events this model describes.
 \item Compute the rate of occurrence of any event $\lambda$.

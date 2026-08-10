@@ -1,4 +1,4 @@
-﻿\subsection{Re-Scaling and Re-Parameterizing to Integer Counts}\label{subsec:alg_rescaling}
+\subsection{Re-Scaling and Re-Parameterizing to Integer Counts}\label{subsec:alg_rescaling}
 
 %\textbf{Instructional Time:} 2 hours
 
@@ -92,13 +92,11 @@ $1 \frac{(\textup{light year})^3}{\textup{year}}$.
 So, $a \frac{(\textup{light year})^3}{\textup{year}} =  9.667 a \times 10^{46} \frac{\textup{liter}}{\textup{hour}}$. Set $\widetilde{a} = 9.667a \times 10^{46} \frac{\textup{liter}}{\textup{hour}}$ and, similarly, $\widetilde{b} = 9.667b\times 10^{46} \frac{\textup{liter}}{\textup{hour}}$.
 \item The parameter $c$ is in kilograms per gallon $\frac{\textup{kg}}{\textup{gal}}$. There are $264.2$ grams per liter $\frac{\textup{gram}}{\textup{liter}}$ in $1 \frac{\textup{kilogram}}{\textup{gallon}}$. So, set $\widetilde{c} = 264.2c \frac{\textup{gram}}{\textup{liter}}$.
 \item The parameter $m$ is in pounds $\textup{lbs}$ per molecule. There are $453.6\textup{ grams}$ per $1\textup{ lbs}$. So, set $\widetilde{m} = 453.6m \frac{\textup{grams}}{\textup{molecule}}$.
-\end{itemize} Now the parameters $\widetilde{V}$, $\widetilde{a}$, $\widetilde{b}$, $\widetilde{c}$, and $\widetilde{m}$ can replace $V, a, b, c, m$ as in Example~\ref{ex:saline_tank}, giving $\frac{dM}{dt} = \frac{\widetilde{b}\widetilde{c}}{\widetilde{m}} - \frac{\widetilde{a}+\widetilde{b}}{\widetilde{V}}M$. The equation has the same algebraic form as before. Only the numerical values of the parameters have changed for consistency in units.
-
-
+\end{itemize} Now the parameters $\widetilde{V}$, $\widetilde{a}$, $\widetilde{b}$, $\widetilde{c}$, and $\widetilde{m}$ can replace $V, a, b, c, m$ as in Example~\ref{ex:saline_tank}, giving $\frac{dM}{dt} = \frac{\widetilde{b}\widetilde{c}}{\widetilde{m}} - \frac{\widetilde{a}+\widetilde{b}}{\widetilde{V}}M$. The equation has the same algebraic form as before. Only the numerical values of the parameters have changed for consistency in units.\\
 
 \end{example}
 
-\textup{{\bf Questions for Reflection:}}
+\noindent \textup{{\bf Questions for Reflection:}}
 \begin{enumerate}
 \item In Example~\ref{ex:radioactive_decay_units}, the factor $1/0.4536$ appeared on both sides of the rescaled ODE and canceled. Explain in general why a multiplicative rescaling of the state variable does not change the qualitative dynamics of a linear ODE, but does change the numerical value of the rate parameter.
 

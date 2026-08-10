@@ -1,9 +1,5 @@
-﻿\section{Modeling Projects}
-\label{sec:projects}
-
-The projects below pose open-ended investigations that start capstone or thesis work. Each names a modeling context and some entry points, and leaves the scope, depth of analysis, and choice of tools to the reader. The projects have no unique correct answers.
-
-\begin{enumerate}
+%\section{Modeling Projects}
+\begin{modelingproject}[\label{sec:projects}The projects below pose open-ended investigations that start capstone or thesis work. Each names a modeling context and some entry points, and leaves the scope, depth of analysis, and choice of tools to the reader. The projects have no unique correct answers.]
 
 \item % (expected time: 10 to 20 hours)
 Select a radioactive decay chain\index{radioactive decay} from among the following list. Use whatever source you like to determine half-lives of each element in the chain, and investigate your models for some fixed initial number of atoms, say $1000$.
@@ -23,7 +19,7 @@ The Wilson-Cowan model from cognitive neuroscience models neural populations in 
 
 
 \item % (expected time: 10 to 20 hours)
-The classical Lotka-Volterra\index{Lotka-Volterra equations}\index{predator-prey model|see{Lotka-Volterra equations}} predator-prey model with prey $H$ (hosts) and predators $P$ is as follows, where $\alpha, \beta, \delta, \gamma > 0$.
+The classical Lotka-Volterra\cite{lotka1925elements,volterra1926variazioni}\index{Lotka-Volterra equations}\index{predator-prey model|see{Lotka-Volterra equations}} predator-prey model with prey $H$ (hosts) and predators $P$ is as follows, where $\alpha, \beta, \delta, \gamma > 0$.
 \begin{align*}
 \frac{dH}{dt} &= \alpha H - \beta H P \\
 \frac{dP}{dt} &= \delta H P - \gamma P
@@ -46,4 +42,4 @@ Model this situation and analyze your model. ODE models of the nitrogen cycle al
 
 Beware: this problem can be a rabbit hole. Introducing more detailed dynamics leads to a more complicated model. Two chemical species of ammonia with different properties exist, and their dynamics both influence and respond to other chemical properties of the water. Each additional individual the aquarium houses complicates the situation further.
 
-\end{enumerate}
+\end{modelingproject}
