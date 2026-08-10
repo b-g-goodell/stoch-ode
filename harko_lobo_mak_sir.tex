@@ -1,0 +1,93 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb}
+\usepackage[margin=1in]{geometry}
+
+\title{The Harko-Lobo-Mak Exact Solution of the SIR Model}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{The SIR model}
+Consider the standard SIR model with mass-action incidence and no vital dynamics,
+\begin{align}
+\frac{dS}{dt} &= -\beta S I, \label{eq:S}\\
+\frac{dI}{dt} &= \beta S I - \gamma I, \label{eq:I}\\
+\frac{dR}{dt} &= \gamma I, \label{eq:R}
+\end{align}
+with constant total population $S + I + R = N$, contact rate $\beta > 0$, recovery
+rate $\gamma > 0$, and initial data $S(t_0) = S_0$, $I(t_0) = I_0 > 0$, $R(t_0) = 0$.
+Since $I \ge 0$, equation \eqref{eq:S} forces $S$ to be nonincreasing, so $S$ is a
+monotone coordinate along every trajectory. This monotonicity is what makes an exact
+parametric solution possible.
+
+\section{Reduction to a single quadrature}
+Dividing \eqref{eq:S} by \eqref{eq:R} removes time,
+\[
+\frac{dS}{dR} = -\frac{\beta}{\gamma}\, S
+\qquad\Longrightarrow\qquad
+S = S_0 \exp\!\left(-\frac{\beta}{\gamma} R\right),
+\]
+using $R(t_0) = 0$. Inverting gives $R = -\frac{\gamma}{\beta} \ln(S/S_0)$, and the
+conservation law $I = N - S - R$ then makes the infectious compartment an explicit
+function of $S$,
+\[
+I = N - S + \frac{\gamma}{\beta} \ln\frac{S}{S_0}.
+\]
+Both $R$ and $I$ are now known in terms of $S$ alone. The only remaining task is the
+time dependence, which equation \eqref{eq:S} supplies through $dS/dt = -\beta S I(S)$.
+
+\section{Parametric solution (Harko, Lobo, and Mak)}
+Introduce the dimensionless parameter
+\[
+u = \frac{S}{S_0} \in (u_\infty, 1], \qquad u(t_0) = 1,
+\]
+which decreases monotonically with $t$. The state variables become
+\begin{align}
+S(u) &= S_0\, u, \\
+R(u) &= -\frac{\gamma}{\beta} \ln u, \\
+I(u) &= N - S_0\, u + \frac{\gamma}{\beta} \ln u.
+\end{align}
+Differentiating $u = S/S_0$ and using \eqref{eq:S} gives $\dot u = -\beta u\, I(u)$,
+so $dt = -\,du / [\beta u\, I(u)]$ and
+\[
+t(u) = t_0 + \int_{u}^{1}
+\frac{dw}{\beta\, w\left(N - S_0 w + \frac{\gamma}{\beta} \ln w\right)}.
+\]
+The quadruple $\{S(u), I(u), R(u), t(u)\}$ is the exact solution of
+\eqref{eq:S}-\eqref{eq:R} in parametric form. Recovering $S, I, R$ as explicit
+functions of $t$ would require inverting this integral, which has no elementary
+closed form. The quadrature is therefore the irreducible content of the solution.
+
+\section{Quantities read directly off the solution}
+\begin{itemize}
+  \item \textbf{Final size.} The epidemic ends as $I \to 0$. The terminal value
+    $u_\infty \in (0, 1)$ is the root of
+    \[
+    N - S_0 u_\infty + \frac{\gamma}{\beta} \ln u_\infty = 0,
+    \]
+    approached as $t \to \infty$. Then $S_\infty = S_0 u_\infty$ and
+    $R_\infty = -\frac{\gamma}{\beta} \ln u_\infty$.
+  \item \textbf{Peak prevalence.} From \eqref{eq:I}, $dI/dt = 0$ when
+    $\beta S = \gamma$, that is at $u^\ast = \gamma / (\beta S_0)$. Substituting,
+    \[
+    I_{\max} = N - \frac{\gamma}{\beta}
+      + \frac{\gamma}{\beta} \ln\frac{\gamma}{\beta S_0},
+    \]
+    which is attained when the basic reproduction number
+    $\mathcal{R}_0 = \beta S_0 / \gamma$ exceeds $1$.
+  \item \textbf{Validity.} Because $S$ strictly decreases while $I > 0$, the map
+    $t \mapsto u$ is a bijection on the whole trajectory, so $u$ is a legitimate
+    global parameter.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{HLM2014}
+T. Harko, F. S. N. Lobo, M. K. Mak,
+Exact analytical solutions of the Susceptible-Infected-Recovered (SIR) epidemic
+model and of the SIR model with equal death and birth rates,
+Applied Mathematics and Computation \textbf{236} (2014) 184--194.
+\end{thebibliography}
+
+\end{document}
