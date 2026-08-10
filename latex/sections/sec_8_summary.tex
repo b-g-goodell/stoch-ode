@@ -11,9 +11,9 @@ Once we generate stochastic trajectories, we must assess simulation quality befo
 
 Model elasticity also serves as a statistical indicator that a bifurcation\index{bifurcation} (a qualitative change in model behavior as a parameter crosses a threshold value called the bifurcation point\index{bifurcation!point}) has occurred. Elasticity is a finite-difference approximation of a logarithmic derivative. If the underlying statistic changes smoothly, elasticity stays stable. If the parameter crosses a bifurcation point, the statistic may change discontinuously and elasticity spikes.
 
-Returning to the modeling cycle of the introductory chapter on the mathematical modeling process, this chapter supplied tools for two of its stages. The Doob-Gillespie algorithm gets a solution by realizing an ODE as stochastic trajectories. Parameter sweeps and elasticity scores serve the analysis and model assessment stage, measuring how much to trust those trajectories. After the modeler reports their results, they return to the start of the cycle.
+Returning to the modeling cycle of the introductory chapter on the mathematical modeling process, this chapter supplied tools for two of its stages. The Doob-Gillespie algorithm gets a solution by realizing an ODE as stochastic trajectories. Parameter sweeps and elasticity scores serve the analysis and model assessment stage, measuring how much to trust those trajectories. After the modeler reports their results, they return to the start of the cycle.\\
 
-\textup{{\bf Questions for Reflection:}}
+\noindent \textup{{\bf Questions for Reflection:}}
 \begin{enumerate}
 \item In the logistic growth model, the birth rate equals the death rate when $P = K$. Describe qualitatively how a DG simulation behaves near $P = K$ compared to the deterministic ODE solution, and explain what drives the difference.
 

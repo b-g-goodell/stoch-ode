@@ -1,6 +1,5 @@
-﻿\subsection{Identifying Events and Their State Changes}\label{subsec:events}\index{state-change event}
+\subsection{Identifying Events and Their State Changes}\label{subsec:events}\index{state-change event}
 
-%\textbf{Instructional Time:} 1 hour
 
 The next step in the Doob-Gillespie\index{Doob-Gillespie algorithm} framework is to identify the state-change events and their effects. Each independent model event corresponds to a \textit{distinct} analytic term in a reduced representation of the ODE (see Section~\ref{sec:resolving}). Each term with its own sign and functional dependence corresponds to one independent event, so count the distinct terms, not the equations.
 
@@ -60,12 +59,12 @@ However, even after one birth from either of these states, the population has sl
 Sometimes a state-change event corresponds to a term appearing multiple times in the ODE.
 This occurs when an event is a transition of an individual from one state to another rather than an arrival or removal.
 For example, in an epidemiological context, a susceptible person becoming infectious removes a susceptible individual and adds an infectious one.
-The arithmetic erm governing the rate appears multiple times in the ODE, but it is still only \emph{one} event.
+The arithmetic term governing the rate appears multiple times in the ODE, but it is still only \emph{one} event.
 Count events by counting the number of distinct causal mechanisms, not by the number of terms across all equations.
 
 Below is the epidemiological example we promised.
 Mathematical modeling plays an important role in epidemiology and informing public policy.
-Refresh yourself on the chapter on ethics in mathematics, since this model relates to public health issues.
+Review content on ethics in mathematics, since this model relates to public health issues.
 \begin{example}\label{ex:sir_first}
 \textbf{SIR epidemiological model.}\index{model!SIR}
 Charlie had too many cats, and monetized his collection by selling cat milk at the local farmer's market.
@@ -121,7 +120,7 @@ If you imagine a sphere centered around any $(S_0, 0, R_0)$ point, the plane of 
 This is only possible because ODE solutions allow continuous states, so the system can be at any point on the plane of equilibria.
 A trajectory with some initial condition $(S_0, I_0, R_0)$ with $I_0 \neq 0$ but nearby $(S_0, 0, R_0)$ may settle at a different nearby equilibrium.
 
-The reader should work out the rates of all the remaining events in the following edge-case scenarios: $S = I = R = 0$, $S = I = 0$ but $R \neq 0$, $S = R = 0$ but $I \neq 0$, $I = R = 0$ but $S \neq 0$, $S = 0$ but $I, R \neq 0$, and lastly $R = 0$ but $S, I \neq 0$.
+The reader should work out the rates of all the remaining events in the following edge-case scenarios: $S = I = R = 0$, $S = I = 0$ but $R \neq 0$, $S = R = 0$ but $I \neq 0$, $I = R = 0$ but $S \neq 0$, $S = 0$ but $I, R \neq 0$, and lastly $R = 0$ but $S, I \neq 0$.\\
 
 \begin{table}[htbp]
 \centering
@@ -138,7 +137,7 @@ $I \to R$ & Infectious cat recovers & $\beta I$ & $I \mathrel{-}= 1$, $R \mathre
 
 \end{example}
 
-\textup{{\bf Questions for Reflection:}}
+\noindent \textup{{\bf Questions for Reflection:}}
 \begin{enumerate}
 \item The Allee model contains the cubic term $-\frac{r}{LK}P^3$, which the DG framework treats as a death event with rate $\frac{r}{LK}P^3$. Give a physical interpretation of this rate as a three-body interaction and contrast it with the two-body interaction rate $\frac{r}{K}P^2$ from the logistic growth model.
 

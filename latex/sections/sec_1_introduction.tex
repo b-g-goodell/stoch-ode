@@ -1,5 +1,4 @@
-\section{Introduction}\label{sec:intro}
-%\textbf{Instructional Time:} 3 hours
+\section{Introduction and Motivation}\label{sec:intro}
 
 
 
@@ -32,7 +31,7 @@ Namely, if $\frac{dM}{dt} = 0$, then $M = 0$.
 Every real-valued trajectory with a positive initial condition $M_0 > 0$ has $\frac{dM}{dt} < 0$, and every real-valued trajectory with a negative initial condition $M_0 < 0$ has $\frac{dM}{dt} > 0$.
 In this way, the equilibrium is globally stable\index{stable}.
 
-The ODE is separable.
+The ODE is separable and thus solvable using ODE techniques (not a prerequisite for this chapter.)
 The solution trajectory $M(t)$ satisfies $\int \frac{dM}{M} = \int -\mu dt$.
 Integrate both sides and collect the constants of integration to get $\ln\left|M\right| = -\mu t + c$.
 Solve for $\left|M(t)\right| = e^{c-\mu t} = Ae^{-\mu t}$ for some constant $A=e^c$.
@@ -71,21 +70,23 @@ So, if we bring a mature male and mature female rabbit together at $t=0$ to bree
 On the other hand, if a male and female are born at the same time at $t=0$ and breed when they are mature at $t=4$, then $P(0)=2$, and after $6$ months, $P(6)=8$.
 For initial population $P_0 = P(0) > 0$, the classic population model is $\frac{dP}{dt} = rP$. Compare it to the radoiactive decay model. It has solutions $P(t) = P_0 e^{rt}$. These are unrealistic because they grow unboundedly.
 
-Worse, the model requires high precision to parameterize. We say it is sensitive. For the rabbit population, we can estimate $r$ by using the two cases of rabbit breeding speed above. For the $P(2)=8$ case, $P(t) = 2 e^{rt}$ implies $P(2)=e^{2r}$. Solving for $r$ gives $r = \frac{1}{2}\ln(8) = \frac{3\ln(2)}{2} \approx 1.03972$. On the other hand, for the $P(6)=e^{6r}=8$ case, a similar argument suggests that $r = \frac{1}{6}\ln(8) = \frac{\ln(2)}{2} \approx 0.34657$. Both of these are estimates for a per-capita birth rate $r$,  a rabbit population will see average behavior somewhere between these two extremes. But, these are two very different values. A population with $r \approx 1.03972$ doubles about thrice as often as a population with $r \approx 0.34657$.
+Worse, the model requires high precision to parameterize. We say it is sensitive. For the rabbit population, we can estimate $r$ by using the two cases of rabbit breeding speed above. For the $P(2)=8$ case, $P(t) = 2 e^{rt}$ implies $P(2)=2e^{2r}$. Solving for $r$ gives $r = \frac{1}{2}\ln(4) = \frac{2\ln(2)}{2} \approx 0.69315$. On the other hand, for the $P(6)=2e^{6r}=8$ case, a similar argument suggests that $r = \frac{1}{6}\ln(4) = \frac{\ln(2)}{3} \approx 0.23105$. Both of these are estimates for a per-capita birth rate $r$,  a rabbit population will see average behavior somewhere between these two extremes. But, these are two very different values. A population with $r \approx 0.69315$ doubles about thrice as often as a population with $r \approx 0.23105$.
 
 Instead of accepting the classic population model with unbounded solutions, we modify the ODE using an integer carrying capacity\index{carrying capacity} $0 < K \neq P_0$ and by assuming the \textit{effective} per-capita birth rate is $r(1-\frac{P}{K})\textup{ time}^{-1}$, providing the following.
 \begin{equation}\label{eqn:logistic_growth}
 \frac{dP}{dt} = r P\left(1-\frac{P}{K}\right)
 \end{equation}
 Equation~\ref{eqn:logistic_growth} is the \textit{logistic growth ODE}\index{logistic growth}.
-The factor $(1 - P/K)$ is dimensionless ($P$ and $K$ share units) and acts as a correction to the per-capita birth rate $r$, reducing it linearly as $P$ approaches the carrying capacity $K$. In this way, we can account for the wide range of estimates of $r$ as dependent on sub-optimal rabbit-breeding conditions. Moreover, when $P/K \approx 0$, we have $\frac{dP}{dt} \approx rP$. From this point of view, effective per-capita birth rate can go at least as high as $1.03972$, and will drop as $P \to K$.
+The factor $(1 - P/K)$ is dimensionless ($P$ and $K$ share units) and acts as a correction to the per-capita birth rate $r$, reducing it linearly as $P$ approaches the carrying capacity $K$. In this way, we can account for the wide range of estimates of $r$ as dependent on sub-optimal rabbit-breeding conditions. Moreover, when $P/K \approx 0$, we have $\frac{dP}{dt} \approx rP$. From this point of view, effective per-capita birth rate can go at least as high as $0.69315$, and will drop as $P \to K$.
 Equation~\ref{eqn:logistic_growth} is a separable ODE whose solutions satisfy $\int \frac{dP}{P(1-\frac{P}{K})} = \int r dt$.
 Integrate both sides with partial fraction decomposition to get the solution.
 \begin{equation}\label{eqn:logistic_solution}
 P(t) = K\left(1 + \frac{K-P_0}{P_0}\,e^{-rt}\right)^{-1},
 \end{equation}
 Solutions to Equation~\ref{eqn:logistic_growth} can be complex-valued, but if they begin real, they stay real, and if they begin positive, they stay positive.  Certainly $P(0) = P_0$. Since $K > 0$, the signed coefficient $\frac{K-P_0}{P_0}$ has the same sign as $P_0$, compressing a sign convention into a convenient formula. Because $0 < r$, the term $e^{-rt} \to 0$ as $t \to \infty$, and hence $P(t) \to K$ for any $P_0 > 0$. Moreover, trajectories do not cross the lines $P = 0$ or $P = K$.
+
 Every solution with $P_0 < 0$ blows up to $-\infty$ in finite forward time. To see why, write the solution as $P(t)=K/g(t)$ with $g(t)=1+A e^{-rt}$ and $A=\frac{K-P_0}{P_0}$.  Since $K>0$ and $P_0<0$, we have $K-P_0>0$, so $A<0$ with $|A|=\frac{K-P_0}{-P_0}=1+\frac{K}{-P_0} > 1$. Thus $g(0)=1+A=1-|A|<0$, while $g(t)\to 1>0$ as $t\to\infty$. Since $g$ is continuous and strictly increasing, $g$ has a unique root. Set $g(s) = 0$ and solve for $s=\frac{1}{r}\ln|A|>0$. On $[0,s)$ the denominator is negative and $g(t)\to 0^{-}$ as $t\to s^{-}$, so $P(t)=K/g(t)\to-\infty$. Hence the solution blows up at the finite time $s$.
+
 That is to say, (i) every positive initial population, no matter how close to zero or how far it overshoots $K$, converges monotonically to $K$, (ii) every non-positive initial population escapes to $-\infty$ in finite time. The convergence of positive solutions stuck between $P = 0$ and $P = K$ is fastest where the absolute growth rate $rP\left(1-\frac{P}{K}\right)$ is largest, namely at $P=K/2$.
 
 We call trajectories stuck between $P = 0$ and $P = K$ sigmoidal\index{sigmoidal curve} due to their $s$-shape. The point $P=K/2$, $f(P) = \frac{fK}{4}$ is exactly the inflection of one of these trajectories (about which the curve is horizontally symmetric). Solutions to this ODE appear in Figure~\ref{fig:logistic_growth}.
@@ -119,14 +120,14 @@ In the logistic growth model, events are individual birth and death events. Tabl
 \centering
 \begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includegraphics[width=\textwidth]{figures/radioactive_decay.pdf}
+\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/radioactive_decay.pdf}
 \caption{Radioactive decay ODE.}
 \label{fig:radioactive_decay}
 \end{subfigure}
 \hfill
 \begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includegraphics[width=\textwidth]{figures/logistic_growth.pdf}
+\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/logistic_growth.pdf}
 \caption{Logistic growth ODE.}
 \label{fig:logistic_growth}
 \end{subfigure}
@@ -154,7 +155,7 @@ Unfortunately (and contrary to popular belief) ODE solution trajectories do not 
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/logistic_growth_mean_vs_ode.pdf}
+\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/logistic_growth_mean_vs_ode.pdf}
 \caption{ODE solution (dashed) and Doob-Gillespie sample mean (solid), logistic growth model, $P(0) = K/2$. Short-time agreement masks qualitatively opposite long-run behavior. As usual, we shade non-physical regions red. We draw this with \PlotMeanVsOde{} from \texttt{tools/plots/plot\_mean\_vs\_ode.py} (Listing~\ref{lst:plots_mean_vs_ode}).}
 \label{fig:logistic_growth_mean_vs_ode}
 \end{figure}
@@ -172,19 +173,14 @@ Given any homogeneous ODE model whose stochastic realizations admit absorbing st
 If $P_{\texttt{ODE}}(t)$ is a solution to the ODE with a physical initial condition $P_{\texttt{ODE}}(0) > 0$, then $\underset{t \longrightarrow +\infty}{\lim} P_{\texttt{ODE}}(t) = K$. However, if $P_{\texttt{stoch}}(t)$ is a random variable describing stochastic trajectories with the same initial condition, then $\underset{t \longrightarrow +\infty}{\lim} \mathbb{E}[P_{\texttt{stoch}}(t)] = 0$. That is to say,
 $$\underset{t \longrightarrow +\infty}{\lim} \mathbb{E}[P_{\texttt{stoch}}(t)] \neq \underset{t \longrightarrow +\infty}{\lim} P_{\texttt{ODE}}(t)$$ which shows that ODE solution trajectories are not mean stochastic trajectories. This argument is related to \textit{gambler's ruin}, the fact that a game with a negative expected value will eventually drive you broke, no matter your strategy. See Exercise \ref{ex:hw_gamblers_ruin}
 
-The problem becomes more obvious when sample sizes get small and we can no longer fall back on the LLN and CLT, but the conceptual problem remains even with very large sample sizes. So, a non-trivial interpretation gap still confronts modelers after all the mathematics are said and done.
+The problem becomes more obvious when sample sizes get small and we can no longer fall back on the LLN and CLT, but the conceptual problem remains even with very large sample sizes. So, a non-trivial interpretation gap still confronts modelers after all the mathematics are said and done.\\
 
 
-
-
-
-
-
-\textup{{\bf Questions for Reflection:}}
+\noindent \textup{{\bf Questions for Reflection:}}
 \begin{enumerate}
-\item Examples~\ref{ex:radioactive_decay} and~\ref{ex:logistic_growth} are continuous-state, deterministic models, but they are modeling discrete-state, stochastic real-life systems. Provide examples of discrete-state, deterministic real-life systems?
+\item Examples~\ref{ex:radioactive_decay} and~\ref{ex:logistic_growth} are continuous-state, deterministic models, but they are modeling discrete-state, stochastic real-life systems. Provide examples of discrete-state, deterministic real-life systems.
 
-\item Provide examples of continuous-state, stochastic real-life systems?
+\item Provide examples of continuous-state, stochastic real-life systems.
 
 \item Do not fool yourself into thinking that discrete-state, deterministic processes are easy. For example, take any starting positive integer $x_0$ and, for each $i = 0, 1, 2, \ldots$, set the following.
 \[x_{i+1} = \begin{cases}
@@ -237,12 +233,12 @@ To install \texttt{Python 3.12} in Windows or macOS, download and run the instal
 We host all \texttt{Python} code referenced in this chapter (scripts, simulation frameworks, and plotting utilities) at the \textbf{free} companion repository at \url{https://github.com/b-g-goodell/stoch-ode}.
 \textit{Git} records the history of changes to a collection of
 files. \textit{GitHub} hosts such histories and makes them publicly accessible. Students who intend to write and revise their own simulation code will find version control indispensable for keeping track of experiments and recovering from mistakes. The official tutorial at \url{https://git-scm.com/doc} is a
-practical starting point. If you installed git, the following command downloads the repository into a new directory named \texttt{stoch-ode} automatically.
+practical starting point. If you installed \textit{Git}, the following command downloads the repository into a new directory named \texttt{stoch-ode} automatically.
 \begin{verbatim}
 git clone https://github.com/b-g-goodell/stoch-ode
 \end{verbatim}
 
-Or, navigate to \url{https://github.com/b-g-goodell/stoch-ode}, see the repository directory structure plainly, and use \textit{Code $\to$ Download ZIP} to obtain the entire repository without Git.
+Or, navigate to \url{https://github.com/b-g-goodell/stoch-ode}, see the repository directory structure plainly, and use \textit{Code $\to$ Download ZIP} to obtain the entire repository without \textit{Git}.
 
 The repository has the following directory structure. You can then run any script in the \texttt{scripts/} directory from within the repository directory with, for example,
 \texttt{python scripts/logistic\_growth.py}. Readers who prefer interactive execution can open the scripts cell-by-cell in a \textit{Jupyter} notebook or \textit{Google Colab}.
@@ -266,4 +262,6 @@ Directory & Contents \\
 
 
 
-% Background Definitions moved to the end-of-chapter Glossary (sections/sec_11_glossary.tex).
+
+\subsection*{Special Thanks}
+A special thanks must be extended to Diego Salazar at Cypher Stack and Power-Up Privacy for helping to make this chapter possible, as well as Joshua Babb at Cypher Stack for myriad helpful conversations.

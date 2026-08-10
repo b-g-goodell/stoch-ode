@@ -1,6 +1,5 @@
 \section{Visualizing and Interpreting Simulated Trajectories}\label{sec:visualizing_interpreting}
 
-%\textbf{Instructional Time:} 3 hours
 
 \subsection{Visualizing Simulated Trajectories}\label{subsec:visualizing}
 
@@ -47,7 +46,7 @@ The scripts in \texttt{scripts/} use these tools to make the figures.
 This way, the scripts play double duty as usage examples.
 
 Three of our plotting utilities share one structure, the template of Listing~\ref{lst:plots_template}: set the page style, draw, then save or show.
-Recall the template in Figure~\ref{fig:dg_algorithm} and Listing~\ref{lst:dg_algorithm_python_template} uses $\texttt{...}$ to mark the block in the DG algorithm which we must tailor for the ODE model.
+Recall the template in Figure~\ref{fig:dg_algorithm} and Listing~\ref{lst:dg-algorithm-python-template} uses $\texttt{...}$ to mark the block in the DG algorithm which we must tailor for the ODE model.
 Similarly, we use \texttt{...} to mark the block in the plotting template which we must tailor for the kind of image we generate.
 The heat map follows the same template, but with an additional block that prepares the trajectories for binning before drawing.
 
@@ -58,36 +57,35 @@ Python's dictionary comprehension is sort of like set builder notation. We use i
 
 After the drawing block, the tail sets the title and axis labels, tightens the margins, and either writes the figure to \texttt{save\_path}, creating its directory first, or shows it on screen.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, caption={The shared template for the \texttt{tools/plots/} plotters. The styling preamble and the save-or-show tail are common to the trajectory, phase-diagram, and mean-versus-ODE plotters; each replaces the \texttt{...} block with its own drawing.}, label={lst:plots_template}]{../tools/plots/plot_template.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, caption={The shared template for the \texttt{tools/plots/} plotters. The styling preamble and the save-or-show tail are common to the trajectory, phase-diagram, and mean-versus-ODE plotters; each replaces the \texttt{...} block with its own drawing.}, label={lst:plots_template}]{\detokenize{17StochasticODEs/stoch-ode/latex/tools/plots/plot_template.py}}
 
 \subsubsection{Plotting trajectories}\label{subsubsec:code_plot_trajs}
 
 The drawing block of \PlotTrajs{} (Listing~\ref{lst:plots_trajectories}) renders trajectories as step graphs. \texttt{draw\_labels} substitutes a list of \texttt{None} when the caller gives no labels, keeping the loop uniform. The loop unzips each trajectory into times and states and draws it as a right-continuous step (\texttt{where='post'}). A legend appears only when the caller supplies real labels. The \texttt{xlim} and \texttt{ylim} calls fix the axis ranges to the supplied bounds.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-37}, caption={The drawing block of \PlotTrajs{} in \texttt{tools/plots/plot\_trajectories.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws Figures~\ref{fig:saline_tank}, \ref{fig:allee_two_trajs}, and~\ref{fig:sir}.}, label={lst:plots_trajectories}]{../tools/plots/plot_trajectories.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-37}, caption={The drawing block of \PlotTrajs{} in \texttt{tools/plots/plot\_trajectories.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws Figures~\ref{fig:saline_tank}, \ref{fig:allee_two_trajs}, and~\ref{fig:sir}.}, label={lst:plots_trajectories}]{\detokenize{17StochasticODEs/stoch-ode/latex/tools/plots/plot_trajectories.py}}
 
 \subsubsection{Plotting phase diagrams}\label{subsubsec:code_phase}
 
 The drawing block of \MakePhaseDiagram{} (Listing~\ref{lst:plots_vector_field}) draws the streamplot of a scalar ODE. \texttt{mgrid} builds a grid of resolution \texttt{res} over the time-state rectangle. The horizontal arrow component is $1$ since time advances at unit rate, and the vertical component is the caller's \texttt{y\_len\_fun} on the grid. To use this to make a phase diagram of an ODE of the form $y^\prime = f(y)$, just express $f(y)$ as \texttt{y\_len\_fun}. The \texttt{streamplot} call draws the field in blue with arrow size scaled to the page, and an optional \texttt{axhspan} shades the non-physical region below zero red.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={31-38}, caption={The drawing block of \MakePhaseDiagram{} in \texttt{tools/plots/plot\_vector\_field.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws the phase diagrams in Figures~\ref{fig:ode_examples} and~\ref{fig:allee_ode}.}, label={lst:plots_vector_field}]{../tools/plots/plot_vector_field.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={31-38}, caption={The drawing block of \MakePhaseDiagram{} in \texttt{tools/plots/plot\_vector\_field.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws the phase diagrams in Figures~\ref{fig:ode_examples} and~\ref{fig:allee_ode}.}, label={lst:plots_vector_field}]{\detokenize{17StochasticODEs/stoch-ode/latex/tools/plots/plot_vector_field.py}}
 
 \subsubsection{Plotting the mean against the ODE}\label{subsubsec:code_mean}
 
 The drawing block of \PlotMeanVsOde{} (Listing~\ref{lst:plots_mean_vs_ode}) overlays a stochastic mean on a deterministic solution. An optional \texttt{axhspan} shades the non-physical region. The code plots the stochastic mean as a solid curve and the ODE solution as a dashed curve, sets the axes to the data range, and places a legend at the lower right.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-35}, caption={The drawing block of \PlotMeanVsOde{} in \texttt{tools/plots/plot\_mean\_vs\_ode.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws Figure~\ref{fig:logistic_growth_mean_vs_ode}.}, label={lst:plots_mean_vs_ode}]{../tools/plots/plot_mean_vs_ode.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-35}, caption={The drawing block of \PlotMeanVsOde{} in \texttt{tools/plots/plot\_mean\_vs\_ode.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws Figure~\ref{fig:logistic_growth_mean_vs_ode}.}, label={lst:plots_mean_vs_ode}]{\detokenize{17StochasticODEs/stoch-ode/latex/tools/plots/plot_mean_vs_ode.py}}
 
 \subsubsection{Plotting the heat map}\label{subsubsec:code_heatmap}
 
 The heat map follows the template, adding a block that prepares the trajectories before the drawing block.
 \PlotHeatmap{} (Listing~\ref{lst:plots_heatmap}) first re-samples trajectories by laying \texttt{grid} equal time bins, finding their centers, and reading each trajectory's state at those centers by looking at the latest change point with \texttt{searchsorted}. Section~\ref{subsubsec:prep_heatmap} explains why this matters. \PlotHeatmap{} then stacks the re-sampled trajectories. \texttt{histogram2d} bins the $(t, y)$ pairs into a \texttt{grid}-by-\texttt{grid} count array. This count array determines brightness, but we cap the brightness at the $95$th percentile of counts as \texttt{vmax}. This way, the brightest cells saturate while dimmer occupancy bands stay visible, showing multimodal distributions. Finally, the code draws the transposed counts as a rasterized image with the \texttt{magma} colormap and bilinear smoothing, adds a color bar labeled from \emph{Few} to \emph{Many}, labels the axes, and saves or shows the figure through the shared tail.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={30-55}, caption={The drawing block of \PlotHeatmap{} in \texttt{tools/plots/plot\_heatmap\_histogram.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws the heat map in Figure~\ref{fig:allee_heat}.}, label={lst:plots_heatmap}]{../tools/plots/plot_heatmap_histogram.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={30-55}, caption={The drawing block of \PlotHeatmap{} in \texttt{tools/plots/plot\_heatmap\_histogram.py}, which we insert into the template of Listing~\ref{lst:plots_template}. It draws the heat map in Figure~\ref{fig:allee_heat}.}, label={lst:plots_heatmap}]{\detokenize{17StochasticODEs/stoch-ode/latex/tools/plots/plot_heatmap_histogram.py}}
 
 \subsection{Reading and Statistically Measuring Stochastic Output}\label{subsec:output}
 
-%\textbf{Instructional Time:} 1 hour
 
 Examples~\ref{ex:saline_tank_code}, \ref{ex:allee_code}, and \ref{ex:sir_code} reported results as sample proportions and five-number summaries without justifying why these statistics are appropriate or how to interpret them. We provide a light refresher on statistics in this section.
 
@@ -97,7 +95,7 @@ As a rule, if the event has probability $p$, run at least $1/p$ simulations to o
 
 Many questions about a model reduce to a binary outcome: does the population go extinct? Does the process succeed before time $T$? Does the state ever exceed a threshold? For any such binary event with true probability $p$, a large sample of $n$ independent simulations, and $k$ observations, the sample proportion\index{proportion, sample} $\hat{p} = k/n$ is an unbiased estimator\index{estimator, unbiased} of $p$: on average, $\hat{p} = p$. The precision of $\hat{p}$ improves as $n$ increases, with standard error $\sqrt{p(1-p)/n}$.
 
-If $\hat{p} = 3/100{,}000 = 3\times 10^{-5}$, the estimate is not robust: observing even one less observation would reduce our estimate to $2/100{,}000$, a $50\%$ drop.
+If $\hat{p} = 3/100{,}000 = 3\times 10^{-5}$, the estimate is not robust: observing even one less observation would reduce our estimate to $2/100{,}000$.
 
 \subsubsection{Five-number summary for a continuous-valued statistic}\label{subsubsec:five_number}
 
@@ -123,9 +121,9 @@ The Allee effect simulation (Example~\ref{ex:allee_code}) illustrates this. The 
 
 The conditional distribution of the final state given survival, i.e.\ the \textit{survivorship bias}, is more informative, but is misleading for its own reasons. Statistical patterns which matter only indirectly are less informative than direct causes, and those are less informative than firm predictions. Like a good prediction of weather should provid a probability of rain, a good analysis of a population ecology model should estimate extinction probability $\hat{p}$.
 
-No matter the stastics we decide to measure, it is wise to inspect a heat map or histogram of the simulation output. If the distribution has more than one mode, partition the trajectories into qualitatively distinct groups and perform separate statistical analyses for each group.
+No matter the stastics we decide to measure, it is wise to inspect a heat map or histogram of the simulation output. If the distribution has more than one mode, partition the trajectories into qualitatively distinct groups and perform separate statistical analyses for each group.\\
 
-\textup{{\bf Questions for Reflection:}}
+\noindent \textup{{\bf Questions for Reflection:}}
 \begin{enumerate}
 \item A social researcher finds that the average American family has decreased in size from $1.7$ parents and $2.3$ children to $1.1$ parents and $1.9$ children. Explain why this might be misleading and discuss what you would report instead.
 

@@ -1,6 +1,5 @@
 \section{Parameter Space Exploration}\label{sec:parameter_sweep}\index{exploration!parameter space}\index{parameter space exploration}
 
-%\textbf{Instructional Time:} 3 hours
 
 A parameter sweep surveys how a model behaves across a range of parameter values. Such sweeps are costly, but they show how sensitive the model is to measurement error in its parameters and reveal qualitative changes in behavior that a single run hides.
 
@@ -11,7 +10,6 @@ Readers who recreate the results below will see different numbers, even with the
 
 \subsection{Exploring Parameter Space}\label{subsec:exploring_parameter_space}
 
-%\textbf{Instructional Time:} 2 hours
 
 We select two parameters $r$ and $K$ from small sets of possibilities and measure two statistics across those choices.
 
@@ -55,7 +53,6 @@ The logistic growth DG simulation models two competing events at each step, list
 
 \subsection{Scale and Cost of Parameter Space Exploration}\label{subsec:scale_cost_parameter_sweep}
 
-%\textbf{Instructional Time:} 1 hour
 
 A thorough parameter space exploration spans more than one order of magnitude for each parameter, with more than one sample point per order of magnitude. For example, using $r \in \left\{10^{-3}, 10^{-2.9}, 10^{-2.8}, \ldots, 10^{2.8}, 10^{2.9}, 10^3\right\}$ (there are $61$ possible choices of $r$ in this set) and $K \in \left\{10^1, 10^{1.1}, 10^{1.2}, \ldots, 10^{5.8}, 10^{5.9}, 10^6\right\}$ (there are $51$ choices of $K$ in this set) would be more appropriate. This would require generating a sample size $N$ of simulations for each of these $51\cdot 61 = 3111$ different parameter choices.
 
@@ -63,9 +60,9 @@ Parameter space exploration is computationally costly. It also suffers the \text
 
 This trade-off deepens because parameter space exploration is most useful when the researcher can individually inspect plots of simulated results to identify qualitatively different behaviors.
 In a weird version of Heisenberg's uncertainty principle, the more thoroughly we search the parameter space, the less thoroughly we can inspect simulation results.
-Estimate the total runtime of a parameter sweep before launching it.
+Estimate the total runtime of a parameter sweep before launching it.\\
 
-\textup{{\bf Questions for Reflection:}}
+\noindent \textup{{\bf Questions for Reflection:}}
 \begin{enumerate}
 \item In Table~\ref{table:pcap}, $p_{\text{cap}}$ is uniformly high across all values of $K$ when $r = 0.0152$, but depends strongly on $K$ when $r = 0.0038$. Using the logistic growth event rates, explain analytically why a higher growth rate makes exceeding the carrying capacity likely regardless of $K$.
 

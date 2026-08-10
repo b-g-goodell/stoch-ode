@@ -1,13 +1,12 @@
 \section{Simulation Farming}\label{sec:farming}
 \index{Doob-Gillespie algorithm!simulation farming}\index{farming!simulation}
 
-%\textbf{Instructional Time:} 6 hours
 
 A single trajectory reveals one possible outcome. Only a large sample reveals the distribution of outcomes and answers probabilistic questions such as ``what fraction of populations go extinct?'' We therefore run many simulations and aggregate their results.
 
-We bring our results on Examples~\ref{ex:saline_tank}, \ref{ex:logistic_growth}, \ref{ex:allee}, and \ref{ex:sir_first} together to design Doob-Gillespie implementations for those examples. Every model reuses the simulation core functions \RatesToPmf{}, \RateToDeltaTime{}, and \PmfToEventIndex{} of Figure~\ref{fig:dg_algorithm} and its \texttt{Python} template (Listing~\ref{lst:dg_algorithm_python_template}). Only two subroutines are bespoke to each model: \MakeRates{} and \MakeDeltaStates{}. For each model below we give just these two, in pseudocode and in \texttt{Python}. Each model in the companion code inlines the same loop, replacing the Step 5 total-rate check with an absorbing-state guard where one is convenient, and the SIR model has a vector state $(S, I, R)$ that \UpdateSirState{} updates componentwise.
+We bring our results on Examples~\ref{ex:saline_tank}, \ref{ex:logistic_growth}, \ref{ex:allee}, and \ref{ex:sir_first} together to design Doob-Gillespie implementations for those examples. Every model reuses the simulation core functions \RatesToPmf{}, \RateToDeltaTime{}, and \PmfToEventIndex{} of Figure~\ref{fig:dg_algorithm} and its \texttt{Python} template (Listing~\ref{lst:dg-algorithm-python-template}). Only two subroutines are bespoke to each model: \MakeRates{} and \MakeDeltaStates{}. For each model below we give just these two, in pseudocode and in \texttt{Python}. Each model in the companion code inlines the same loop, replacing the Step 5 total-rate check with an absorbing-state guard where one is convenient, and the SIR model has a vector state $(S, I, R)$ that \UpdateSirState{} updates componentwise.
 
-We look at the saline tank model in Example~\ref{ex:saline_tank_code} (simulating Example~\ref{ex:saline_tank}),\index{model!saline tank} the logistic growth model in Example~\ref{ex:logistic_growth_code},\index{logistic growth} the Allee effect model in Example~\ref{ex:allee_code} (Example~\ref{ex:allee}),\index{Allee effect} and the SIR epidemiological model in Example~\ref{ex:sir_code} (Example~\ref{ex:sir_first}),\index{model!SIR} in order of increasing model complexity.
+We look at the saline tank model in Example~\ref{ex:saline_tank_code} (simulating Example~\ref{ex:saline_tank}),\index{model!saline tank} the logistic growth model in Example~\ref{ex:logistic_growth_code} (simulating Example~\ref{ex:logistic_growth}),\index{logistic growth} the Allee effect model in Example~\ref{ex:allee_code} (simulating Example~\ref{ex:allee}),\index{Allee effect} and the SIR epidemiological model in Example~\ref{ex:sir_code} (simulating Example~\ref{ex:sir_first}),\index{model!SIR} in order of increasing model complexity.
 
 
 
@@ -38,7 +37,7 @@ Departure & Salt molecule leaves tank & $\frac{(a+b)M}{V}$ & $-1$ \\
 
 We emphasize that every model uses only two bespoke subroutines, \MakeRates and \MakeDeltaStates.
 All the other functions in Figure~\ref{fig:dg_subroutines_a} and Figure~\ref{fig:dg_subroutines_b} are identical for all models.
-Moreover, a simple lookup could replace the function \MakeDeltaStates rather than an explicit function, ostensibly simplifying our presentation of each model, but at the cost of complicating our template in Figure~\ref{fig:dg_algorithm} and Listing~\ref{lst:dg_algorithm_python_template}.
+Moreover, a simple lookup could replace the function \MakeDeltaStates rather than an explicit function, ostensibly simplifying our presentation of each model, but at the cost of complicating our template in Figure~\ref{fig:dg_algorithm} and Listing~\ref{lst:dg-algorithm-python-template}.
 
 In Figure~\ref{fig:bespoke_saline_tank}, $\textsf{MakeRates}$ returns the two rates of Table~\ref{tab:saline_tank_events}, the arrival rate $bc/m$ and the departure rate $(a+b)M/V$, and $\textsf{MakeDeltaStates}$ returns the state-change vector $(+1, -1)$, the $+1$ for an arrival (index $0$) and the $-1$ for a departure (index $1$). The generic loop of Figure~\ref{fig:dg_algorithm} uses them unchanged. Listing~\ref{lst:framework_saline_tank} gives the \texttt{Python} implementation, which lists the parameters $a, b, c, V, m$ explicitly.
 
@@ -55,13 +54,13 @@ In Figure~\ref{fig:bespoke_saline_tank}, $\textsf{MakeRates}$ returns the two ra
 \label{fig:bespoke_saline_tank}
 \end{figure}
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={17-24}, caption={The bespoke \texttt{Python} functions for the saline tank model, \MakeTankRates{} and \MakeTankDeltaStates{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_saline_tank}.}, label={lst:framework_saline_tank}]{../simulation_frameworks/saline_tank.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={17-24}, caption={The bespoke \texttt{Python} functions for the saline tank model, \MakeTankRates{} and \MakeTankDeltaStates{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_saline_tank}.}, label={lst:framework_saline_tank}]{\detokenize{17StochasticODEs/stoch-ode/latex/simulation_frameworks/saline_tank.py}}
 
 A typical execution sees a few dozen simulations out of $100,000$ exceed tolerances, providing a sample proportion on the order of $10^{-4}$. See Figure~\ref{fig:saline_tank} for a typical simulation result: trajectories starting above the equilibrium $M \approx 150$ drift downward, matching the ODE analysis. See Section~\ref{subsec:plotting_utilities} for the trajectory-plotting code.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/saline_tank.pdf}
+\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/saline_tank.pdf}
 \caption{An example simulation from the model of Example~\ref{ex:saline_tank} with initial
 condition $M(0) = 300 \textup{ NaCl molecules}$, parameters $V = 10^6\textup{ liters}$,
 $a = b = 100\textup{ liters per hour}$,
@@ -94,7 +93,7 @@ In Figure~\ref{fig:bespoke_logistic_growth}, $\textsf{MakeRates}$ returns the bi
 \label{fig:bespoke_logistic_growth}
 \end{figure}
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-37}, caption={The bespoke \texttt{Python} functions for the logistic growth model, \MakeLogisticRates{} and \MakeLogisticDeltaStates{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_logistic_growth}.}, label={lst:framework_logistic_growth}]{../simulation_frameworks/logistic_growth.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-37}, caption={The bespoke \texttt{Python} functions for the logistic growth model, \MakeLogisticRates{} and \MakeLogisticDeltaStates{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_logistic_growth}.}, label={lst:framework_logistic_growth}]{\detokenize{17StochasticODEs/stoch-ode/latex/simulation_frameworks/logistic_growth.py}}
 
 The stochastic trajectories fluctuate around the deterministic logistic solution. Figure~\ref{fig:logistic_growth_mean_vs_ode} compares the mean of $30$ stochastic trajectories against the solution of Equation~\ref{eqn:logistic_growth}.
 
@@ -140,12 +139,23 @@ In Figure~\ref{fig:bespoke_allee}, $\textsf{MakeRates}$ returns the four rates o
 The function \FindTraj{} (in the Python repository) inputs simulation setup data and a success condition function and returns a successful trajectory with a count of all attempts including the successful one. After running the Allee effect script (in the Python repository) with a sample of $128$ simulations, we saw $71$ simulations go extinct, providing an estimated probability of extinction $\widehat{p} = 0.5546875$ (see Section~\ref{subsec:background} for the definition of sample proportion and hat notation).
 Verify that the qualitative behavior matches your ODE analysis: trajectories starting below $P = L = 50$ should drift toward extinction, while those starting above $L$ should drift toward $K = 200$.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={9-19}, caption={\texttt{Python} functions \MakeAlleeRates{} and \MakeAlleeDeltaStates{} for the Allee effect model. See pseudocode in Figure~\ref{fig:bespoke_allee}.}, label={lst:framework_allee}]{../simulation_frameworks/allee_effect.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={9-19}, caption={\texttt{Python} functions \MakeAlleeRates{} and \MakeAlleeDeltaStates{} for the Allee effect model. See pseudocode in Figure~\ref{fig:bespoke_allee}.}, label={lst:framework_allee}]{\detokenize{17StochasticODEs/stoch-ode/latex/simulation_frameworks/allee_effect.py}}
+
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/allee_ode.pdf}
-\caption{Phase diagram for Allee effect ODE $\frac{dP}{dt} = -rP(1-P/L)(1-P/K)$ ()$r = 0.0045\,\text{days}^{-1}$, $L = 50$, $K = 200$, from Example~\ref{ex:allee}).
+\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/allee_effect_two_trajs.pdf}
+\caption{Two Allee trajectories from
+Example~\ref{ex:allee}, with $r = 0.0045 (\text{time})^{-1}$,
+$L = 50 \text{ individuals}$, $K = 200$, and  $P(0) = 50$.  We draw this with \PlotTrajs{} from \texttt{tools/plots/plot\_trajectories.py} (Listing~\ref{lst:plots_trajectories}).}
+\label{fig:allee_two_trajs}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/allee_ode.pdf}
+\caption{Phase diagram for Allee effect ODE $\frac{dP}{dt} = -rP(1-P/L)(1-P/K)$ where $r = 0.0045\,\text{days}^{-1}$, $L = 50$, $K = 200$, from Example~\ref{ex:allee}).
 Trajectories below $P = L$ trend to extinction. Trajectories above $P = L$ trend to $P = K$.
 We shade the non-physical region $P < 0$ red. We draw this with \MakePhaseDiagram{} from \texttt{tools/plots/plot\_vector\_field.py} (Listing~\ref{lst:plots_vector_field}).}
 \label{fig:allee_ode}
@@ -153,17 +163,7 @@ We shade the non-physical region $P < 0$ red. We draw this with \MakePhaseDiagra
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/allee_effect_two_trajs.pdf}
-\caption{Two Allee trajectories from
-Example~\ref{ex:allee}, with $r = 0.0045 (\text{time})^{-1}$,
-$L = 50 \text{individuals}$, $K = 200$, and  $P(0) = 50$.  We draw this with \PlotTrajs{} from \texttt{tools/plots/plot\_trajectories.py} (Listing~\ref{lst:plots_trajectories}).}
-\label{fig:allee_two_trajs}
-\end{figure}
-
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{figures/allee_effect.pdf}
+\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/allee_effect.pdf}
 \caption{Heat map of $128$ Allee trajectories from Example~\ref{ex:allee} with the same parameters as Figure \ref{fig:allee_two_trajs}. Brighter pixels are near more trajectories.
 We draw this with \PlotHeatmap{} from \texttt{tools/plots/plot\_heatmap\_histogram.py} (Listing~\ref{lst:plots_heatmap}).}
 \label{fig:allee_heat}
@@ -199,7 +199,7 @@ The simulations are stochastic. Exceptions occur occasionally: trajectories boun
 Reconsider Example~\ref{ex:sir_first} and Charlie's fungus-infected cats. The SIR model partitions a population into three compartments: susceptible ($S$), infectious ($I$), and recovered ($R$). Individuals move from $S$ to $I$ upon infection and from $I$ to $R$ upon recovery. Assume Charlie has $S + I + R = 100$ cats, assume $I(0) = 10$ of the cats start out sick, and assume the rest are susceptible. We assume that cats recover with a half-life $\tau = 45$ days and interact with each other in random pairs $1000$ times a day, so the time between a cat's interactions is $\tau_{\textup{int}} = 1/1000 = 0.001$ days, and each interaction has a probability $0.0001$ (that is, $0.01\%$) of an infection spreading.
 We use $\widetilde{\alpha} = \frac{0.0001}{0.001} = 0.1\,\textup{days}^{-1}$, and since $S + I + R = N = 100$, the per-pair rate is $\alpha = \widetilde{\alpha}/N = \frac{0.0001}{0.001 \cdot 100} = 10^{-3}\,(\textup{individual}\cdot\textup{days})^{-1}$, matching \MakeSirRates{} in the companion code.
 
-We re-parameterize in terms of daily interactions because transmissibility depends on both the infectious organism and social behavior. For example, the black-tailed prairie dog is sociable, and plague (\textit{Yersinia pestis}) infections transmit rapidly through their populations. By contrast, California ground squirrels (\textit{Otospermophilus beecheyi}) are less social in their burrowing behavior and tolerate plague better than black-tailed prairie dogs \cite{buhnerkempe2011transmission}.
+We re-parameterize in terms of daily interactions because transmissibility depends on both the infectious organism and social behavior. For example, the black-tailed prairie dog (\textit{Cynomys ludovicianus}) is sociable, and plague (\textit{Yersinia pestis}) infections transmit rapidly through their populations. By contrast, California ground squirrels (\textit{Otospermophilus beecheyi}) are less social in their burrowing behavior and tolerate plague better than black-tailed prairie dogs \cite{buhnerkempe2011transmission}.
 
 Unlike the previous models, the SIR state is a vector $(S, I, R)$ rather than a scalar count. Table~\ref{tab:sir_dg_events} lists the two events and their vector state changes.
 
@@ -231,13 +231,13 @@ In Figure~\ref{fig:bespoke_sir}, $\textsf{MakeRates}$ returns the infection rate
 \label{fig:bespoke_sir}
 \end{figure}
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={13-29}, caption={The bespoke \texttt{Python} functions for the SIR model: \MakeSirRates{}, \MakeSirDeltaStates{}, and the componentwise update \UpdateSirState{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_sir}.}, label={lst:framework_sir}]{../simulation_frameworks/epidemiology.py}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={13-29}, caption={The bespoke \texttt{Python} functions for the SIR model: \MakeSirRates{}, \MakeSirDeltaStates{}, and the componentwise update \UpdateSirState{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_sir}.}, label={lst:framework_sir}]{\detokenize{17StochasticODEs/stoch-ode/latex/simulation_frameworks/epidemiology.py}}
 
 We generate $100,000$ stochastic trajectories with run time $T = 365$ days (see the Python repository for the code) to estimate (i) the probability that Charlie's cats totally recover within a year and (ii) the five-number summary\index{summary, five-number} of the time until Charlie has no more infected cats, computed from trajectories in which all infectious cats recovered (i.e., $I = 0$) before day $365$. Our simulation reveals an estimated probability of total recovery within the year of $0.53844$ (a sample proportion, defined in Section~\ref{subsec:background}). The five-number summary (see Section~\ref{subsec:background}) of the time until recovery, computed only from trajectories in which all infectious cats recovered before day $365$, was $(161.5, 288.1, 315.9, 340.0, 364.998)$. This indicates that, when Charlie's cats totally recover within one year, a $50\%$ probability exists that the cats will take more than $316$ days to recover. We use the SIR plotting code (in the Python repository) to visualize one representative stochastic trajectory (which includes all three compartments of population members) in Figure~\ref{fig:sir}.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/epidemiology.pdf}
+\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/epidemiology.pdf}
 \caption{An example simulation of the fungal infection among Charlie's cats, showing the susceptible ($S$), infectious ($I$), and recovered ($R$) compartments over time. We draw this with \PlotTrajs{} from \texttt{tools/plots/plot\_trajectories.py} (Listing~\ref{lst:plots_trajectories}).}
 \label{fig:sir}
 \end{figure}
@@ -251,9 +251,9 @@ A streamplot like Figure~\ref{fig:ode_examples} does not apply here. A streamplo
 
 
 
-The examples above used sample proportions and five-number summaries to summarize simulation output. Section~\ref{subsec:background} introduces both. Section~\ref{subsec:output} formalizes their use, discusses when summary statistics can be misleading (particularly for bimodal output), and provides practical guidance for reporting stochastic simulation results. Read Section~\ref{subsec:output} before proceeding to sensitivity analysis (Section~\ref{subsec:qualitative_changes}), as the sensitivity analysis in Section~\ref{subsec:qualitative_changes} relies on the same statistical vocabulary.
+The examples above used sample proportions and five-number summaries to summarize simulation output. Section~\ref{subsec:background} introduces both. Section~\ref{subsec:output} formalizes their use, discusses when summary statistics can be misleading (particularly for bimodal output), and provides practical guidance for reporting stochastic simulation results. Read Section~\ref{subsec:output} before proceeding to sensitivity analysis (Section~\ref{subsec:qualitative_changes}), as the sensitivity analysis in Section~\ref{subsec:qualitative_changes} relies on the same statistical vocabulary.\\
 
-\textup{{\bf Questions for Reflection:}}
+\noindent \textup{{\bf Questions for Reflection:}}
 \begin{enumerate}
 
 \item Given $r, s > 0$ and the same initial condition $X_0 = Y_0$, the ODEs $\frac{dX}{dt} = rX$ and $\frac{dY}{dt} = (r+s)Y - sY$ always produce the same trajectories. Can you use the Doob-Gillespie algorithm to detect a difference between them? Explain.
