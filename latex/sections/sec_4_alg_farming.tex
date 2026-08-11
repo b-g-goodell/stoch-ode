@@ -55,13 +55,13 @@ In Figure~\ref{fig:bespoke_saline_tank}, $\textsf{MakeRates}$ returns the two ra
 \label{fig:bespoke_saline_tank}
 \end{figure}
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={17-24}, caption={The bespoke \texttt{Python} functions for the saline tank model, \MakeTankRates{} and \MakeTankDeltaStates{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_saline_tank}.}, label={lst:framework_saline_tank}]{\detokenize{17StochasticODEs/stoch-ode/latex/simulation_frameworks/saline_tank.py}}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={17-24}, caption={The bespoke \texttt{Python} functions for the saline tank model, \MakeTankRates{} and \MakeTankDeltaStates{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_saline_tank}.}, label={lst:framework_saline_tank}]{\detokenize{stoch-ode/latex/simulation_frameworks/saline_tank.py}}
 
 A typical execution sees a few dozen simulations out of $100,000$ exceed tolerances, providing a sample proportion on the order of $10^{-4}$. See Figure~\ref{fig:saline_tank} for a typical simulation result: trajectories starting above the equilibrium $M \approx 150$ drift downward, matching the ODE analysis. See Section~\ref{subsec:plotting_utilities} for the trajectory-plotting code.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/saline_tank.pdf}
+\includegraphics[width=\textwidth]{stoch-ode/latex/figures/saline_tank.pdf}
 \caption{An example simulation from the model of Example~\ref{ex:saline_tank} with initial
 condition $M(0) = 300 \textup{ NaCl molecules}$, parameters $V = 10^6\textup{ liters}$,
 $a = b = 100\textup{ liters per hour}$,
@@ -94,7 +94,7 @@ In Figure~\ref{fig:bespoke_logistic_growth}, $\textsf{MakeRates}$ returns the bi
 \label{fig:bespoke_logistic_growth}
 \end{figure}
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-37}, caption={The bespoke \texttt{Python} functions for the logistic growth model, \MakeLogisticRates{} and \MakeLogisticDeltaStates{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_logistic_growth}.}, label={lst:framework_logistic_growth}]{\detokenize{17StochasticODEs/stoch-ode/latex/simulation_frameworks/logistic_growth.py}}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={29-37}, caption={The bespoke \texttt{Python} functions for the logistic growth model, \MakeLogisticRates{} and \MakeLogisticDeltaStates{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_logistic_growth}.}, label={lst:framework_logistic_growth}]{\detokenize{stoch-ode/latex/simulation_frameworks/logistic_growth.py}}
 
 The stochastic trajectories fluctuate around the deterministic logistic solution. Figure~\ref{fig:logistic_growth_mean_vs_ode} compares the mean of $30$ stochastic trajectories against the solution of Equation~\ref{eqn:logistic_growth}.
 
@@ -140,12 +140,12 @@ In Figure~\ref{fig:bespoke_allee}, $\textsf{MakeRates}$ returns the four rates o
 The function \FindTraj{} (in the Python repository) inputs simulation setup data and a success condition function and returns a successful trajectory with a count of all attempts including the successful one. After running the Allee effect script (in the Python repository) with a sample of $128$ simulations, we saw $71$ simulations go extinct, providing an estimated probability of extinction $\widehat{p} = 0.5546875$ (see Section~\ref{subsec:background} for the definition of sample proportion and hat notation).
 Verify that the qualitative behavior matches your ODE analysis: trajectories starting below $P = L = 50$ should drift toward extinction, while those starting above $L$ should drift toward $K = 200$.
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={9-19}, caption={\texttt{Python} functions \MakeAlleeRates{} and \MakeAlleeDeltaStates{} for the Allee effect model. See pseudocode in Figure~\ref{fig:bespoke_allee}.}, label={lst:framework_allee}]{\detokenize{17StochasticODEs/stoch-ode/latex/simulation_frameworks/allee_effect.py}}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={9-19}, caption={\texttt{Python} functions \MakeAlleeRates{} and \MakeAlleeDeltaStates{} for the Allee effect model. See pseudocode in Figure~\ref{fig:bespoke_allee}.}, label={lst:framework_allee}]{\detokenize{stoch-ode/latex/simulation_frameworks/allee_effect.py}}
 
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/allee_effect_two_trajs.pdf}
+\includegraphics[width=\textwidth]{stoch-ode/latex/figures/allee_effect_two_trajs.pdf}
 \caption{Two Allee trajectories from
 Example~\ref{ex:allee}, with $r = 0.0045 (\text{time})^{-1}$,
 $L = 50 \text{ individuals}$, $K = 200$, and  $P(0) = 50$.  We draw this with \PlotTrajs{} from \texttt{tools/plots/plot\_trajectories.py} (Listing~\ref{lst:plots_trajectories}).}
@@ -155,7 +155,7 @@ $L = 50 \text{ individuals}$, $K = 200$, and  $P(0) = 50$.  We draw this with \P
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/allee_ode.pdf}
+\includegraphics[width=\textwidth]{stoch-ode/latex/figures/allee_ode.pdf}
 \caption{Phase diagram for Allee effect ODE $\frac{dP}{dt} = -rP(1-P/L)(1-P/K)$ where $r = 0.0045\,\text{days}^{-1}$, $L = 50$, $K = 200$, from Example~\ref{ex:allee}).
 Trajectories below $P = L$ trend to extinction. Trajectories above $P = L$ trend to $P = K$.
 We shade the non-physical region $P < 0$ red. We draw this with \MakePhaseDiagram{} from \texttt{tools/plots/plot\_vector\_field.py} (Listing~\ref{lst:plots_vector_field}).}
@@ -165,7 +165,7 @@ We shade the non-physical region $P < 0$ red. We draw this with \MakePhaseDiagra
 %flipped the previous two figures due to referencing in the chapter being in this (flipped) order.
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/allee_effect.pdf}
+\includegraphics[width=\textwidth]{stoch-ode/latex/figures/allee_effect.pdf}
 \caption{Heat map of $128$ Allee trajectories from Example~\ref{ex:allee} with the same parameters as Figure \ref{fig:allee_two_trajs}. Brighter pixels are near more trajectories.
 We draw this with \PlotHeatmap{} from \texttt{tools/plots/plot\_heatmap\_histogram.py} (Listing~\ref{lst:plots_heatmap}).}
 \label{fig:allee_heat}
@@ -233,13 +233,13 @@ In Figure~\ref{fig:bespoke_sir}, $\textsf{MakeRates}$ returns the infection rate
 \label{fig:bespoke_sir}
 \end{figure}
 
-\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={13-29}, caption={The bespoke \texttt{Python} functions for the SIR model: \MakeSirRates{}, \MakeSirDeltaStates{}, and the componentwise update \UpdateSirState{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_sir}.}, label={lst:framework_sir}]{\detokenize{17StochasticODEs/stoch-ode/latex/simulation_frameworks/epidemiology.py}}
+\lstinputlisting[float=htbp, language=Python, numbers=none, linerange={13-29}, caption={The bespoke \texttt{Python} functions for the SIR model: \MakeSirRates{}, \MakeSirDeltaStates{}, and the componentwise update \UpdateSirState{}. We pair these with the pseudocode of Figure~\ref{fig:bespoke_sir}.}, label={lst:framework_sir}]{\detokenize{stoch-ode/latex/simulation_frameworks/epidemiology.py}}
 
 We generate $100,000$ stochastic trajectories with run time $T = 365$ days (see the Python repository for the code) to estimate (i) the probability that Charlie's cats totally recover within a year and (ii) the five-number summary\index{summary, five-number} of the time until Charlie has no more infected cats, computed from trajectories in which all infectious cats recovered (i.e., $I = 0$) before day $365$. Our simulation reveals an estimated probability of total recovery within the year of $0.53844$ (a sample proportion, defined in Section~\ref{subsec:background}). The five-number summary (see Section~\ref{subsec:background}) of the time until recovery, computed only from trajectories in which all infectious cats recovered before day $365$, was $(161.5, 288.1, 315.9, 340.0, 364.998)$. This indicates that, when Charlie's cats totally recover within one year, a $50\%$ probability exists that the cats will take more than $316$ days to recover. We use the SIR plotting code (in the Python repository) to visualize one representative stochastic trajectory (which includes all three compartments of population members) in Figure~\ref{fig:sir}.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/epidemiology.pdf}
+\includegraphics[width=\textwidth]{stoch-ode/latex/figures/epidemiology.pdf}
 \caption{An example simulation of the fungal infection among Charlie's cats, showing the susceptible ($S$), infectious ($I$), and recovered ($R$) compartments over time. We draw this with \PlotTrajs{} from \texttt{tools/plots/plot\_trajectories.py} (Listing~\ref{lst:plots_trajectories}).}
 \label{fig:sir}
 \end{figure}
