@@ -52,7 +52,7 @@ A lot of text scrolls by. That is normal. It finishes and the prompt comes back 
 
 ## 5. Run something
 
-Small programs live in `scripts/`. Five of them simulate models and draw figures from the book chapter. (The sixth file there, `generate_macros.py`, is plumbing for the book build. Ignore it.) Run one:
+Small programs live in `scripts/`. Five of them draw figures from the book chapter. (The sixth file there, `generate_macros.py`, is plumbing for the book build. Ignore it.) Run one:
 
     python scripts/radioactive_decay.py
 
