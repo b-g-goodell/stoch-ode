@@ -1,6 +1,2 @@
-# Standalone chapter build: latexmk -pdf standalone.tex
-# The chapter's include paths start at the directory that contains
-# 17StochasticODEs/, so the repo must live at
-# <anywhere>/17StochasticODEs/stoch-ode.
-ensure_path('TEXINPUTS', '../../..');
+# Standalone chapter build: latexmk standalone.tex
 $pdf_mode = 1;

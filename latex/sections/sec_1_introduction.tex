@@ -120,18 +120,18 @@ In the logistic growth model, events are individual birth and death events. Tabl
 \centering
 \begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/radioactive_decay.pdf}
+\includegraphics[width=\textwidth]{figures/radioactive_decay.pdf}
 \caption{Radioactive decay ODE.}
 \label{fig:radioactive_decay}
 \end{subfigure}
 \hfill
 \begin{subfigure}[t]{0.48\textwidth}
 \centering
-\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/logistic_growth.pdf}
+\includegraphics[width=\textwidth]{figures/logistic_growth.pdf}
 \caption{Logistic growth ODE.}
 \label{fig:logistic_growth}
 \end{subfigure}
-\caption{Phase diagrams for the two motivating homogeneous ODE models from Section~\ref{subsec:problems_with_odes}. The region below the $x$-axis (shaded red) has no physical meaning for matter isotopes. The companion Python repository on GitHub (see subsection \ref{subsec:companion_repo}) contains scripts that generate these images: \texttt{/stoch-ode/scripts/radioactive\_decay.py} and \texttt{/stoch-ode/scripts/logistic\_growth.py}. We draw both panels with \MakePhaseDiagram{} from \texttt{tools/plots/plot\_vector\_field.py} (Listing~\ref{lst:plots_vector_field}).}
+\caption{Phase diagrams for the two motivating homogeneous ODE models from Section~\ref{subsec:problems_with_odes}. The region below the $x$-axis (shaded red) has no physical meaning for matter isotopes. The companion Python repository on GitHub (see subsection \ref{subsec:companion_repo}) contains scripts that generate these images: \texttt{scripts/radioactive\_decay.py} and \texttt{scripts/logistic\_growth.py}. We draw both panels with \MakePhaseDiagram{} from \texttt{tools/plots/plot\_vector\_field.py} (Listing~\ref{lst:plots_vector_field}).}
 \label{fig:ode_examples}
 \end{figure}
 
@@ -155,7 +155,7 @@ Unfortunately (and contrary to popular belief) ODE solution trajectories do not 
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{17StochasticODEs/stoch-ode/latex/figures/logistic_growth_mean_vs_ode.pdf}
+\includegraphics[width=\textwidth]{figures/logistic_growth_mean_vs_ode.pdf}
 \caption{ODE solution (dashed) and Doob-Gillespie sample mean (solid), logistic growth model, $P(0) = K/2$. Short-time agreement masks qualitatively opposite long-run behavior. As usual, we shade non-physical regions red. We draw this with \PlotMeanVsOde{} from \texttt{tools/plots/plot\_mean\_vs\_ode.py} (Listing~\ref{lst:plots_mean_vs_ode}).}
 \label{fig:logistic_growth_mean_vs_ode}
 \end{figure}
@@ -250,7 +250,7 @@ The repository has the following directory structure. You can then run any scrip
 Directory & Contents \\
 \hline
 \texttt{scripts/}               & Top-level scripts for figures \\
-\texttt{simulation\_frameworks/}& One framework per model \\
+\texttt{simulation\_frameworks/}& One framework per model of Section~\ref{sec:farming} \\
 \texttt{tools/}                 & Plotting utilities and simulation core functions \\
 \texttt{tests/}                 & Automated test suite, run with \texttt{pytest} \\
 \hline
