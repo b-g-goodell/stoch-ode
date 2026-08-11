@@ -76,8 +76,6 @@ A short wait, then a green line like "55 passed, 2 deselected". "Passed" means h
     tests/                   automatic checks
     latex/                   the book chapter: LaTeX text, figures, build files
 
-One surprise in there: `latex/` holds its own copies of `scripts/`, `tools/`, and `simulation_frameworks/`. Those copies serve the book's build. The ones you run and read are the top-level ones.
-
 ## The book (optional)
 
 The chapter is written in LaTeX, a typesetting system that turns text files into a PDF. Inside the publisher's book, `latex/main.tex` is a fragment the book builds for itself, so to read the chapter you build it yourself. First install LaTeX. It is a large install, gigabytes, and takes a while.
