@@ -52,13 +52,13 @@ A lot of text scrolls by. That is normal. It finishes and the prompt comes back 
 
 ## 5. Run something
 
-Small programs live in `scripts/`. Each one simulates a model and draws a figure from the book chapter. Run one:
+Small programs live in `scripts/`. Five of them simulate models and draw figures from the book chapter. (The sixth file there, `generate_macros.py`, is plumbing for the book build. Ignore it.) Run one:
 
     python scripts/radioactive_decay.py
 
-Wait for the prompt to come back. Then open the folder `stoch-ode/latex/figures` in your file browser (Windows: File Explorer, Mac: Finder). A file `radioactive_decay.pdf` sits there with a fresh timestamp. Open it and look at it. That is the code working.
+It prints nothing and finishes in a few seconds. When the prompt comes back, open the folder `stoch-ode/latex/figures` in your file browser (Windows: File Explorer, Mac: Finder). A file `radioactive_decay.pdf` sits there with a fresh timestamp. Open it and look at it. That is the code working.
 
-Try the others the same way: `logistic_growth.py`, `epidemiology.py`, `saline_tank.py`, `allee_effect.py`. Some run many simulations and take a few minutes. A busy, silent terminal is not a stuck terminal.
+Try the others the same way: `logistic_growth.py`, `epidemiology.py`, `saline_tank.py`, `allee_effect.py`. Each also prints nothing and finishes in seconds, and some write two or three PDFs into `latex/figures` at once.
 
 ## 6. Check the code is healthy
 
@@ -66,15 +66,17 @@ Tests are code that checks the other code still works. Run them all, from the `s
 
     python -m pytest -q
 
-A short wait, then a green line saying how many tests passed. "Passed" means healthy. Red "failed" lines mean something is wrong. Nothing to fix right now either way. This command is how you check.
+A short wait, then a green line like "55 passed, 2 deselected". "Passed" means healthy, and a "deselected" count is fine: those tests are skipped on purpose. Red "failed" lines mean something is wrong. Nothing to fix right now either way. This command is how you check.
 
 ## What lives where
 
     scripts/                 small programs that make the book figures
-    simulation_frameworks/   the example models (decay, growth, disease, ...)
+    simulation_frameworks/   the example models (growth, disease, tank mixing, ...)
     tools/                   the simulation engine and plotting code
     tests/                   automatic checks
     latex/                   the book chapter: LaTeX text, figures, build files
+
+One surprise in there: `latex/` holds its own copies of `scripts/`, `tools/`, and `simulation_frameworks/`. Those copies serve the book's build. The ones you run and read are the top-level ones.
 
 ## The book (optional)
 
