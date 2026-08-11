@@ -132,7 +132,7 @@ In the logistic growth model, events are individual birth and death events. Tabl
 \caption{Logistic growth ODE.}
 \label{fig:logistic_growth}
 \end{subfigure}
-\caption{Phase diagrams for the two motivating homogeneous ODE models from Section~\ref{subsec:problems_with_odes}. The region below the $x$-axis (shaded red) has no physical meaning for matter isotopes. The companion Python repository on GitHub (see subsection \ref{subsec:companion_repo}) contains scripts that generate these images: \texttt{/stoch-ode/scripts/radioactive\_decay.py} and \texttt{/stoch-ode/scripts/logistic\_growth.py}. We draw both panels with \MakePhaseDiagram{} from \texttt{tools/plots/plot\_vector\_field.py} (Listing~\ref{lst:plots_vector_field}).}
+\caption{Phase diagrams for the two motivating homogeneous ODE models from Section~\ref{subsec:problems_with_odes}. The region below the $x$-axis (shaded red) has no physical meaning for matter isotopes. The companion Python repository on GitHub (see subsection \ref{subsec:companion_repo}) contains scripts that generate these images: \texttt{scripts/radioactive\_decay.py} and \texttt{scripts/logistic\_growth.py}. We draw both panels with \MakePhaseDiagram{} from \texttt{tools/plots/plot\_vector\_field.py} (Listing~\ref{lst:plots_vector_field}).}
 \label{fig:ode_examples}
 \end{figure}
 
@@ -251,7 +251,7 @@ The repository has the following directory structure. You can then run any scrip
 Directory & Contents \\
 \hline
 \texttt{scripts/}               & Top-level scripts for figures \\
-\texttt{simulation\_frameworks/}& One framework per model \\
+\texttt{simulation\_frameworks/}& One framework per model of Section~\ref{sec:farming} \\
 \texttt{tools/}                 & Plotting utilities and simulation core functions \\
 \texttt{tests/}                 & Automated test suite, run with \texttt{pytest} \\
 \hline
