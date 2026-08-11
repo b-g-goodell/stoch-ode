@@ -61,7 +61,7 @@ Green means good.
 ## What lives where
 
     scripts/                 small programs that make book figures
-    simulation_frameworks/   the example models (decay, growth, disease, ...)
+    simulation_frameworks/   the example models (growth, disease, tank mixing, ...)
     tools/                   the simulation engine and plotting code
     tests/                   automatic checks
     latex/                   the book chapter text
